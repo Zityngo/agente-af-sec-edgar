@@ -1,6 +1,8 @@
-name: SEC EDGAR - prueba inicial
+name: SEC EDGAR - seguimiento diario
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '17 9 * * *'
   push:
     branches: [main]
     paths: ['.github/workflows/actualizar-sec.yml']
@@ -31,5 +33,5 @@ jobs:
         with:
           name: sec-edgar-piloto
           path: publico/sec/
-          retention-days: 7
+          retention-days: 90
           if-no-files-found: error
