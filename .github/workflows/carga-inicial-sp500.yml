@@ -1,0 +1,77 @@
+name: SEC S&P 500 - carga inicial acelerada
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/carga-inicial-sp500.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sec-sp500-carga-inicial
+  cancel-in-progress: false
+
+jobs:
+  descargar:
+    name: Lote ${{ matrix.lote }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        lote: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Descargar datos financieros oficiales SEC
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+          SP500_BATCH_INDEX: ${{ matrix.lote }}
+          SP500_BATCH_SIZE: '40'
+          SP500_BOOTSTRAP: '1'
+        run: python descargar_sp500.py
+      - name: Conservar resultados del lote
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sp500-lote-${{ matrix.lote }}
+          path: publico/sec/
+          retention-days: 7
+          compression-level: 0
+          if-no-files-found: warn
+
+  consolidar:
+    name: Unir los 13 lotes y validar 500 empresas
+    if: always()
+    needs: [descargar]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Unir artefactos de los 13 lotes
+        uses: actions/download-artifact@v4
+        with:
+          pattern: sp500-lote-*
+          path: publico/sec/
+          merge-multiple: true
+      - name: Generar reporte verificable de cobertura
+        run: python verificar_bootstrap.py
+      - name: Guardar copia conjunta para Google Drive
+        uses: actions/upload-artifact@v4
+        with:
+          name: sec-sp500-carga-completa
+          path: publico/sec/
+          retention-days: 90
+          compression-level: 0
+          if-no-files-found: error
+      - name: Comprobar que están las 500 empresas
+        run: python verificar_bootstrap.py --check
