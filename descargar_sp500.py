@@ -25,7 +25,9 @@ import urllib.request
 BASE = Path(__file__).resolve().parent
 OUT = BASE / "publico" / "sec"
 UNIVERSE = BASE / "universo_sp500.csv"
-BATCH_SIZE = 40
+BATCH_SIZE = int(os.environ.get('SP500_BATCH_SIZE', '40'))
+if not (10 <= BATCH_SIZE <= 100):
+    raise SystemExit('SP500_BATCH_SIZE debe estar entre 10 y 100')
 USER_AGENT = os.environ.get("SEC_USER_AGENT", "").strip()
 if len(USER_AGENT) < 12 or "@" not in USER_AGENT:
     raise SystemExit("No está configurado SEC_USER_AGENT como secreto en GitHub")
@@ -84,7 +86,10 @@ def main():
     all_firms=companies()
     batch_total=math.ceil(len(all_firms)/BATCH_SIZE)
     now=datetime.now(timezone.utc)
-    batch_id=now.toordinal()%batch_total
+    selected = os.environ.get('SP500_BATCH_INDEX', '').strip()
+    batch_id = int(selected) if selected else now.toordinal()%batch_total
+    if not (0 <= batch_id < batch_total):
+        raise SystemExit(f'Índice de lote no válido: {batch_id}; máximo {batch_total-1}')
     start=batch_id*BATCH_SIZE
     batch=all_firms[start:start+BATCH_SIZE]
     index={
@@ -127,13 +132,15 @@ def main():
             print(f"{ticker} CIK {cik}: ERROR {e}",flush=True)
         index["companies"].append(entry)
     OUT.mkdir(parents=True,exist_ok=True)
-    (OUT/"sp500_batch_manifest.json").write_text(
+    manifest_path = (OUT / "batches" / f"sp500_batch_{batch_id:02d}.json") if os.environ.get("SP500_BOOTSTRAP") == "1" else OUT / "sp500_batch_manifest.json"
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(
         json.dumps(index,ensure_ascii=False,indent=2)+"\n",encoding="utf-8"
     )
     successes=sum(x["status"]=="OK" for x in index["companies"])
     print(f"SP500 lote: {successes}/{len(batch)} empresas OK; "+
           f"{len(index['errors'])} errores; "+
-          f"cobertura completa prevista en {batch_total} dias consecutivos.",flush=True)
+          f"total de {batch_total} lotes; este lote #{batch_id+1}.",flush=True)
     if successes==0:raise SystemExit("NINGUNA empresa recuperada: revisar fuente y permisos")
     if index["errors"]:
         print("WARNING: lote parcial. No atribuir cobertura total a fallos.",flush=True)
