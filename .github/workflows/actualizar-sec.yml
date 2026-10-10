@@ -27,6 +27,10 @@ jobs:
         env:
           SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
         run: python descargar_sec.py
+      - name: Descargar lote S&P 500
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: python descargar_sp500.py
       - name: Conservar resultados para validación
         if: success()
         uses: actions/upload-artifact@v4
