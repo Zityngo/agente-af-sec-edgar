@@ -1,0 +1,32 @@
+name: SEC EDGAR - prueba inicial
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sec-edgar-piloto
+  cancel-in-progress: false
+
+jobs:
+  descargar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Consultar SEC EDGAR oficial
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: python descargar_sec.py
+      - name: Conservar resultados para validación
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sec-edgar-piloto
+          path: publico/sec/
+          retention-days: 7
+          if-no-files-found: error
