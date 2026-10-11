@@ -1,0 +1,28 @@
+name: SEC EDGAR - repair extra CIKs
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/download_extra_ciks.py'
+      - '.github/workflows/repair-extra-ciks.yml'
+permissions:
+  contents: read
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download official SEC extra CIKs
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: python scripts/download_extra_ciks.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sec-extra-ciks
+          path: publico/sec_extra/
+          retention-days: 90
