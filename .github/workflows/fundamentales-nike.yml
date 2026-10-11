@@ -1,0 +1,46 @@
+name: SEC EDGAR - fundamentales Nike
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/fundamentales-nike.yml']
+permissions:
+  contents: read
+jobs:
+  nike:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Descargar SEC NKE y NU
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: python descargar_sec.py
+      - name: Descomprimir companyfacts
+        run: |
+          python - <<'PY'
+          import gzip
+          from pathlib import Path
+          for p in Path("publico/sec").rglob("companyfacts.json.gz"):
+              p.with_suffix("").write_bytes(gzip.decompress(p.read_bytes()))
+          PY
+      - name: Construir fundamentales
+        run: python scripts/build_fundamentals.py publico/sec --out fundamentales.csv --start 2016 --end 2026
+      - name: Validar Nike
+        run: |
+          python - <<'PY'
+          import csv
+          rows=list(csv.DictReader(open("fundamentales.csv")))
+          nke=[r for r in rows if r["cik"]=="0000320187"]
+          assert nke, "Nike no generó métricas"
+          print("Nike company-years:",len(nke))
+          for r in nke[-3:]: print(r)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fundamentales-nike
+          path: fundamentales.csv
+          retention-days: 90
