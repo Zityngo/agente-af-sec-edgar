@@ -1,0 +1,18 @@
+{
+  "version": "v3.9",
+  "date": "2026-10-12",
+  "library_path": "/Inversiones y finanzas personales/SP500_SEC_fundamentales_v3.9_2026-10-12.zip",
+  "zip_sha256": "e38f978d3ba22c15a5f53372653f2485e056348f4c36e787b7243c328a867600",
+  "parent_zip_sha256": "b3ffe010d65e7cb972ec4acaf2216654aee1e742534d6cfdc628c13cb59e812c",
+  "companies": 500,
+  "annual_rows": 2451,
+  "quarterly_rows": 10271,
+  "raw_sec_archives_sha256_verified": 13,
+  "same_tag_filing_reconciliations": 49,
+  "numeric_da_issuer_year_changes": 24,
+  "provenance_only_repairs": 25,
+  "unverified_mixed_tag_q4": 53,
+  "review_required": 102,
+  "per": "NULL",
+  "status": "PROVISIONAL"
+}
