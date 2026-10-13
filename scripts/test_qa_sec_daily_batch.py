@@ -3,7 +3,7 @@ import gzip, hashlib, json, tempfile, unittest
 from pathlib import Path
 import os, sys
 sys.path.insert(0,str(Path(__file__).resolve().parent))
-from qa_sec_daily_batch_v75 import verify_snapshot
+from qa_sec_daily_batch import verify_snapshot
 
 class TestDailyQA(unittest.TestCase):
     def test_valid_with_recent_filing_and_duplicate_guard(self):
