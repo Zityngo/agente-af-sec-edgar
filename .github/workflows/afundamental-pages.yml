@@ -30,10 +30,11 @@ jobs:
           assert 'A.Fundamental 2.2' in html
           for field in ('companySelect','sameQuarterSelect','sameQuarterMetric','peerChart','valuationTable'):
               assert ('id="'+field+'"') in html, field
-          match=re.search(r'<script>const DATA = (\\{[^\\n]+\\});',html)
-          if not match:
-              raise SystemExit('Dashboard DATA no encontrado')
-          data=json.loads(match.group(1))
+          try:
+              raw=html.split('<script>const DATA = ',1)[1].split(';'+chr(10)+'const $',1)[0]
+              data=json.loads(raw)
+          except (IndexError,ValueError) as e:
+              raise SystemExit('Dashboard DATA no encontrado: '+str(e))
           assert data['ticker']=='MSFT'
           assert len(data['annual']['MSFT'])==5
           assert len(data['quarterly']['MSFT'])>=20
