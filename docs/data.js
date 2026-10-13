@@ -1,5 +1,5 @@
 window.AF_DATA = {
-  "title": "Microsoft | A.Fundamental 2.0",
+  "title": "Microsoft | A.Fundamental 2.1",
   "date": "2026-10-13",
   "price_date": "2026-10-12",
   "ticker": "MSFT",
@@ -393,4 +393,334 @@ window.AF_DATA = {
     ]
   ],
   "footnote": "Flujos CFO-CAPEX pagados tratados como aproximación a caja para el accionista; tasa de descuento empleada como coste del capital propio; shares constantes y sin doble suma de caja/deuda. El crecimiento terminal determina mucho del valor."
+,
+  "peerHistory": [
+  {
+    "ticker": "MSFT",
+    "name": "Microsoft",
+    "business": "Software / cloud",
+    "color": "#4cdbbd",
+    "fiscalYearEnd": "2026-06-30",
+    "records": [
+      {
+        "year": 2022,
+        "close": "2022-06-30",
+        "revenue": 198.27,
+        "ebit": 83.383,
+        "net": 72.738,
+        "cfo": 89.035,
+        "capex": 23.886,
+        "fcf": 65.149,
+        "ebit_margin": 42.06,
+        "fcf_margin": 32.86
+      },
+      {
+        "year": 2023,
+        "close": "2023-06-30",
+        "revenue": 211.915,
+        "ebit": 88.523,
+        "net": 72.361,
+        "cfo": 87.582,
+        "capex": 28.107,
+        "fcf": 59.475,
+        "ebit_margin": 41.77,
+        "fcf_margin": 28.07
+      },
+      {
+        "year": 2024,
+        "close": "2024-06-30",
+        "revenue": 245.122,
+        "ebit": 109.433,
+        "net": 88.136,
+        "cfo": 118.548,
+        "capex": 44.477,
+        "fcf": 74.071,
+        "ebit_margin": 44.64,
+        "fcf_margin": 30.22
+      },
+      {
+        "year": 2025,
+        "close": "2025-06-30",
+        "revenue": 281.724,
+        "ebit": 128.528,
+        "net": 101.832,
+        "cfo": 136.162,
+        "capex": 64.551,
+        "fcf": 71.611,
+        "ebit_margin": 45.62,
+        "fcf_margin": 25.42
+      },
+      {
+        "year": 2026,
+        "close": "2026-06-30",
+        "revenue": 331.839,
+        "ebit": 155.237,
+        "net": 133.749,
+        "cfo": 182.935,
+        "capex": 115.948,
+        "fcf": 66.987,
+        "ebit_margin": 46.78,
+        "fcf_margin": 20.19
+      }
+    ],
+    "source": "SEC EDGAR / S&P 500 v6.9 (2026-10-13), métricas FY provisionales"
+  },
+  {
+    "ticker": "ORCL",
+    "name": "Oracle",
+    "business": "Software / infraestructura cloud",
+    "color": "#69aaf7",
+    "fiscalYearEnd": "2026-05-31",
+    "records": [
+      {
+        "year": 2022,
+        "close": "2022-05-31",
+        "revenue": 42.44,
+        "ebit": 10.926,
+        "net": 6.717,
+        "cfo": 9.539,
+        "capex": 4.511,
+        "fcf": 5.028,
+        "ebit_margin": 25.74,
+        "fcf_margin": 11.85
+      },
+      {
+        "year": 2023,
+        "close": "2023-05-31",
+        "revenue": 49.954,
+        "ebit": 13.093,
+        "net": 8.503,
+        "cfo": 17.165,
+        "capex": 8.695,
+        "fcf": 8.47,
+        "ebit_margin": 26.21,
+        "fcf_margin": 16.96
+      },
+      {
+        "year": 2024,
+        "close": "2024-05-31",
+        "revenue": 52.961,
+        "ebit": 15.353,
+        "net": 10.467,
+        "cfo": 18.673,
+        "capex": 6.866,
+        "fcf": 11.807,
+        "ebit_margin": 28.99,
+        "fcf_margin": 22.29
+      },
+      {
+        "year": 2025,
+        "close": "2025-05-31",
+        "revenue": 57.399,
+        "ebit": 17.678,
+        "net": 12.443,
+        "cfo": 20.821,
+        "capex": 21.215,
+        "fcf": -0.394,
+        "ebit_margin": 30.8,
+        "fcf_margin": -0.69
+      },
+      {
+        "year": 2026,
+        "close": "2026-05-31",
+        "revenue": 67.357,
+        "ebit": 20.606,
+        "net": 17.087,
+        "cfo": 31.977,
+        "capex": 55.663,
+        "fcf": -23.686,
+        "ebit_margin": 30.59,
+        "fcf_margin": -35.16
+      }
+    ],
+    "source": "SEC EDGAR / S&P 500 v6.9 (2026-10-13), métricas FY provisionales"
+  },
+  {
+    "ticker": "CRM",
+    "name": "Salesforce",
+    "business": "Software de gestión / SaaS",
+    "color": "#f6c46d",
+    "fiscalYearEnd": "2026-01-31",
+    "records": [
+      {
+        "year": 2022,
+        "close": "2022-01-31",
+        "revenue": 26.492,
+        "ebit": 0.548,
+        "net": 1.444,
+        "cfo": 6.0,
+        "capex": 0.717,
+        "fcf": 5.283,
+        "ebit_margin": 2.07,
+        "fcf_margin": 19.94
+      },
+      {
+        "year": 2023,
+        "close": "2023-01-31",
+        "revenue": 31.352,
+        "ebit": 1.03,
+        "net": 0.208,
+        "cfo": 7.111,
+        "capex": 0.798,
+        "fcf": 6.313,
+        "ebit_margin": 3.29,
+        "fcf_margin": 20.14
+      },
+      {
+        "year": 2024,
+        "close": "2024-01-31",
+        "revenue": 34.857,
+        "ebit": 5.011,
+        "net": 4.136,
+        "cfo": 10.234,
+        "capex": 0.736,
+        "fcf": 9.498,
+        "ebit_margin": 14.38,
+        "fcf_margin": 27.25
+      },
+      {
+        "year": 2025,
+        "close": "2025-01-31",
+        "revenue": 37.895,
+        "ebit": 7.205,
+        "net": 6.197,
+        "cfo": 13.092,
+        "capex": 0.658,
+        "fcf": 12.434,
+        "ebit_margin": 19.01,
+        "fcf_margin": 32.81
+      },
+      {
+        "year": 2026,
+        "close": "2026-01-31",
+        "revenue": 41.525,
+        "ebit": 8.331,
+        "net": 7.457,
+        "cfo": 14.996,
+        "capex": 0.594,
+        "fcf": 14.402,
+        "ebit_margin": 20.06,
+        "fcf_margin": 34.68
+      }
+    ],
+    "source": "SEC EDGAR / S&P 500 v6.9 (2026-10-13), métricas FY provisionales"
+  },
+  {
+    "ticker": "GOOGL",
+    "name": "Alphabet",
+    "business": "Google Cloud / IA (negocio diversificado)",
+    "color": "#ba94f6",
+    "fiscalYearEnd": "2025-12-31",
+    "records": [
+      {
+        "year": 2022,
+        "close": "2022-12-31",
+        "revenue": 282.836,
+        "ebit": 74.842,
+        "net": 59.972,
+        "cfo": 91.495,
+        "capex": 31.485,
+        "fcf": 60.01,
+        "ebit_margin": 26.46,
+        "fcf_margin": 21.22
+      },
+      {
+        "year": 2023,
+        "close": "2023-12-31",
+        "revenue": 307.394,
+        "ebit": 84.293,
+        "net": 73.795,
+        "cfo": 101.746,
+        "capex": 32.251,
+        "fcf": 69.495,
+        "ebit_margin": 27.42,
+        "fcf_margin": 22.61
+      },
+      {
+        "year": 2024,
+        "close": "2024-12-31",
+        "revenue": 350.018,
+        "ebit": 112.39,
+        "net": 100.118,
+        "cfo": 125.299,
+        "capex": 52.535,
+        "fcf": 72.764,
+        "ebit_margin": 32.11,
+        "fcf_margin": 20.79
+      },
+      {
+        "year": 2025,
+        "close": "2025-12-31",
+        "revenue": 402.836,
+        "ebit": 129.039,
+        "net": 132.17,
+        "cfo": 164.713,
+        "capex": 91.447,
+        "fcf": 73.266,
+        "ebit_margin": 32.03,
+        "fcf_margin": 18.19
+      }
+    ],
+    "source": "SEC EDGAR / S&P 500 v6.9 (2026-10-13), métricas FY provisionales"
+  },
+  {
+    "ticker": "AMZN",
+    "name": "Amazon",
+    "business": "AWS / cloud (negocio diversificado)",
+    "color": "#fa8790",
+    "fiscalYearEnd": "2025-12-31",
+    "records": [
+      {
+        "year": 2022,
+        "close": "2022-12-31",
+        "revenue": 513.983,
+        "ebit": 12.248,
+        "net": -2.722,
+        "cfo": 46.752,
+        "capex": 63.645,
+        "fcf": -16.893,
+        "ebit_margin": 2.38,
+        "fcf_margin": -3.29
+      },
+      {
+        "year": 2023,
+        "close": "2023-12-31",
+        "revenue": 574.785,
+        "ebit": 36.852,
+        "net": 30.425,
+        "cfo": 84.946,
+        "capex": 52.729,
+        "fcf": 32.217,
+        "ebit_margin": 6.41,
+        "fcf_margin": 5.61
+      },
+      {
+        "year": 2024,
+        "close": "2024-12-31",
+        "revenue": 637.959,
+        "ebit": 68.593,
+        "net": 59.248,
+        "cfo": 115.877,
+        "capex": 82.999,
+        "fcf": 32.878,
+        "ebit_margin": 10.75,
+        "fcf_margin": 5.15
+      },
+      {
+        "year": 2025,
+        "close": "2025-12-31",
+        "revenue": 716.924,
+        "ebit": 79.975,
+        "net": 77.67,
+        "cfo": 139.514,
+        "capex": 131.819,
+        "fcf": 7.695,
+        "ebit_margin": 11.16,
+        "fcf_margin": 1.07
+      }
+    ],
+    "source": "SEC EDGAR / S&P 500 v6.9 (2026-10-13), métricas FY provisionales"
+  }
+],
+  "peerHistoryNote": "Fuente: SEC EDGAR, base A.Fundamental v6.9 (13/10/2026). Cinco ejercicios como máximo; FY2026 aún no disponible para Alphabet y Amazon. Años fiscales no son trimestres coincidentes. Datos provisionales; no incluye estimaciones de mercado."
 };
