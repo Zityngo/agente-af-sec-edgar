@@ -1,4 +1,4 @@
-name: Publicar A.Fundamental 2.0 (GitHub Pages)
+name: Publicar A.Fundamental 2.3 (GitHub Pages)
 on:
   push:
     branches: [main]
@@ -21,27 +21,37 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validar dashboard 2.2 y cobertura histórica
+      - name: Validar dashboard completo 2.3 y controles SEC
         run: |
-          python - <<'PY'
-          from pathlib import Path
-          import re,json
-          html=Path('docs/index.html').read_text(encoding='utf-8')
-          assert 'A.Fundamental 2.2' in html
-          for field in ('companySelect','sameQuarterSelect','sameQuarterMetric','peerChart','valuationTable'):
-              assert ('id="'+field+'"') in html, field
-          try:
-              raw=html.split('<script>const DATA = ',1)[1].split(';'+chr(10)+'const $',1)[0]
-              data=json.loads(raw)
-          except (IndexError,ValueError) as e:
-              raise SystemExit('Dashboard DATA no encontrado: '+str(e))
-          assert data['ticker']=='MSFT'
-          assert len(data['annual']['MSFT'])==5
-          assert len(data['quarterly']['MSFT'])>=20
-          assert all(t in data['annual'] and t in data['quarterly'] for t in ('MSFT','ORCL','GOOGL','AMZN','CRM'))
-          assert abs(data['summary']['revenue_2026']-331.839)<0.001
-          print('A.Fundamental 2.2: anual, trimestres, pares y controles OK')
-          PY
+          node --check docs/data.js
+          node --check docs/app.js
+          node --check docs/upgrade.js
+          node - <<'JS'
+          const fs=require('fs'),vm=require('vm')
+          const ctx={window:{}}
+          vm.runInNewContext(fs.readFileSync('docs/data.js','utf8'),ctx)
+          const data=ctx.window.AF_DATA
+          if(!data||!data.AF23)throw Error('Falta expediente v2.3')
+          const x=data.AF23
+          if(data.history.length!==5)throw Error('Historial MSFT 2.1 perdido')
+          if(Math.abs(data.dcf.cases.base.value-390.7)>1)throw Error('DCF 2.1 no conservado')
+          for(const t of ['MSFT','ORCL','GOOGL','AMZN','CRM']){
+            if(x.annual[t].length!==5)throw Error('Anual incompleto: '+t)
+            if(x.quarterly[t].length<20)throw Error('Trimestral incompleto: '+t)
+          }
+          const q=x.quarterly.MSFT
+          const q4=q.find(r=>r.fy===2026&&r.q==='Q4')
+          if(Math.abs(q4.fcf-19.639)>0.01)throw Error('FCF Q4 FY2026 incoherente')
+          const html=fs.readFileSync('docs/index.html','utf8')
+          for(const id of ['negocio','crecimiento','retornos','caja','balance','comparables','valoracion','preguntas','glosario','fuentes','tablas','evolucion-comparables','af23-table','af23-compare-result']){
+            if(!html.includes('id="'+id+'"'))throw Error('Apartado o control perdido: '+id)
+          }
+          for(const f of ['docs/upgrade.css','docs/upgrade.js','docs/styles.css','docs/app.js']){
+            if(!fs.existsSync(f))throw Error('Recurso ausente: '+f)
+          }
+          if(!fs.readFileSync('docs/app.js','utf8').includes('1uXRFicl0oCIEEyiQ8H7oG4GCswe1uiJh'))throw Error('PDF premium no enlazado')
+          console.log('A.Fundamental 2.3: legado 2.1, DCF, fuentes SEC y nuevas tablas OK')
+          JS
       - uses: actions/configure-pages@v5
         with:
           enablement: true
