@@ -33,6 +33,17 @@ jobs:
           if(ctx.window.AF_DATA.history.length!==5)throw Error('La serie SEC no contiene 5 años')
           if(ctx.window.AF_DATA.dcf.cases.base.value<390 || ctx.window.AF_DATA.dcf.cases.base.value>392)throw Error('DCF incoherente')
           if(!fs.readFileSync('docs/index.html','utf8').includes('Simulador DCF'))throw Error('Falta sección DCF')
+          const data=ctx.window.AF_DATA;
+          if(data.peerHistory.length!==5)throw Error('Los pares SEC deben ser exactamente cinco compañías');
+          if(!['MSFT','ORCL','CRM','GOOGL','AMZN'].every(t=>data.peerHistory.some(x=>x.ticker===t)))throw Error('Falta un competidor');
+          for(const x of data.peerHistory){
+            if(!x.records.find(y=>y.year===2022))throw Error('Falta base 2022 '+x.ticker)
+            if(x.ticker==='MSFT'&&x.records.find(y=>y.year===2026).revenue!==331.839)throw Error('MSFT FY2026 inesperado')
+            if(['GOOGL','AMZN'].includes(x.ticker)&&x.records.some(y=>y.year===2026))throw Error('No inventar 2026 de '+x.ticker)
+            if(x.records.some(y=>!y.close||y.revenue===null))throw Error('Falta fecha o ingresos '+x.ticker)
+          }
+          const html=fs.readFileSync('docs/index.html','utf8');
+          if(!['growth-metrics','growth-all','peer-companies','peer-scale','peer-chart'].every(x=>html.includes('id="'+x+'"')))throw Error('Faltan controles interactivos')
           console.log('Datos FY, DCF y sitio validados')
           JS
       - uses: actions/configure-pages@v5
