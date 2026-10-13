@@ -1,0 +1,43 @@
+name: Publicar A.Fundamental 2.0 (GitHub Pages)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - '.github/workflows/afundamental-pages.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: afundamental-github-pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Comprobar archivos web y modelo DCF
+        run: |
+          node --check docs/app.js
+          test -s docs/index.html
+          test -s docs/styles.css
+          node - <<'JS'
+          const fs=require('fs'),vm=require('vm')
+          const txt=fs.readFileSync('docs/data.js','utf8'), ctx={window:{}}
+          vm.runInNewContext(txt,ctx)
+          if(ctx.window.AF_DATA.history.length!==5)throw Error('La serie SEC no contiene 5 años')
+          if(ctx.window.AF_DATA.dcf.cases.base.value<390 || ctx.window.AF_DATA.dcf.cases.base.value>392)throw Error('DCF incoherente')
+          if(!fs.readFileSync('docs/index.html','utf8').includes('Simulador DCF'))throw Error('Falta sección DCF')
+          console.log('Datos FY, DCF y sitio validados')
+          JS
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+      - id: deployment
+        uses: actions/deploy-pages@v4
