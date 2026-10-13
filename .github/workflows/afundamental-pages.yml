@@ -21,31 +21,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Comprobar archivos web y modelo DCF
+      - name: Validar dashboard 2.2 y cobertura histórica
         run: |
-          node --check docs/app.js
-          test -s docs/index.html
-          test -s docs/styles.css
-          node - <<'JS'
-          const fs=require('fs'),vm=require('vm')
-          const txt=fs.readFileSync('docs/data.js','utf8'), ctx={window:{}}
-          vm.runInNewContext(txt,ctx)
-          if(ctx.window.AF_DATA.history.length!==5)throw Error('La serie SEC no contiene 5 años')
-          if(ctx.window.AF_DATA.dcf.cases.base.value<390 || ctx.window.AF_DATA.dcf.cases.base.value>392)throw Error('DCF incoherente')
-          if(!fs.readFileSync('docs/index.html','utf8').includes('Simulador DCF'))throw Error('Falta sección DCF')
-          const data=ctx.window.AF_DATA;
-          if(data.peerHistory.length!==5)throw Error('Los pares SEC deben ser exactamente cinco compañías');
-          if(!['MSFT','ORCL','CRM','GOOGL','AMZN'].every(t=>data.peerHistory.some(x=>x.ticker===t)))throw Error('Falta un competidor');
-          for(const x of data.peerHistory){
-            if(!x.records.find(y=>y.year===2022))throw Error('Falta base 2022 '+x.ticker)
-            if(x.ticker==='MSFT'&&x.records.find(y=>y.year===2026).revenue!==331.839)throw Error('MSFT FY2026 inesperado')
-            if(['GOOGL','AMZN'].includes(x.ticker)&&x.records.some(y=>y.year===2026))throw Error('No inventar 2026 de '+x.ticker)
-            if(x.records.some(y=>!y.close||y.revenue===null))throw Error('Falta fecha o ingresos '+x.ticker)
-          }
-          const html=fs.readFileSync('docs/index.html','utf8');
-          if(!['growth-metrics','growth-all','peer-companies','peer-scale','peer-chart'].every(x=>html.includes('id="'+x+'"')))throw Error('Faltan controles interactivos')
-          console.log('Datos FY, DCF y sitio validados')
-          JS
+          python - <<'PY'
+          from pathlib import Path
+          import re,json
+          html=Path('docs/index.html').read_text(encoding='utf-8')
+          assert 'A.Fundamental 2.2' in html
+          for field in ('companySelect','sameQuarterSelect','sameQuarterMetric','peerChart','valuationTable'):
+              assert ('id="'+field+'"') in html, field
+          match=re.search(r'<script>const DATA = (\\{[^\\n]+\\});',html)
+          if not match:
+              raise SystemExit('Dashboard DATA no encontrado')
+          data=json.loads(match.group(1))
+          assert data['ticker']=='MSFT'
+          assert len(data['annual']['MSFT'])==5
+          assert len(data['quarterly']['MSFT'])>=20
+          assert all(t in data['annual'] and t in data['quarterly'] for t in ('MSFT','ORCL','GOOGL','AMZN','CRM'))
+          assert abs(data['summary']['revenue_2026']-331.839)<0.001
+          print('A.Fundamental 2.2: anual, trimestres, pares y controles OK')
+          PY
       - uses: actions/configure-pages@v5
         with:
           enablement: true
