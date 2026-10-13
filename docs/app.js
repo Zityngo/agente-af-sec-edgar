@@ -3,7 +3,7 @@ const DATA=window.AF_DATA;if(!DATA){document.body.prepend('No se cargaron los da
 const q=s=>document.querySelector(s),qa=s=>Array.from(document.querySelectorAll(s));
 const format=(v,n=1)=>Number(v).toLocaleString('es-ES',{minimumFractionDigits:n,maximumFractionDigits:n});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const pdf='https://drive.google.com/file/d/18uCHuVIYJfOYN6PzDzav63lwCgKOE4vw/view?usp=drivesdk';q('#pdf-main').href=pdf;q('#pdf-main').target='_blank';q('#pdf-main').rel='noopener noreferrer';
+const pdf='https://drive.google.com/file/d/1uXRFicl0oCIEEyiQ8H7oG4GCswe1uiJh/view?usp=drivesdk';q('#pdf-main').href=pdf;q('#pdf-main').target='_blank';q('#pdf-main').rel='noopener noreferrer';
 const metrics={revenue:{name:'Ingresos',color:'#4cdbbd'},ebit:{name:'EBIT',color:'#61a6ee'},net:{name:'Beneficio neto',color:'#f5bb65'},cfo:{name:'Flujo operativo',color:'#a9c6ed'},capex:{name:'CAPEX pagado',color:'#f9a76e'},fcf:{name:'FCF',color:'#fb7884'},roic:{name:'ROIC proxy',color:'#4cdbbd'},roe:{name:'ROE',color:'#65a6f3'}};
 const plot=(selector,detailSelector,fields,initial=4,percent=false)=>{
  const data=DATA.history;const colors=fields.map(f=>metrics[f].color);const values=data.flatMap(d=>fields.map(f=>d[f]));const max=Math.max(...values),min=Math.min(0,...values);
