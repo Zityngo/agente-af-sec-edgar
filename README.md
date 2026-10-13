@@ -33,3 +33,14 @@ La SEC requiere identificar peticiones automatizadas. El valor permanece como se
 Una vez verificada la descarga, activar la revisión diaria y archivar los datos en Google Drive utilizando el índice ya creado. El script está configurado para verificar ambos documentos por compañía: \`submissions\` y \`companyfacts\` completos expuestos por la SEC. La fuente no incluye todos los documentos narrativos, etiquetas personalizadas ni consenso de analistas.
 
 El programa usa sólo Python estándar y no necesita suscripciones ni claves API.
+
+
+## Módulo FMP Basic (gratuito y opcional)
+
+- Fuente primaria: **SEC EDGAR**. FMP es **un contraste privado** de incidencias, no sustituto de cifras SEC.
+- Script de comparación: [scripts/fmp_free_crosscheck.py](scripts/fmp_free_crosscheck.py).
+- Pruebas offline: [scripts/test_fmp_free_crosscheck.py](scripts/test_fmp_free_crosscheck.py).
+- Documentación 80/20, límites y pasos: [docs/FMP_BASIC_80_20.md](docs/FMP_BASIC_80_20.md).
+- Comprobación manual: **Actions → FMP Basic - prueba segura**; exige crear el secreto \`FMP_API_KEY\` en GitHub Actions para hacer peticiones reales.
+- La modalidad gratuita publica **250 llamadas/día**, pero **no garantiza acceso a estados históricos ni a todas las empresas**; los endpoints se validan antes de escalar. Sin clave o sin permisos, el agente SEC sigue funcionando.
+- No se publican respuestas de FMP ni claves API. No ejecutar scraping o redistribuir datos FMP para la futura web sin licencia.
