@@ -3,7 +3,7 @@ const DATA=window.AF_DATA;if(!DATA){document.body.prepend('No se cargaron los da
 const q=s=>document.querySelector(s),qa=s=>Array.from(document.querySelectorAll(s));
 const format=(v,n=1)=>Number(v).toLocaleString('es-ES',{minimumFractionDigits:n,maximumFractionDigits:n});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const pdf='__PDF_URL__';q('#pdf-main').href=pdf;q('#pdf-main').target='_blank';q('#pdf-main').rel='noopener noreferrer';
+const pdf='https://drive.google.com/file/d/18uCHuVIYJfOYN6PzDzav63lwCgKOE4vw/view?usp=drivesdk';q('#pdf-main').href=pdf;q('#pdf-main').target='_blank';q('#pdf-main').rel='noopener noreferrer';
 const metrics={revenue:{name:'Ingresos',color:'#4cdbbd'},ebit:{name:'EBIT',color:'#61a6ee'},net:{name:'Beneficio neto',color:'#f5bb65'},cfo:{name:'Flujo operativo',color:'#a9c6ed'},capex:{name:'CAPEX pagado',color:'#f9a76e'},fcf:{name:'FCF',color:'#fb7884'},roic:{name:'ROIC proxy',color:'#4cdbbd'},roe:{name:'ROE',color:'#65a6f3'}};
 const plot=(selector,detailSelector,fields,initial=4,percent=false)=>{
  const data=DATA.history;const colors=fields.map(f=>metrics[f].color);const values=data.flatMap(d=>fields.map(f=>d[f]));const max=Math.max(...values),min=Math.min(0,...values);
@@ -64,7 +64,7 @@ q('#ask-copy').addEventListener('click',async()=>{let userText=q('#custom-questi
  const prompt=`Actúa como analista fundamental independiente y mentor. Analiza Microsoft (NASDAQ:MSFT) a fecha 13/10/2026 con datos verificables SEC FY2022–FY2026 (10-K y 10-Q), siguiendo ingresos→márgenes→ROIC→balance→CFO-CAPEX/FCF→valoración. Distingue dato SEC, hipótesis y estimaciones; no inventes cifras. El FCF FY2026 es 66,987 B$, CAPEX 115,948 B$, CFO 182,935 B$; precio de referencia 541,15 USD (12/10). Responde con escenarios negativo/base/positivo, indicadores que invalidan la tesis y riesgos. Mi pregunta es: ${userText}`;
  try{await navigator.clipboard.writeText(prompt);q('#copy-status').textContent='✓ Consulta copiada. Pégala en ChatGPT.'}catch(_){let f=document.createElement('textarea');f.value=prompt;document.body.append(f);f.select();document.execCommand('copy');f.remove();q('#copy-status').textContent='Consulta preparada. Puedes pegarla en ChatGPT.'}
 });
-const root=document.documentElement;const saved=localStorage.getItem('af-theme');if(saved==='light')root.dataset.theme='light';
-q('#theme-btn').addEventListener('click',()=>{root.dataset.theme=root.dataset.theme==='light'?'dark':'light';localStorage.setItem('af-theme',root.dataset.theme)});
+const root=document.documentElement;let saved=null;try{saved=localStorage.getItem('af-theme')}catch(_){/* local-only preview */}if(saved==='light')root.dataset.theme='light';
+q('#theme-btn').addEventListener('click',()=>{root.dataset.theme=root.dataset.theme==='light'?'dark':'light';try{localStorage.setItem('af-theme',root.dataset.theme)}catch(_){}});
 const obs=new IntersectionObserver(entries=>{entries.filter(e=>e.isIntersecting).forEach(e=>{qa('.sidebar a').forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id))})},{rootMargin:'-15% 0px -75% 0px'});qa('main > section[id]').forEach(s=>obs.observe(s));
 })();
