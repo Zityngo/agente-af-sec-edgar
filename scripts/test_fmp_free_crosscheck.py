@@ -53,6 +53,35 @@ class Tests(unittest.TestCase):
   rows,events,calls=fmp.crosscheck(['AAPL','CSCO'],{},'FAKE',9,0,fetch=blocked)
   self.assertEqual(calls,1)
   self.assertEqual(events[0]['code'],'429')
+ def test_402_blocks_only_affected_ticker_not_others(self):
+  calls_seen=[]
+  def provider(endpoint,ticker,key):
+   calls_seen.append((ticker,endpoint))
+   if ticker=='APP':
+    raise fmp.APIError(402,'Plan or symbol restricted')
+   return [{'period':'FY','fiscalYear':'2025','date':'2025-09-27',
+            'reportedCurrency':'USD','revenue':416161000000}]
+  report,events,calls=fmp.crosscheck(['AAPL','APP','CSCO'],{},'FAKE',9,0,fetch=provider)
+  self.assertEqual(calls,7)  # 3 AAPL, 1 APP, 3 CSCO
+  self.assertEqual(len([x for x in calls_seen if x[0]=='CSCO']),3)
+  self.assertEqual(len([x for x in calls_seen if x[0]=='APP']),1)
+  self.assertEqual(len([x for x in events if x['status']=='SKIPPED_AFTER_TICKER_RESTRICTION']),2)
+  self.assertNotIn('SKIPPED_RESTRICTED_ENDPOINT',[x['status'] for x in events])
+  self.assertTrue(any(x['ticker']=='CSCO' for x in report))
+ def test_402_preserves_call_budget(self):
+  def provider(endpoint,ticker,key):
+   if ticker=='APP': raise fmp.APIError(402,'Plan restriction')
+   return [{'period':'FY','fiscalYear':'2025','date':'2025-09-27','reportedCurrency':'USD'}]
+  report,events,calls=fmp.crosscheck(['AAPL','APP','CSCO'],{},'FAKE',5,0,fetch=provider)
+  self.assertEqual(calls,5)
+  self.assertTrue(any(e['status']=='CALL_BUDGET_REACHED' for e in events))
+ def test_403_is_also_symbol_scoped(self):
+  def provider(endpoint,ticker,key):
+   if ticker=='APP': raise fmp.APIError(403,'Not accessible')
+   return [{'period':'FY','fiscalYear':'2025','date':'2025-09-27','reportedCurrency':'USD'}]
+  _,events,calls=fmp.crosscheck(['APP','CSCO'],{},'FAKE',9,0,fetch=provider)
+  self.assertEqual(calls,4)
+  self.assertEqual(len([e for e in events if e['ticker']=='CSCO' and e['status']=='FETCHED']),3)
  def test_no_key_dry_run(self):
   with patch.dict('os.environ',{},clear=True):
    self.assertEqual(fmp.run(['--dry-run','--tickers','AAPL,CSCO','--max-calls','4']),0)
