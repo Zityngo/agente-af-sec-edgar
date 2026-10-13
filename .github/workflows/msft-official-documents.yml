@@ -1,0 +1,37 @@
+name: Microsoft - fuentes oficiales 5 años (SEC e IR)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/msft-official-documents.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  msft-official-source-archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Descargar SEC companyfacts submissions y formularios Microsoft
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: python scripts/collect_msft_official_forms.py
+      - name: Confirmar archivo y mostrar cobertura real
+        run: |
+          python - <<'PY'
+          import json,pathlib
+          p=pathlib.Path('/tmp/msft_sec_documents/ARCHIVE_QA.json')
+          if not p.exists(): raise SystemExit('ARCHIVE_NOT_GENERATED')
+          r=json.loads(p.read_text())
+          print('MSFT_OFFICIAL_QA',json.dumps(r,ensure_ascii=False))
+          if r['five_year_10k']<5:raise SystemExit('FIVE_YEAR_10K_INVENTORY_INCOMPLETE')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: msft-official-5y-sources
+          path: /tmp/msft_official_source_archive.zip
+          retention-days: 90
