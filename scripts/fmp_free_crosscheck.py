@@ -183,14 +183,19 @@ def compare_one(ticker, endpoint, fmp_record, sec_row, tolerance=0.015):
 
 
 def crosscheck(tickers, sec, api_key, max_calls, delay, fetch=fetch_fmp):
-    report=[]; events=[]; calls=0; halt=False; restricted_endpoints=set()
+    report=[]; events=[]; calls=0; halt=False
     for ticker in tickers:
         if halt:break
+        # A 402/403 for one ticker does not establish that an endpoint is
+        # restricted for every ticker. Skip only this ticker's remaining calls
+        # to save the free allowance, then probe the next ticker.
+        ticker_restricted=False
         for endpoint in ENDPOINTS:
             if halt:
                 break
-            if endpoint in restricted_endpoints:
-                events.append({'ticker':ticker,'endpoint':endpoint,'status':'SKIPPED_RESTRICTED_ENDPOINT'})
+            if ticker_restricted:
+                events.append({'ticker':ticker,'endpoint':endpoint,
+                               'status':'SKIPPED_AFTER_TICKER_RESTRICTION'})
                 continue
             if calls >= max_calls:
                 events.append({'ticker':ticker,'endpoint':endpoint,'status':'CALL_BUDGET_REACHED'})
@@ -201,7 +206,7 @@ def crosscheck(tickers, sec, api_key, max_calls, delay, fetch=fetch_fmp):
             except APIError as exc:
                 events.append({'ticker':ticker,'endpoint':endpoint,'status':'API_UNAVAILABLE','code':str(exc.code),'reason':exc.reason})
                 if exc.code in (401, 429):halt=True
-                if exc.code in (402, 403):restricted_endpoints.add(endpoint)
+                if exc.code in (402, 403):ticker_restricted=True
                 if delay:time.sleep(delay)
                 continue
             accepted=0
