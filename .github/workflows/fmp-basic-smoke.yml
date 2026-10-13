@@ -14,7 +14,11 @@ jobs:
           python-version: '3.12'
       - name: Tests offline del motor FMP (sin llamadas)
         run: python scripts/test_fmp_free_crosscheck.py -q
-      - name: Comprobar permisos reales de Basic con AAPL (maximo tres llamadas)
+      - name: SEC oficial - obtener Apple 5 ejercicios (sin FMP)
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: python scripts/sec_aapl_reference.py --out /tmp/sec_apple_5y.csv
+      - name: Comparar FMP Basic con SEC oficial (AAPL, maximo tres llamadas)
         env:
           FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
         run: |
@@ -22,12 +26,13 @@ jobs:
             echo "PENDIENTE: configura FMP_API_KEY en GitHub Actions secrets. No se ha llamado a la API."
             exit 0
           fi
-          python scripts/fmp_free_crosscheck.py --tickers AAPL --max-companies 1 --max-calls 3 --delay 0.8 --out-dir /tmp/fmp_check
+          python scripts/fmp_free_crosscheck.py --sec-csv /tmp/sec_apple_5y.csv --tickers AAPL --max-companies 1 --max-calls 3 --delay 0.8 --out-dir /tmp/fmp_check
           python - <<'PY'
           import json
           p=json.load(open('/tmp/fmp_check/fmp_qa_summary.json'))
           for e in p['endpoint_events']:
               print(e['endpoint'], e['status'],e.get('code',''),e.get('annual_periods',''))
+          print('Resultados SEC vs FMP:',p['comparison_status_counts'])
           print('Solicitudes HTTP consumidas:',p['http_calls_consumed'])
           print('Datos FMP privados: ningun artefacto publicado')
           PY
