@@ -1,0 +1,33 @@
+name: FMP Basic - prueba segura
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  basic-access:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Tests offline del motor FMP (sin llamadas)
+        run: python scripts/test_fmp_free_crosscheck.py -q
+      - name: Comprobar permisos reales de Basic con AAPL (maximo tres llamadas)
+        env:
+          FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
+        run: |
+          if [ -z "$FMP_API_KEY" ]; then
+            echo "PENDIENTE: configura FMP_API_KEY en GitHub Actions secrets. No se ha llamado a la API."
+            exit 0
+          fi
+          python scripts/fmp_free_crosscheck.py --tickers AAPL --max-companies 1 --max-calls 3 --delay 0.8 --out-dir /tmp/fmp_check
+          python - <<'PY'
+          import json
+          p=json.load(open('/tmp/fmp_check/fmp_qa_summary.json'))
+          for e in p['endpoint_events']:
+              print(e['endpoint'], e['status'],e.get('code',''),e.get('annual_periods',''))
+          print('Solicitudes HTTP consumidas:',p['http_calls_consumed'])
+          print('Datos FMP privados: ningun artefacto publicado')
+          PY
