@@ -1,0 +1,1014 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#091324">
+<meta name="description" content="A.Fundamental 2.0: Microsoft 2026. Panel interactivo de análisis SEC, calidad de negocio, caja, valoración DCF, comparables y preguntas de inversión.">
+<title>Microsoft · A.Fundamental 2.1 | Estudio de inversión</title>
+<style>
+:root{--bg:#071120;--surface:#101f32;--surface2:#13273b;--border:#23374a;--ink:#f2f6fb;--muted:#9eb0c4;--soft:#7590a9;--teal:#47dbba;--blue:#69aaf7;--orange:#f4bc64;--red:#fb7884;--green:#45dab3;--max:1120px;--shadow:0 16px 46px rgba(0,0,0,.2)}
+html{scroll-behavior:smooth}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:15px;line-height:1.6}a{color:inherit;text-decoration:none}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--teal);outline-offset:3px}::selection{background:var(--teal);color:#071120}h1,h2,h3,p{margin-top:0}h1,h2,h3{line-height:1.17;letter-spacing:-.04em}h2{font-size:clamp(25px,3vw,36px);margin-bottom:10px}h3{font-size:20px;letter-spacing:-.03em;margin:0 0 12px}.skip-link{position:absolute;top:-100px;left:16px;background:white;color:black;padding:12px;z-index:200}.skip-link:focus{top:12px}
+.topbar{height:74px;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:0 clamp(18px,3vw,45px);background:rgba(8,18,31,.92);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:30;backdrop-filter:blur(18px)}.brand{font-weight:850;letter-spacing:.035em;display:flex;gap:13px;align-items:center;white-space:nowrap;font-size:17px}.brand small{font-size:10px;border:1px solid #496074;border-radius:5px;padding:2px 5px;vertical-align:3px}.brand-dot{color:var(--teal)}.brand-symbol{display:grid;grid-template-columns:repeat(2,10px);gap:3px;transform:rotate(-8deg)}.brand-symbol i{background:var(--teal);height:10px;border-radius:2px}.brand-symbol i:nth-child(2){background:#65b3ee}.brand-symbol i:nth-child(3){background:#ffd07e}.brand-symbol i:nth-child(4){background:#d5f5ff}.quicknav{display:flex;gap:26px;font-size:12px;color:var(--muted);font-weight:700}.quicknav a:hover{color:var(--teal)}.top-actions{display:flex;align-items:center;gap:10px}.icon-btn,.btn{border:1px solid var(--border);border-radius:11px;background:transparent;color:var(--ink);font-weight:750;transition:.2s ease;display:inline-flex;align-items:center;justify-content:center;gap:7px}.icon-btn{width:36px;height:36px}.btn{padding:10px 16px;font-size:12px}.btn:hover,.icon-btn:hover{border-color:var(--teal);transform:translateY(-1px)}.btn-primary{background:var(--teal);color:#082238;border-color:var(--teal)}.btn-outline{background:rgba(255,255,255,.045)}.btn-ghost{border-style:dashed;color:var(--muted)}
+.layout{display:grid;grid-template-columns:242px minmax(0,1fr);max-width:1700px;margin:auto}.sidebar{position:sticky;top:74px;height:calc(100vh - 74px);overflow:auto;border-right:1px solid var(--border);padding:29px 17px;display:flex;flex-direction:column;gap:4px}.sidebar-top{font-size:9px;font-weight:850;letter-spacing:.18em;color:var(--soft);margin:0 9px 19px}.sidebar-live{display:block;font-size:9px;letter-spacing:0;color:var(--teal);font-weight:650;margin-top:7px}.sidebar a{display:flex;gap:12px;align-items:center;color:var(--muted);padding:10px 13px;border-radius:9px;font-size:12px;font-weight:650}.sidebar a:hover,.sidebar a.active{color:var(--ink);background:#1b3449}.sidebar a span{width:22px;font-size:15px;text-align:center;color:var(--teal)}.sidebar-bottom{margin-top:auto;border-top:1px solid var(--border);padding:22px 9px 0}.sidebar-bottom strong{font-size:10px;color:var(--teal);letter-spacing:.07em}.sidebar-bottom p{font-size:12px;margin:3px 0 9px}.sidebar-bottom small{display:block;font-size:10px;line-height:1.5;color:var(--soft)}
+.content{padding:24px clamp(24px,4vw,74px) 38px;max-width:calc(var(--max) + 120px);width:100%;margin:auto}.eyebrow{font-size:10px;font-weight:850;letter-spacing:.19em;color:var(--teal);display:flex;gap:12px;align-items:center;margin:12px 0 18px}.eyebrow-right{margin-left:auto;color:var(--soft)}.live-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 12px #47dbba60}.hero{border-radius:22px;border:1px solid #2e5c73;background:radial-gradient(circle at 85% 16%,#214b66 0,transparent 37%),linear-gradient(115deg,#0e2540,#122a40 62%,#203a53);padding:clamp(23px,4vw,44px);position:relative;overflow:hidden;box-shadow:var(--shadow)}.hero:before{content:"";position:absolute;width:260px;height:260px;border:1px solid #ffffff0d;border-radius:50%;right:-90px;top:-100px;box-shadow:0 0 0 45px #ffffff05,0 0 0 100px #ffffff03}.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 225px;gap:25px;position:relative}.pill{display:inline-flex;gap:7px;align-items:center;border-radius:99px;padding:6px 11px;font-size:10px;font-weight:800;letter-spacing:.06em}.pill-glass{background:#ffffff12;border:1px solid #ffffff2a;color:#d5fefa}.hero h1{font-size:clamp(51px,8.5vw,104px);letter-spacing:-.075em;margin:17px 0 10px;line-height:1.03;font-weight:830}.hero-period{color:var(--teal)}.hero-desc{font-size:16px;color:#c5d9e8;max-width:560px;line-height:1.7}.hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:27px}.hero-tags span{border:1px solid #426077;border-radius:6px;padding:5px 9px;font-size:10px;color:#c6d7e3}.hero-score{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:23px}.score-rings{width:198px;height:198px;border:12px solid #33697a;border-left-color:#4de0bc;border-top-color:#4de0bc;border-radius:50%;display:grid;place-items:center;transform:rotate(-20deg)}.score-rings>div{transform:rotate(20deg);text-align:center}.score-rings small{font-size:10px;letter-spacing:.1em;display:block;color:#b5d6e2}.score-rings strong{font-size:31px;display:block;letter-spacing:-.04em;color:#69ebca}.score-rings span{font-size:9px;color:#bbd0e2}.pill-amber{color:#ffe0ab;background:#f4bc6424;border:1px solid #f4bc644c}.hero-bottom{margin-top:35px;padding-top:22px;border-top:1px solid #ffffff36;display:grid;grid-template-columns:1fr 1.5fr 1fr 1.5fr 1fr 1.5fr;align-items:center;gap:8px}.hero-bottom span{font-size:9px;font-weight:850;letter-spacing:.085em;color:#b5cddd}.hero-bottom strong{font-size:clamp(18px,2vw,26px);letter-spacing:-.04em;white-space:nowrap}.hero-bottom strong:nth-of-type(2){color:#5ce3bf}.alert-info{display:flex;gap:15px;align-items:start;border:1px solid #3e6172;background:#112b3f;padding:13px 16px;border-radius:10px;color:#c4d8e7;margin:19px 0;font-size:11.5px}.alert-info>span:first-child{font-size:20px;color:var(--teal);line-height:1}.section{scroll-margin-top:98px;padding:44px 0 9px;border-bottom:1px solid var(--border)}.section-head{display:flex;justify-content:space-between;gap:18px;align-items:start;margin-bottom:21px}.section-head p{color:var(--muted);font-size:13px;margin:0}.kicker{font-size:10px;font-weight:850;letter-spacing:.18em;color:var(--teal);display:block;margin-bottom:10px}.doc-badge{white-space:nowrap;background:#162c3c;border:1px solid #365469;border-radius:8px;padding:7px 10px;color:#9ecfe0;font-size:10px;font-weight:750}.learn-btn{white-space:nowrap;background:#1a3444;color:#aff2e1;border:1px solid #426978;border-radius:8px;padding:7px 11px;font-size:11px;font-weight:750}.learn-btn:hover{background:#245065}.panel{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:22px;box-shadow:0 6px 26px #0000000c}.panel p{font-size:12.5px;color:var(--muted);margin:6px 0 12px}.signal-grid,.balance-grid,.decision-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.signal{border:1px solid var(--border);background:var(--surface);border-radius:14px;padding:19px}.signal-top{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:10px;letter-spacing:.11em;font-weight:850}.signal-top>span{font-size:17px}.signal>strong{display:block;font-size:37px;letter-spacing:-.055em;line-height:1.3;margin:10px 0 0}.signal>small{color:var(--teal);font-size:11px;display:block}.signal>p{font-size:11.5px;line-height:1.55;color:var(--muted);margin:9px 0 0}.reading{margin-top:16px;border-left:4px solid var(--teal);padding:15px 17px;display:flex;gap:14px;border-radius:0 10px 10px 0;background:#14382f}.reading-icon{font-size:20px;line-height:1.1}.reading strong{font-size:12px;display:block;color:var(--ink)}.reading p{margin:4px 0 0;font-size:12px;color:#bfdfd3;line-height:1.62}.reading.amber{background:#3c2d1a;border-color:var(--orange)}.reading.amber p{color:#edd3ab}.reading.red{background:#41252d;border-color:var(--red)}.reading.red p{color:#edbec5}.split{display:grid;grid-template-columns:1.16fr 1fr;gap:14px}.segment-bars{display:flex;flex-direction:column;gap:19px;margin-top:24px}.segment-label{display:flex;justify-content:space-between;gap:9px;font-size:11.5px;font-weight:760;margin-bottom:6px}.segment-track{height:13px;background:#23384b;border-radius:12px;overflow:hidden}.segment-fill{height:100%;border-radius:12px;background:linear-gradient(90deg,#37ccba,#53c1e9)}.segment-row:nth-child(2) .segment-fill{background:linear-gradient(90deg,#3ca8e8,#849bff)}.segment-row:nth-child(3) .segment-fill{background:linear-gradient(90deg,#f7b267,#e98c73)}.segment-grow{font-size:10px;color:var(--muted);margin-top:3px}.mini-caption{font-size:10px!important;color:var(--soft)!important;line-height:1.65}.panel-highlight{background:linear-gradient(145deg,#16403b,#112b38 60%,#132636)}.sparkle{color:var(--teal);font-size:24px}.big-highlight{font-size:42px;color:var(--teal);font-weight:850;letter-spacing:-.06em;line-height:1.25}.big-highlight span{font-size:12px;color:#c4f1e5;letter-spacing:0;font-weight:500}.stat-line{display:flex;justify-content:space-between;border-top:1px solid #ffffff17;padding:10px 0;gap:12px;font-size:11px}.stat-line span{color:#afc5cc}.stat-line b{color:#d9fef4}.panel-highlight small{font-size:10px;color:#b5d3ce}
+.graph-panel{padding:22px 20px 16px}.graph-head{display:flex;align-items:start;justify-content:space-between;gap:16px}.graph-head h3{margin:0 0 5px}.graph-head p{margin:0}.graph-controls{display:flex;align-items:center;gap:9px}.graph-controls label{font-size:10px;color:var(--muted)}select,input{color:var(--ink);background:#193246;border:1px solid #3b586d;border-radius:7px;padding:8px 10px}select{font-size:11px}select option{background:#13283b}.interactive-chart{min-height:258px;position:relative;margin-top:20px}.interactive-chart svg{display:block;width:100%;height:255px;overflow:visible}.chart-label{fill:var(--muted);font-size:11px}.chart-grid{stroke:#547084;stroke-opacity:.28;stroke-dasharray:3 7}.chart-series{fill:none;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}.chart-point{cursor:pointer;stroke-width:2;transition:r .15s}.chart-point:hover,.chart-point.active{r:7}.chart-detail{color:var(--muted);font-size:12px;margin:7px 0;min-height:24px}.chart-detail strong{color:var(--ink)}.two-metrics{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:14px}.mini-metric{background:var(--surface2);border-radius:12px;border:1px solid var(--border);padding:16px 18px}.mini-metric label{display:block;color:var(--muted);font-size:11px}.mini-metric b{display:block;font-size:24px;letter-spacing:-.04em}.mini-metric span{font-size:10px;color:var(--soft)}.term-inline{border:0;background:transparent;color:var(--teal);padding:0 4px}.cash-summary{display:flex;justify-content:space-between;gap:10px;border-top:1px solid var(--border);padding-top:15px;font-size:11px;color:var(--muted);flex-wrap:wrap}.cash-summary b{color:var(--ink)}.method-note{margin-top:14px;border:1px dashed #37576c;border-radius:11px;color:var(--muted);background:#0e2232;font-size:12px;padding:10px 16px}.method-note summary{font-weight:750;color:#a7e4dd;cursor:pointer}.method-note p{margin:11px 0 4px;line-height:1.75}.metric-panel label{font-size:10px;color:var(--muted);font-weight:780;display:block}.metric-panel b{font-size:35px;letter-spacing:-.05em}.metric-panel b small{font-size:15px;color:var(--teal)}.metric-panel p{margin:0;font-size:11px}.table-panel{padding:8px 15px 13px}.table-scroll{overflow:auto}table{width:100%;border-collapse:collapse;font-size:12px;min-width:490px}th{text-align:right;color:var(--soft);font-size:10px;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid var(--border);padding:14px 12px}th:first-child{text-align:left}td{padding:13px 12px;border-bottom:1px solid var(--border);text-align:right;font-variant-numeric:tabular-nums}td:first-child{text-align:left;font-weight:780}tr.focus-row{background:#1b393c;color:var(--teal)}tr:last-child td{border:0}
+.dcf-layout{display:grid;grid-template-columns:1.03fr .97fr;gap:13px}.dcf-inputs{padding:24px}.pill-light{background:#22463c;color:#b4f3e0;border:1px solid #326655}.scenario-tabs{display:flex;gap:5px;margin:18px 0;background:#091a2c;padding:5px;border-radius:9px}.scenario-tabs button{flex:1;border:0;border-radius:7px;background:transparent;color:var(--muted);font-size:11px;padding:10px 6px;font-weight:770}.scenario-tabs button.selected{background:var(--teal);color:#061c2b}.range-control{margin:17px 0}.range-control>div{display:flex;justify-content:space-between;gap:12px}.range-control label{font-size:12px;color:var(--muted)}.range-control b{font-size:12px;color:var(--teal)}.range-control input[type=range]{display:block;width:100%;padding:0;margin-top:9px;accent-color:var(--teal);height:5px}.range-control input[type=number]{width:100%;margin-top:8px}.dcf-results{padding:28px 24px;background:radial-gradient(circle at 85% 15%,#1c51493e,transparent 38%),var(--surface)}.dcf-caption{color:var(--muted);font-size:11px;letter-spacing:.11em;font-weight:800}.dcf-figure{font-size:clamp(48px,5vw,76px);font-weight:850;letter-spacing:-.075em;color:var(--teal);line-height:1.23}.dcf-figure span{font-size:38px;color:#aff4e3}.fcf-comparison{font-size:13px;color:var(--orange);font-weight:800}.price-bars{margin:30px 0 20px;display:grid;gap:15px}.price-bars>div>span{font-size:10px;color:var(--muted)}.price-track{height:12px;border-radius:20px;background:#263a4c;margin-top:5px;overflow:hidden}.price-track i{display:block;height:100%;width:0;background:var(--teal);border-radius:20px;transition:width .24s}.price-track.secondary i{background:var(--orange)}.price-track.muted i{background:#879bc4}.dcf-mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:17px;border-top:1px solid var(--border);padding-top:19px}.dcf-mini-grid label{display:block;font-size:10px;color:var(--muted);line-height:1.5}.dcf-mini-grid strong{display:block;font-size:21px;letter-spacing:-.045em}.model-warning{color:var(--red);font-size:12px;font-weight:700;padding:9px;background:#4c202b;border-radius:7px;margin-top:8px}.decision-card{border-radius:13px;padding:20px;border:1px solid var(--border);background:#12352d}.decision-card.hold{background:#382b19}.decision-card.warning{background:#3e222a}.decision-card>span{font-size:10px;letter-spacing:.07em;color:var(--teal);font-weight:900}.decision-card.hold>span{color:var(--orange)}.decision-card.warning>span{color:var(--red)}.decision-card h3{font-size:20px;margin:13px 0 9px}.decision-card p{font-size:11px;line-height:1.6;color:#d4e5e5;margin:0}.decision-card.hold p{color:#e9d8bf}.decision-card.warning p{color:#f0cccf}.decision-grid+.split{margin-top:14px}.check-list,.risk-list{list-style:none;padding:0;margin:0}.check-list li,.risk-list li{font-size:12px;color:var(--muted);padding:9px 3px 9px 26px;border-bottom:1px solid var(--border);position:relative}.check-list li:last-child,.risk-list li:last-child{border:0}.check-list li:before,.risk-list li:before{content:"✓";color:var(--green);position:absolute;left:0;font-weight:bold}.risk-list li:before{content:"!";color:var(--red)}.questions{display:grid;grid-template-columns:1fr 1fr;align-items:start;gap:10px}.questions details{border:1px solid var(--border);border-radius:11px;background:var(--surface);padding:13px 16px}.questions summary{cursor:pointer;font-size:12px;font-weight:770;list-style:none;display:flex;align-items:start;gap:11px;justify-content:space-between}.questions summary:after{content:'+';color:var(--teal);font-size:18px;line-height:1}.questions details[open] summary:after{content:'−'}.questions details p{color:var(--muted);font-size:11.5px;line-height:1.7;padding-top:12px;border-top:1px solid var(--border);margin:12px 0 0}.ask-panel{margin-top:14px}.ask-row{display:flex;gap:9px}.ask-row input{flex:1;min-width:0;font-size:12px}.copy-status{font-size:11px;color:var(--teal);min-height:20px;margin-top:6px}.search-gloss{display:flex;align-items:center;gap:12px;margin-bottom:18px;border:1px solid var(--border);border-radius:9px;padding:3px 10px;color:var(--teal)}.search-gloss input{background:none;border:0;flex:1;min-width:0;outline:0;font-size:13px}.glossary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.glossary-grid button{background:#152d40;color:#d4e1ea;border:1px solid #25485a;border-radius:8px;text-align:left;padding:10px;font-size:11.5px;font-weight:760}.glossary-grid button:hover{border-color:var(--teal);color:var(--teal)}.source-legend{display:flex;flex-wrap:wrap;gap:16px;font-size:11px;color:var(--muted);margin-bottom:14px}.source-dot{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px}.source-dot.official{background:var(--green)}.source-dot.calc{background:var(--blue)}.source-dot.hypo{background:var(--orange)}.sources-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}.source-card{border:1px solid var(--border);border-radius:9px;padding:13px;background:var(--surface)}.source-card a{color:var(--teal);font-weight:790;font-size:12px}.source-card p{color:var(--muted);font-size:11px;margin:4px 0}.source-card small{color:var(--soft);font-size:10px}.footnote{font-size:11px;color:var(--soft);margin-top:22px}.footer{display:flex;flex-direction:column;gap:8px;padding:27px 0;color:var(--muted)}.footer p,.footer-note{font-size:11px;margin:0}.footer .brand{color:var(--ink)}.footer-note{color:var(--soft)}dialog{border:1px solid #497c80;border-radius:16px;background:#11293a;color:var(--ink);width:min(440px,92vw);padding:0;box-shadow:0 20px 65px #000b}dialog::backdrop{background:#040c19ba;backdrop-filter:blur(5px)}dialog form{padding:25px}dialog h3{font-size:28px;margin:16px 0 10px}dialog p{font-size:14px;color:#c3d5e2}dialog .btn{margin-top:14px}dialog .dialog-close{float:right;border:0;background:#253c50;border-radius:6px;padding:4px 10px;color:var(--ink)}
+[data-theme=light]{--bg:#f1f6f9;--surface:#fff;--surface2:#eaf2f6;--border:#d2dee8;--ink:#102338;--muted:#506477;--soft:#667e92;--teal:#087d76;--blue:#1671b8;--orange:#ba781e;--red:#c54b59;--green:#087d68;--shadow:0 16px 35px #a6bac83d}[data-theme=light] .topbar{background:#ffffffec}[data-theme=light] .sidebar a:hover,[data-theme=light] .sidebar a.active{background:#d9edf1}[data-theme=light] .hero{color:#fff}[data-theme=light] .hero .pill,[data-theme=light] .hero h1{color:#fff}[data-theme=light] .hero .hero-period{color:#63ddbf}[data-theme=light] .hero .hero-bottom strong,[data-theme=light] .score-rings strong{color:#fff}[data-theme=light] .reading{background:#d8f5e9}[data-theme=light] .reading p{color:#145541}[data-theme=light] .reading.amber{background:#fff1d8}[data-theme=light] .reading.amber p{color:#754b18}[data-theme=light] .reading.red{background:#ffe6e9}[data-theme=light] .reading.red p{color:#7c2a36}[data-theme=light] .panel-highlight{background:linear-gradient(145deg,#daf9f0,#e0f0f6)}[data-theme=light] .panel-highlight .big-highlight span,[data-theme=light] .panel-highlight small,[data-theme=light] .panel-highlight .stat-line span{color:#446878}[data-theme=light] .panel-highlight .stat-line b{color:#194b47}[data-theme=light] .scenario-tabs{background:#dfebf1}[data-theme=light] .ask-row input,[data-theme=light] select,[data-theme=light] input{background:#f7fbfd;color:var(--ink)}[data-theme=light] .method-note{background:#e9f3f7}[data-theme=light] .alert-info{background:#e4f4f5;color:#245467}[data-theme=light] .glossary-grid button{background:#edf7f8;color:#215261}[data-theme=light] .decision-card{background:#daf3e7}[data-theme=light] .decision-card.hold{background:#fff0d6}[data-theme=light] .decision-card.warning{background:#ffe4e7}[data-theme=light] .decision-card p{color:#215342}[data-theme=light] .decision-card.hold p{color:#705128}[data-theme=light] .decision-card.warning p{color:#833844}[data-theme=light] dialog{background:#fff;color:#102338}[data-theme=light] dialog p{color:#506477}
+@media(max-width:1150px){.layout{grid-template-columns:205px minmax(0,1fr)}.sidebar{padding:23px 10px}.content{padding-left:26px;padding-right:26px}.hero-grid{grid-template-columns:minmax(0,1fr) 160px}.score-rings{height:144px;width:144px;border-width:9px}.score-rings strong{font-size:25px}.hero-bottom{grid-template-columns:repeat(3,1fr)}.hero-bottom span{display:block;margin-bottom:-8px}.hero-bottom strong{font-size:20px}.quicknav{display:none}}
+@media(max-width:810px){.layout{display:block}.sidebar{display:none}.content{padding:18px 18px 45px}.topbar{height:66px;padding:0 16px}.topbar .brand{font-size:13px}.topbar .brand small{font-size:9px}.topbar .btn{padding:8px 11px}.hero-grid{grid-template-columns:1fr}.hero-score{flex-direction:row;justify-content:start}.score-rings{display:none}.hero-bottom{grid-template-columns:repeat(3,1fr);gap:12px}.hero-bottom strong{font-size:18px}.hero-bottom span{font-size:9px}.section{padding-top:31px}.section-head{align-items:start}.split,.dcf-layout,.questions,.sources-list{grid-template-columns:1fr}.signal-grid,.balance-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.signal{padding:14px}.signal>strong{font-size:28px}.signal>p{font-size:11px}.decision-grid{grid-template-columns:1fr}.glossary-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.hero{padding:23px 18px}.hero h1{font-size:54px}.hero-desc{font-size:13px}.hero-score{display:none}.hero-bottom{grid-template-columns:1fr 1fr}.hero-bottom span:nth-of-type(3){grid-column:1}.section-head{display:block}.section-head>.doc-badge,.section-head>.learn-btn{margin-top:12px;display:inline-block}.signal-grid,.balance-grid{grid-template-columns:1fr}.signal>strong{font-size:32px}.two-metrics{grid-template-columns:1fr}.graph-head{display:block}.graph-controls{margin-top:11px}.dcf-mini-grid{grid-template-columns:1fr 1fr}.ask-row{flex-direction:column}.glossary-grid{grid-template-columns:1fr 1fr}.eyebrow-right{display:none}.mini-metric b{font-size:21px}.cash-summary{flex-direction:column}.hero-bottom strong{font-size:19px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}
+
+/* A.Fundamental 2.1: multi-series + SEC peer comparison */
+.multi-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.mini-btn{border:1px solid #406578;border-radius:8px;background:#193449;color:#c7e7ec;font-size:11px;font-weight:780;padding:8px 11px;line-height:1.3}
+.mini-btn:hover,.mini-btn:focus-visible{border-color:var(--teal);background:#245169}
+.metric-toggle-set{border:1px solid var(--border);border-radius:10px;margin:17px 0 6px;padding:12px 14px 13px;display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;min-width:0}
+.metric-toggle-set legend{padding:0 8px;color:var(--muted);font-weight:760;font-size:11px}
+.metric-toggle-set label{display:inline-flex;gap:7px;align-items:center;border:1px solid #345169;border-radius:8px;padding:7px 10px;background:#142b3e;color:var(--ink);font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap;min-height:35px}
+.metric-toggle-set label:has(input:checked){border-color:#4a8185;background:#204247}
+.metric-toggle-set label:hover{border-color:var(--teal)}
+.metric-toggle-set input[type=checkbox]{accent-color:var(--teal);height:15px;width:15px;margin:0;padding:0;cursor:pointer}
+.series-dot{width:9px;height:9px;background:var(--series);border-radius:99px;flex:none;display:inline-block}
+.chart-feedback{font-size:11px;color:var(--soft);padding:3px 4px}
+.peers-panel{margin-top:20px;background:linear-gradient(140deg,#12283a,#101f32)}
+.peer-toolbar{display:flex;gap:15px;flex-wrap:wrap;align-items:end;margin-top:17px}
+.peer-toolbar-col{display:flex;flex-direction:column;gap:4px;min-width:175px;flex:1}
+.peer-toolbar-col>label,.peer-toolbar-label{color:var(--muted);font-size:11px;font-weight:700}
+.peer-toolbar-col select{width:100%;font-size:12px;min-height:40px}
+.peer-quick>div{display:flex;gap:6px;align-items:center;min-height:40px}
+.peer-selection{margin:15px 0 11px}
+.peers-panel .interactive-chart{margin-top:6px;min-height:265px}
+.peer-legend{margin-top:0;gap:9px 18px}
+.peer-legend span{font-weight:700}
+.peers-panel .chart-detail{background:#112638;border-radius:9px;padding:12px 14px;min-height:55px;margin:15px 0 10px}
+.peer-detail-items{display:flex;gap:8px 18px;flex-wrap:wrap;margin-top:5px;font-size:11px}
+.peer-detail-item{display:inline-flex;gap:5px;align-items:baseline;color:var(--muted)}
+.peer-detail-item i{background:var(--series);width:8px;height:8px;border-radius:50%;display:inline-block;align-self:center}
+.peer-detail-item b{color:var(--ink)}
+.peer-detail-item small{color:var(--soft);font-size:9px}
+.peer-point:focus{outline:none;stroke:#fff;stroke-width:3}
+.peers-panel .mini-caption{margin:10px 0 0!important}
+[data-theme=light] .metric-toggle-set label{background:#f3fbff;color:#102338}
+[data-theme=light] .metric-toggle-set label:has(input:checked){background:#d8f5ec}
+[data-theme=light] .mini-btn{background:#e6f5f8;color:#174d60}
+[data-theme=light] .peers-panel{background:#fff}
+[data-theme=light] .peers-panel .chart-detail{background:#e9f4f6}
+@media(max-width:740px){.peer-toolbar-col{min-width:135px}.peer-toolbar{gap:10px}.multi-actions{margin-top:9px}.peer-quick{width:100%}}
+@media(max-width:490px){.metric-toggle-set label{padding:7px 9px;font-size:10.5px}.peer-toolbar-col{min-width:100%;max-width:100%}.peer-quick>div{min-height:auto}.graph-head .multi-actions{align-items:start}}
+/* On narrow screens keep chart points and labels readable while the chart itself scrolls. */
+@media(max-width:560px){
+  #growth-chart, #peer-chart {overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#51758b transparent}
+  #growth-chart svg, #peer-chart svg {width:660px;min-width:660px;max-width:none;height:260px}
+  #growth-chart .chart-legend, #peer-chart .chart-legend {min-width:660px;justify-content:flex-start;padding:6px 3px 9px}
+  #peer-footnote::before{content:"↔ Desliza el gráfico horizontalmente para ver cada ejercicio. ";color:var(--teal);font-weight:700}
+}
+
+</style>
+
+</head><body>
+<a class="skip-link" href="#resumen">Ir al informe</a>
+<header class="topbar"><div class="brand"><span class="brand-symbol" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>A<span class="brand-dot">.</span>FUNDAMENTAL <small>2.1</small></span></div><nav class="quicknav"><a href="#crecimiento">Crecimiento</a><a href="#caja">Caja</a><a href="#valoracion">Valoración</a><a href="#preguntas">Preguntas</a></nav><div class="top-actions"><button id="theme-btn" class="icon-btn" aria-label="Alternar tema" title="Cambiar tema">☀</button><a id="pdf-main" class="btn btn-outline" href="#fuentes" target="_self">↗ Ver PDF</a></div></header>
+<div class="layout"><aside class="sidebar" aria-label="Navegación principal"><div class="sidebar-top">ANÁLISIS DE EMPRESAS <span class="sidebar-live">● INFORME FIJO</span></div><a href="#resumen"><span>◈</span> Vista rápida</a><a href="#negocio"><span>◎</span> Negocio y MOAT</a><a href="#crecimiento"><span>↗</span> Crecimiento</a><a href="#retornos"><span>◆</span> ROIC y rentabilidad</a><a href="#caja"><span>◉</span> Flujo de caja</a><a href="#balance"><span>▣</span> Balance</a><a href="#comparables"><span>≋</span> Comparables</a><a href="#valoracion"><span>◐</span> DCF interactivo</a><a href="#decision"><span>✓</span> Decisión y riesgos</a><a href="#preguntas"><span>?</span> Preguntas de inversor</a><a href="#glosario"><span>⌕</span> Glosario</a><a href="#fuentes"><span>☷</span> Fuentes y método</a><div class="sidebar-bottom"><strong>BASE DOC. SEC v6.9</strong><p>5 ejercicios · FY2022–2026</p><small>Documento didáctico, no recomendación personal.</small></div></aside>
+<main id="resumen" class="content">
+<div class="eyebrow"><span class="live-dot"></span> EDICIÓN INDEPENDIENTE / 13 OCT 2026 <span class="eyebrow-right">NASDAQ · MSFT · USD</span></div>
+<section class="hero reveal"><div class="hero-grid"><div><div class="pill pill-glass">📊 INFORME DE INVERSIÓN · ANÁLISIS 80/20</div><h1>Microsoft<span class="hero-period">.</span></h1><p class="hero-desc">Un negocio excepcional. Una valoración que exige demostrar que la infraestructura de IA se convertirá en flujo de caja.</p><div class="hero-tags"><span>Software empresarial</span><span>Azure & IA</span><span>5 años SEC</span></div></div><div class="hero-score"><div class="score-rings"><div><small>CALIDAD DEL NEGOCIO</small><strong>ALTA</strong><span>moat + caja operativa</span></div></div><div class="pill pill-amber">🟠 PRECIO EXIGENTE</div></div></div><div class="hero-bottom"><span>PRECIO / 12 OCT</span><strong>541,15 $</strong><span>DCF BASE / MODELO</span><strong>390,7 $</strong><span>OBJETIVO ANALISTAS</span><strong>579,84 $</strong></div></section>
+<div class="alert-info"><span>ⓘ</span><span><strong>Lectura obligatoria:</strong> mercado y consenso son fotografías fechadas, no cotizaciones en directo; el valor intrínseco es una <strong>estimación dependiente de hipótesis</strong>. No se han empleado exportaciones de InvestingPro+.</span></div>
+<section class="section" aria-labelledby="tres-senales"><div class="section-head"><div><span class="kicker">01 / RESUMEN EJECUTIVO</span><h2 id="tres-senales">Tres señales que importan</h2><p>El 20 % de las variables que mueve la tesis.</p></div><span class="doc-badge">5 ejercicios</span></div><div class="signal-grid"><article class="signal"><div class="signal-top"><span>🟢</span><span>CRECIMIENTO</span></div><strong>+13,7 %</strong><small>CAGR de ingresos 2022–2026</small><p>Demanda sólida y EBIT creciendo aún más deprisa.</p></article><article class="signal"><div class="signal-top"><span>🟠</span><span>RETORNO</span></div><strong>30,6 %</strong><small>ROIC proxy FY2026</small><p>Muy elevado, pero descendente con la reinversión.</p></article><article class="signal"><div class="signal-top"><span>🔴</span><span>FCF / CAPEX</span></div><strong>+0,7 %</strong><small>CAGR del FCF 2022–2026</small><p>El CAPEX absorbe casi todo el aumento del CFO.</p></article></div><div class="reading amber"><span class="reading-icon">🟠</span><div><strong>Lectura ejecutiva</strong><p>Los beneficios operativos aceleran, pero la caja libre no: el retorno de la inversión en IA es la variable decisiva para justificar el precio.</p></div></div></section>
+<section id="negocio" class="section" aria-labelledby="negocio-title"><div class="section-head"><div><span class="kicker">02 / MODELO DE NEGOCIO</span><h2 id="negocio-title">¿De dónde viene la fortaleza?</h2><p>Negocios recurrentes, escala global y costes elevados de cambio.</p></div><button class="learn-btn" data-term="MOAT">¿Qué es MOAT? ⓘ</button></div><div class="split"><div class="panel"><h3>Ingresos por segmentos FY2026</h3><div id="segments" class="segment-bars"></div><p class="mini-caption">B$ · cifras redondeadas · total ~331,9 B$ frente a 331,8 B$ contables. [S1]</p></div><div class="panel panel-highlight"><div class="sparkle">✦</div><h3>Azure: la palanca más potente</h3><div class="big-highlight">+41 % <span>crecimiento FY2026</span></div><p>Servidores, nube y capacidad de cálculo para IA. La ventaja es la distribución empresarial; el riesgo, el coste de servir esa demanda.</p><div class="stat-line"><span>Azure ingresos anuales</span><b>&gt;100 B$</b></div><div class="stat-line"><span>RPO comercial</span><b>678 B$</b></div><small>No confundir RPO con efectivo cobrado o ingresos futuros garantizados.</small></div></div><div class="reading green"><span class="reading-icon">🟢</span><div><strong>Lectura</strong><p>Microsoft combina software esencial y una nube que gana escala. El MOAT es defendible, pero debe seguir acreditándose con márgenes, cuota y retención de clientes.</p></div></div></section>
+<section id="crecimiento" class="section" aria-labelledby="growth-title"><div class="section-head"><div><span class="kicker">03 / RESULTADOS</span><h2 id="growth-title">Crece, y gana más por cada dólar vendido</h2><p>Cuenta de resultados, últimos cinco cierres fiscales.</p></div><span class="doc-badge">Fuente SEC · GAAP</span></div><div class="panel graph-panel"><div class="graph-head"><div><h3>Evolución de magnitudes</h3><p>Activa una o varias métricas; pulsa un punto para consultar el ejercicio.</p></div><div class="multi-actions" role="group" aria-label="Atajos de métricas de Microsoft"><button class="mini-btn" id="growth-all" type="button">✓ Mostrar todas</button><button class="mini-btn" id="growth-one" type="button">Solo ingresos</button></div></div><fieldset class="metric-toggle-set" id="growth-metrics"><legend>Métricas de Microsoft · selección múltiple</legend><label><input type="checkbox" value="revenue" checked> <span class="series-dot" style="--series:#4cdbbd"></span> Ingresos</label><label><input type="checkbox" value="ebit"> <span class="series-dot" style="--series:#61a6ee"></span> EBIT</label><label><input type="checkbox" value="net"> <span class="series-dot" style="--series:#f5bb65"></span> Beneficio neto</label><label><input type="checkbox" value="cfo"> <span class="series-dot" style="--series:#a9c6ed"></span> CFO</label></fieldset><div class="chart-feedback" id="growth-hint" aria-live="polite">1 métrica seleccionada</div><div id="growth-chart" class="interactive-chart" role="img" aria-label="Gráfico interactivo de resultados Microsoft"></div><div id="growth-detail" class="chart-detail" aria-live="polite"></div></div>
+<div class="panel graph-panel peers-panel" id="compare-peers"><div class="graph-head"><div><h3>⚖️ Microsoft frente a sus competidores</h3><p>Elige una métrica y activa las compañías que quieras comparar. <strong>La vista índice 2022 = 100</strong> elimina el efecto del tamaño.</p></div><span class="doc-badge">SEC · 2022–2026</span></div>
+<div class="peer-toolbar"><div class="peer-toolbar-col"><label for="peer-metric">Métrica</label><select id="peer-metric"><option value="revenue">Ingresos · B$</option><option value="ebit">EBIT · B$</option><option value="net">Beneficio neto · B$</option><option value="cfo">CFO · B$</option><option value="capex">CAPEX pagado · B$</option><option value="fcf">FCF · B$</option><option value="ebit_margin">Margen EBIT · %</option><option value="fcf_margin">Margen FCF · %</option></select></div><div class="peer-toolbar-col"><label for="peer-scale">Visualización</label><select id="peer-scale"><option value="absolute">Magnitud real (B$ / %)</option><option value="indexed">Evolución relativa (2022 = 100)</option></select></div><div class="peer-toolbar-col peer-quick"><span class="peer-toolbar-label">Selección rápida</span><div><button type="button" class="mini-btn" id="peer-all">Todas</button><button type="button" class="mini-btn" id="peer-only-msft">Solo Microsoft</button></div></div></div>
+<fieldset class="metric-toggle-set peer-selection" id="peer-companies"><legend>Compañías · puedes marcar varias</legend><label><input type="checkbox" value="MSFT" checked><span class="series-dot" style="--series:#4cdbbd"></span>Microsoft</label><label><input type="checkbox" value="ORCL" checked><span class="series-dot" style="--series:#69aaf7"></span>Oracle</label><label><input type="checkbox" value="CRM" checked><span class="series-dot" style="--series:#f6c46d"></span>Salesforce</label><label><input type="checkbox" value="GOOGL" checked><span class="series-dot" style="--series:#ba94f6"></span>Alphabet</label><label><input type="checkbox" value="AMZN" checked><span class="series-dot" style="--series:#fa8790"></span>Amazon</label></fieldset>
+<div id="peer-chart" class="interactive-chart" role="img" aria-label="Comparador histórico de Microsoft y compañías cotizadas"></div><div id="peer-detail" class="chart-detail" aria-live="polite"></div>
+<p class="mini-caption" id="peer-footnote">Fuente: SEC EDGAR, serie anual v6.9 (13/10/2026). Alphabet y Amazon todavía no disponen de FY2026 en nuestro archivo. Los ejercicios cierran en meses diferentes, por lo que no son periodos idénticos. Las cifras son provisionales.</p></div>
+<div class="reading amber"><span class="reading-icon">🟠</span><div><strong>Lectura comparativa</strong><p>Compara <strong>crecimiento y márgenes</strong>, no solo tamaño: Amazon y Alphabet tienen negocios distintos de Azure; Oracle y Salesforce son comparables parciales. Para 2026 hay vacíos de información que el gráfico no rellena.</p></div></div>
+<div class="two-metrics"><div class="mini-metric"><label>Margen EBIT <button class="term-inline" data-term="EBIT">ⓘ</button></label><b>42,1 → 46,8 %</b><span>FY2022 a FY2026</span></div><div class="mini-metric"><label>BPA GAAP <button class="term-inline" data-term="PER GAAP">ⓘ</button></label><b>9,65 → 17,95 $</b><span>Incluye partidas financieras FY2026</span></div></div><div class="reading green"><span class="reading-icon">🟢</span><div><strong>Lectura</strong><p>El EBIT subió ~16,8 % anual, más que las ventas (~13,7 %). Aun así, el beneficio neto FY2026 incluye ~4,96 B$ de ganancias por inversiones en OpenAI: la rentabilidad recurrente debe verse también ajustada.</p></div></div></section>
+<section id="retornos" class="section" aria-labelledby="return-title"><div class="section-head"><div><span class="kicker">04 / RENTABILIDAD</span><h2 id="return-title">¿Gana suficiente por el capital que emplea?</h2><p>ROIC y ROE: altos, pero la tendencia importa más que la foto.</p></div><button class="learn-btn" data-term="ROIC">¿Qué es ROIC? ⓘ</button></div><div class="panel graph-panel"><div class="graph-head"><div><h3>ROIC estimado vs ROE</h3><p>Porcentaje · misma metodología del agente para los cinco ejercicios.</p></div><span class="doc-badge">PROXY · NO OFICIAL</span></div><div id="return-chart" class="interactive-chart" aria-label="ROIC y ROE anuales"></div><div id="return-detail" class="chart-detail" aria-live="polite"></div></div><div class="reading amber"><span class="reading-icon">🟠</span><div><strong>Lectura</strong><p>ROIC proxy del 37,3 % al 30,6 %: continúa fuerte, pero el capital invertido crece deprisa. No equipararlo automáticamente al ROIC de otras plataformas. El WACC no está calculado de forma independiente.</p></div></div></section>
+<section id="caja" class="section" aria-labelledby="cash-title"><div class="section-head"><div><span class="kicker">05 / CASH FLOW</span><h2 id="cash-title">El gráfico que no debemos ignorar</h2><p>El CAPEX en IA es la gran apuesta y la mayor incertidumbre.</p></div><button class="learn-btn" data-term="FCF">¿Qué es FCF? ⓘ</button></div><div class="panel graph-panel"><div class="graph-head"><div><h3>CFO, CAPEX y FCF · B$</h3><p>FCF = CFO − CAPEX efectivo, sin normalizaciones supuestas.</p></div></div><div id="cash-chart" class="interactive-chart" aria-label="Flujos de caja operativos e inversiones"></div><div id="cash-detail" class="chart-detail" aria-live="polite"></div><div class="cash-summary"><span>FY2026 CFO <b>182,9 B$</b></span><span>CAPEX pagado <b>115,9 B$</b></span><span>FCF residual <b>67,0 B$</b></span></div></div><div class="reading red"><span class="reading-icon">🔴</span><div><strong>Lectura</strong><p>El FCF apenas cambia respecto a 2022 pese a duplicarse el CFO. No implica fracaso de la inversión, pero obliga a exigir retornos reales, utilización de centros de datos y recuperación del FCF por acción.</p></div></div><details class="method-note"><summary>Precisión metodológica: CAPEX efectivo frente a CAPEX con arrendamientos</summary><p>La empresa puede comunicar un CAPEX de gestión superior al pago efectivo de propiedades y equipos, al incluir nuevos arrendamientos financieros. Para el FCF observado se restan <strong>115,948 B$ de CAPEX pagado</strong> en FY2026. No sustituimos este importe por cifras de gasto comprometido ni consideramos depreciación como sinónimo exacto de mantenimiento.</p></details></section>
+<section id="balance" class="section" aria-labelledby="balance-title"><div class="section-head"><div><span class="kicker">06 / SOLVENCIA</span><h2 id="balance-title">La deuda no parece el cuello de botella</h2><p>Separar efectivo, inversiones líquidas, deuda financiera y arrendamientos.</p></div><button class="learn-btn" data-term="EV">¿Qué es EV? ⓘ</button></div><div class="balance-grid"><article class="panel metric-panel"><label>Deuda financiera identificada</label><b>40,3 <small>B$</small></b><p>Sin arrendamientos añadidos automáticamente.</p></article><article class="panel metric-panel"><label>Efectivo + inversiones CP</label><b>76,8 <small>B$</small></b><p>No todo necesariamente disponible para cualquier uso.</p></article><article class="panel metric-panel"><label>Liquidez neta ampliada</label><b>+36,5 <small>B$</small></b><p>Caja + inversiones CP − deuda financiera.</p></article></div><div class="reading green"><span class="reading-icon">🟢</span><div><strong>Lectura</strong><p>El riesgo principal es la productividad del capital invertido, no la solvencia financiera inmediata. Ojo: deuda neta estricta (deuda menos efectivo) = +19,4 B$; usando inversiones CP = −36,5 B$. Son dos definiciones distintas.</p></div></div></section>
+<section id="comparables" class="section" aria-labelledby="comp-title"><div class="section-head"><div><span class="kicker">07 / VALORACIÓN RELATIVA</span><h2 id="comp-title">¿Qué pagamos frente a alternativas?</h2><p>Comparables indicativos, no una media sectorial homogénea.</p></div><button class="learn-btn" data-term="FCF Yield">FCF Yield ⓘ</button></div><div class="panel table-panel"><div class="table-scroll"><table><thead><tr><th>Empresa</th><th>PER GAAP/TTM</th><th>EV/EBITDA¹</th><th>FCF Yield</th></tr></thead><tbody id="peer-rows"></tbody></table></div><p class="mini-caption">¹ Para comparables: múltiplo publicado por StockAnalysis; para MSFT: referencia de proveedor (~21,2x). Nuestro EV/EBITDA ajustado sin leasing es ~20,5x. Las metodologías, periodos y tratamientos de arrendamientos no son idénticos. No calculamos una falsa «media del sector». [S6]</p></div><div class="two-metrics"><div class="mini-metric"><label>EV / EBITDA propio</label><b>20,5x</b><span>EV con inversiones CP; EBITDA proxy</span></div><div class="mini-metric"><label>EV / FCF (orientativo)</label><b>59,4x</b><span>EV / FCF al accionista: mezcla de definiciones; no ratio puro FCFF</span></div></div><div class="reading amber"><span class="reading-icon">🟠</span><div><strong>Lectura</strong><p>Un PER de ~30,1x puede parecer defendible ante el crecimiento, pero un FCF Yield del 1,67 % exige mucha normalización futura de caja. Algunas empresas comparables tienen FCF negativo por su propio ciclo inversor.</p></div></div></section>
+<section id="valoracion" class="section" aria-labelledby="dcf-title"><div class="section-head"><div><span class="kicker">08 / MODELO DE VALOR INTRÍNSECO</span><h2 id="dcf-title">Simulador DCF: cambia los supuestos</h2><p>Aprender probando escenarios es más útil que memorizar un precio objetivo.</p></div><button class="learn-btn" data-term="DCF">¿Qué es DCF? ⓘ</button></div><div class="dcf-layout"><div class="panel dcf-inputs"><div class="pill pill-light">🧪 ESCENARIOS DEL AGENTE · NO PREVISIONES</div><div class="scenario-tabs" role="group" aria-label="Escenarios de valoración"><button data-case="prudente">Prudente</button><button class="selected" data-case="base">Base</button><button data-case="optimista">Optimista</button></div><div class="range-control"><div><label for="fcf0">FCF inicial anual</label><b id="fcf0-v">67,0 B$</b></div><input id="fcf0" type="range" min="50" max="105" step="1" value="67"></div><div class="range-control"><div><label for="g1">Crecimiento FCF · años 1–5</label><b id="g1-v">18,0 %</b></div><input id="g1" type="range" min="0" max="40" step="0.5" value="18"></div><div class="range-control"><div><label for="g2">Crecimiento FCF · años 6–10</label><b id="g2-v">10,0 %</b></div><input id="g2" type="range" min="0" max="25" step="0.5" value="10"></div><div class="range-control"><div><label for="r">Tasa de descuento (equity)</label><b id="r-v">9,0 %</b></div><input id="r" type="range" min="7" max="13" step="0.25" value="9"></div><div class="range-control"><div><label for="terminal">Crecimiento terminal</label><b id="terminal-v">3,5 %</b></div><input id="terminal" type="range" min="1" max="5" step="0.25" value="3.5"></div><div class="range-control"><div><label for="market-price">Precio de referencia editable ($)</label><b id="market-v">541,15 $</b></div><input id="market-price" type="number" min="1" step="0.01" value="541.15"></div><button class="btn btn-ghost" id="reset-dcf">↺ Restablecer escenario base</button></div><div class="panel dcf-results"><span class="dcf-caption">VALOR PRESENTE / ACCIÓN</span><div class="dcf-figure" id="dcf-value">390,7 <span>$</span></div><div id="dcf-sign" class="fcf-comparison">−27,8 % frente al precio</div><div class="price-bars"><div><span>Valor DCF</span><div class="price-track"><i id="bar-dcf"></i></div></div><div><span>Precio mercado</span><div class="price-track secondary"><i id="bar-market"></i></div></div><div><span>Consenso 12m</span><div class="price-track muted"><i id="bar-consensus"></i></div></div></div><div class="dcf-mini-grid"><div><label>Precio con margen seguridad 20 %</label><strong id="safety">312,6 $</strong></div><div><label>Crec. FCF 1–5 años implícito</label><strong id="reverse">~26,4 %</strong></div><div><label>Peso valor terminal</label><strong id="terminal-weight">~68 %</strong></div><div><label>FCF inicial usado</label><strong id="fcf-input">67,0 B$</strong></div></div><div id="dcf-invalid" class="model-warning" hidden>⚠️ El descuento debe superar el crecimiento terminal.</div></div></div><div class="reading red"><span class="reading-icon">🔴</span><div><strong>Lectura</strong><p>El resultado depende mucho de la tasa de descuento, la normalización del FCF y el valor terminal. El DCF base es prudente frente al precio, pero no demuestra que Microsoft «valga exactamente» 390,7 $.</p></div></div><details class="method-note"><summary>Ver la fórmula, sensibilidad y límites del DCF</summary><p>Proyectamos FCF observado 2026 diez años; los primeros cinco a <em>g1</em>, los siguientes cinco a <em>g2</em>. Descontamos cada flujo a <em>r</em>. Valor terminal en 2036 = FCF2036 × (1 + g terminal) / (r − g terminal), descontado diez años. Dividimos entre 7,4255 mil millones de acciones. Aproximación de flujo disponible al accionista (FCFE), de ahí que <strong>no sumemos la liquidez neta ni restemos deuda otra vez</strong>. No es un FCFF/WACC formal. No modela dilución futura, recompras, ciclos o impuestos separados. El valor terminal pesa mucho. Modelo didáctico, no certeza.</p></details></section>
+<section id="decision" class="section" aria-labelledby="decision-title"><div class="section-head"><div><span class="kicker">09 / DECISIÓN</span><h2 id="decision-title">Qué compraríamos… y qué nos haría cambiar de opinión</h2><p>El proceso importa más que acertar un precio exacto.</p></div></div><div class="decision-grid"><div class="decision-card buy"><span>🟢 ENTRADA DISCIPLINADA</span><h3>Comprar solo con margen</h3><p>En el escenario base original, una referencia con 20 % de margen estaría cerca de <strong>313 $</strong>. No es una predicción de que la acción llegue allí.</p></div><div class="decision-card hold"><span>🟠 SI YA LA TIENES</span><h3>Mantener / revisar peso</h3><p>Concentración, precio de adquisición y evolución del FCF importan. No vender automáticamente por una valoración prudente.</p></div><div class="decision-card warning"><span>🔴 NUEVA COMPRA A 541 $</span><h3>Precio sin margen base</h3><p>Exige que Azure y Copilot conviertan el CAPEX actual en crecimiento de FCF durante años.</p></div></div><div class="split"><div class="panel"><h3>Catalizadores que reforzarían la tesis</h3><ul class="check-list"><li>FCF por acción reanuda un crecimiento elevado.</li><li>Azure mantiene crecimiento sin erosionar margen.</li><li>Copilot monetiza su base de clientes de pago.</li><li>Se estabilizan inversiones de crecimiento frente al CFO.</li></ul></div><div class="panel"><h3>Qué invalidaría o deterioraría la tesis</h3><ul class="risk-list"><li>CAPEX sin rentabilidad incremental comprobable.</li><li>Más depreciación sin ingresos proporcionales.</li><li>Competencia y precios en nube/IA.</li><li>Presión regulatoria, ciberseguridad y socios de IA.</li></ul></div></div><div class="reading amber"><span class="reading-icon">🟠</span><div><strong>Veredicto</strong><p>Excelente negocio; valoración exigente. Para nuevas compras, esperar una entrada con margen o evidencias de mayor FCF recurrente. Para carteras existentes, decidir según peso y alternativas, no por un solo ratio.</p></div></div></section>
+<section id="preguntas" class="section" aria-labelledby="qa-title"><div class="section-head"><div><span class="kicker">10 / PREGUNTAS DE UN INVERSOR EXIGENTE</span><h2 id="qa-title">Dudas que cambian la tesis, a un clic</h2><p>Respuestas curadas a partir del expediente, sin sobrecargar el informe.</p></div><span class="doc-badge">💬 Biblioteca · no chat IA</span></div><div id="question-list" class="questions"></div><div class="panel ask-panel"><h3>¿Tu pregunta no está aquí?</h3><p>Escribe una duda; generaremos un mensaje contextual para copiarlo a ChatGPT. <strong>No enviamos datos ni llamamos a una IA desde esta página.</strong></p><div class="ask-row"><input id="custom-question" placeholder="Ej.: ¿qué pasa si Azure desacelera al 20 %?" aria-label="Escribe tu pregunta" maxlength="320"><button id="ask-copy" class="btn btn-primary">Copiar consulta ↗</button></div><div id="copy-status" class="copy-status" aria-live="polite"></div></div></section>
+<section id="glosario" class="section" aria-labelledby="gloss-title"><div class="section-head"><div><span class="kicker">APRENDER MIENTRAS INVERTIMOS</span><h2 id="gloss-title">Chuleta del inversor</h2><p>Los términos aparecen también junto a los gráficos y las métricas.</p></div></div><div class="panel"><div class="search-gloss"><span>⌕</span><input id="gloss-search" placeholder="Buscar ROIC, DCF, CAPEX, PER…" aria-label="Buscar término financiero"></div><div id="glossary-list" class="glossary-grid"></div></div></section>
+<section id="fuentes" class="section" aria-labelledby="sources-title"><div class="section-head"><div><span class="kicker">FUENTES Y TRAZABILIDAD</span><h2 id="sources-title">Qué es dato, cálculo e hipótesis</h2><p>Para contrastar con el profesor sin mezclar definiciones.</p></div></div><div class="source-legend"><span><i class="source-dot official"></i> DATO OFICIAL: SEC / Microsoft IR</span><span><i class="source-dot calc"></i> CÁLCULO: ratios del agente</span><span><i class="source-dot hypo"></i> HIPÓTESIS: DCF/escenarios</span></div><div class="sources-list" id="sources-list"></div><details class="method-note"><summary>Limitaciones y discrepancias metodológicas</summary><p>El curso tiene una simplificación de Enterprise Value cuya expresión escrita no es consistente con su ejemplo. Aquí usamos <strong>EV = capitalización + deuda financiera neta</strong>, o capitalización − liquidez neta. ROIC del agente es proxy; EBIT y EBITDA pueden diferir de proveedores. CAPEX pagado no equivale a compromisos con leasing. ROIC debería contrastarse con un WACC calculado independientemente; aquí no se presenta un spread certificado. Las valoraciones externas proceden de fuentes de mercado fechadas y sus definiciones pueden diferir. El informe no actualiza precios en tiempo real.</p></details><p class="footnote">El material del curso FUNDAMENTAL 1–9 y «Deuda y caja», facilitado en el proyecto, sustenta el orden de análisis y las definiciones didácticas. Este sitio solo resume la metodología y enlaza documentación pública oficial; no publica los apuntes privados ni archivos de FMP/InvestingPro.</p></section>
+<footer class="footer"><div class="brand"><span class="brand-symbol" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>A<span class="brand-dot">.</span>FUNDAMENTAL <small>2.1</small></span></div><p>Invertir con criterio. Entender → proteger capital → evaluar riesgos → buscar rentabilidad.</p><div class="footer-note">Microsoft · Corte 13.10.2026 · Modelo de investigación independiente y educativo.</div></footer>
+</main></div>
+<dialog id="term-dialog"><form method="dialog"><button class="dialog-close" aria-label="Cerrar">✕</button><div class="pill pill-light">📚 CHULETA DEL INVERSOR</div><h3 id="term-title"></h3><p id="term-text"></p><button class="btn btn-primary" value="close">Entendido</button></form></dialog>
+<script>
+window.AF_DATA = {
+  "title": "Microsoft | A.Fundamental 2.1",
+  "date": "2026-10-13",
+  "price_date": "2026-10-12",
+  "ticker": "MSFT",
+  "price": 541.15,
+  "shares_billion": 7.425545491,
+  "latest": {
+    "year": 2026,
+    "revenue": 331.839,
+    "ebit": 155.237,
+    "net": 133.749,
+    "cfo": 182.935,
+    "capex": 115.948,
+    "fcf": 66.987,
+    "debt": 40.294,
+    "cash": 20.935,
+    "equity": 442.387,
+    "assets": 758.376,
+    "ebitda": 194.237,
+    "eps": 17.95,
+    "gross_margin": 67.94,
+    "ebit_margin": 46.78,
+    "fcf_margin": 20.19,
+    "roic": 30.59,
+    "roe": 34.04
+  },
+  "history": [
+    {
+      "year": 2022,
+      "revenue": 198.27,
+      "ebit": 83.383,
+      "net": 72.738,
+      "cfo": 89.035,
+      "capex": 23.886,
+      "fcf": 65.149,
+      "debt": 49.781,
+      "cash": 13.931,
+      "equity": 166.542,
+      "assets": 364.84,
+      "ebitda": 97.983,
+      "eps": 9.65,
+      "gross_margin": 68.4,
+      "ebit_margin": 42.06,
+      "fcf_margin": 32.86,
+      "roic": 37.32,
+      "roe": 47.15
+    },
+    {
+      "year": 2023,
+      "revenue": 211.915,
+      "ebit": 88.523,
+      "net": 72.361,
+      "cfo": 87.582,
+      "capex": 28.107,
+      "fcf": 59.475,
+      "debt": 47.237,
+      "cash": 34.704,
+      "equity": 206.223,
+      "assets": 411.976,
+      "ebitda": 102.023,
+      "eps": 9.68,
+      "gross_margin": 68.92,
+      "ebit_margin": 41.77,
+      "fcf_margin": 28.07,
+      "roic": 34.06,
+      "roe": 38.82
+    },
+    {
+      "year": 2024,
+      "revenue": 245.122,
+      "ebit": 109.433,
+      "net": 88.136,
+      "cfo": 118.548,
+      "capex": 44.477,
+      "fcf": 74.071,
+      "debt": 51.63,
+      "cash": 18.315,
+      "equity": 268.477,
+      "assets": 512.163,
+      "ebitda": 129.433,
+      "eps": 11.8,
+      "gross_margin": 69.76,
+      "ebit_margin": 44.64,
+      "fcf_margin": 30.22,
+      "roic": 34.38,
+      "roe": 37.13
+    },
+    {
+      "year": 2025,
+      "revenue": 281.724,
+      "ebit": 128.528,
+      "net": 101.832,
+      "cfo": 136.162,
+      "capex": 64.551,
+      "fcf": 71.611,
+      "debt": 43.151,
+      "cash": 30.242,
+      "equity": 343.479,
+      "assets": 619.003,
+      "ebitda": 156.528,
+      "eps": 13.64,
+      "gross_margin": 68.82,
+      "ebit_margin": 45.62,
+      "fcf_margin": 25.42,
+      "roic": 32.17,
+      "roe": 33.28
+    },
+    {
+      "year": 2026,
+      "revenue": 331.839,
+      "ebit": 155.237,
+      "net": 133.749,
+      "cfo": 182.935,
+      "capex": 115.948,
+      "fcf": 66.987,
+      "debt": 40.294,
+      "cash": 20.935,
+      "equity": 442.387,
+      "assets": 758.376,
+      "ebitda": 194.237,
+      "eps": 17.95,
+      "gross_margin": 67.94,
+      "ebit_margin": 46.78,
+      "fcf_margin": 20.19,
+      "roic": 30.59,
+      "roe": 34.04
+    }
+  ],
+  "business_segments": [
+    {
+      "name": "Productivity & Business Processes",
+      "value": 140.0,
+      "growth": 16
+    },
+    {
+      "name": "Intelligent Cloud",
+      "value": 137.8,
+      "growth": 30
+    },
+    {
+      "name": "More Personal Computing",
+      "value": 54.1,
+      "growth": -1
+    }
+  ],
+  "financial": {
+    "cash_short_invest": 76.843,
+    "financial_debt": 40.294,
+    "net_liquidity": 36.54900000000001,
+    "strict_net_debt": 19.359,
+    "marketcap": 4018.33394245465,
+    "ev_adjusted": 3981.78494245465,
+    "ev_ebitda_proxy": 20.49962130003372,
+    "ev_fcf_heuristic": 59.441159366065804,
+    "pe_gaap": 30.147632311977716,
+    "pe_adj": 31.316550925925924,
+    "fcf_yield": 1.6670341728512525,
+    "eps_adj": 17.28,
+    "net_income_adj": 128.786
+  },
+  "analysts": {
+    "target": 579.84,
+    "num": 48,
+    "provider": "MarketBeat",
+    "target_factset": 584.48
+  },
+  "dcf": {
+    "starting_fcf": 66.987,
+    "cases": {
+      "prudente": {
+        "label": "Conservador",
+        "g1": 12,
+        "g2": 7,
+        "r": 10,
+        "terminal": 3,
+        "value": 219.6
+      },
+      "base": {
+        "label": "Base",
+        "g1": 18,
+        "g2": 10,
+        "r": 9,
+        "terminal": 3.5,
+        "value": 390.7
+      },
+      "optimista": {
+        "label": "Optimista",
+        "g1": 24,
+        "g2": 12,
+        "r": 8.5,
+        "terminal": 4,
+        "value": 641.8
+      }
+    }
+  },
+  "peers": [
+    {
+      "ticker": "MSFT",
+      "name": "Microsoft",
+      "pe": 30.15,
+      "ev_ebitda": 21.23,
+      "fcf_yield": 1.67,
+      "source": "PE propio; EV/EBITDA proveedor; FCF propio"
+    },
+    {
+      "ticker": "GOOGL",
+      "name": "Alphabet",
+      "pe": 17.7,
+      "ev_ebitda": 24.21,
+      "fcf_yield": 1.23,
+      "source": "StockAnalysis, 13.10.2026"
+    },
+    {
+      "ticker": "ORCL",
+      "name": "Oracle",
+      "pe": 21.54,
+      "ev_ebitda": 15.93,
+      "fcf_yield": -6.9,
+      "source": "StockAnalysis, 13.10.2026"
+    },
+    {
+      "ticker": "AMZN",
+      "name": "Amazon",
+      "pe": 20.87,
+      "ev_ebitda": 17.4,
+      "fcf_yield": -0.41,
+      "source": "StockAnalysis, 13.10.2026"
+    }
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "name": "SEC 10-K FY2026",
+      "url": "https://www.sec.gov/Archives/edgar/data/789019/000119312526323660/msft-20260630.htm",
+      "detail": "Negocio, estados GAAP, CAPEX, deuda, riesgos y notas."
+    },
+    {
+      "id": "S2",
+      "name": "Microsoft IR: Earnings FY2026 Q4",
+      "url": "https://www.microsoft.com/en-us/investor/earnings/fy-2026-q4/press-release-webcast",
+      "detail": "Segmentos, Azure, ajustes por OpenAI, crecimiento y guía."
+    },
+    {
+      "id": "S3",
+      "name": "SEC XBRL Companyfacts",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000789019.json",
+      "detail": "Cinco ejercicios y series normalizadas SEC con trazabilidad."
+    },
+    {
+      "id": "S4",
+      "name": "Cotización 12 octubre",
+      "url": "https://www.marketbeat.com/stocks/NASDAQ/MSFT/",
+      "detail": "MSFT 541,15 USD; cierre, no precio en tiempo real."
+    },
+    {
+      "id": "S5",
+      "name": "Consenso analistas",
+      "url": "https://www.marketbeat.com/stocks/NASDAQ/MSFT/forecast/",
+      "detail": "579,84 USD; 48 analistas; ventana de 12 meses."
+    },
+    {
+      "id": "S6",
+      "name": "Comparables (múltiplos)",
+      "url": "https://stockanalysis.com/stocks/msft/statistics/",
+      "detail": "Datos indicativos de mercado; metodologías de deuda y EBITDA pueden diferir."
+    },
+    {
+      "id": "S7",
+      "name": "Manual del curso",
+      "url": "https://www.sec.gov/edgar/search/",
+      "detail": "Metodología de las guías FUNDAMENTAL 1–9 aportadas por el usuario; fuente privada, no publicada aquí."
+    }
+  ],
+  "glossary": [
+    [
+      "MOAT",
+      "Ventaja competitiva que protege márgenes y clientes frente a la competencia."
+    ],
+    [
+      "Azure",
+      "Plataforma de nube de Microsoft: servidores, datos, IA y servicios gestionados para empresas."
+    ],
+    [
+      "CFO",
+      "Cash Flow Operativo: efectivo generado por las operaciones ordinarias."
+    ],
+    [
+      "CAPEX",
+      "Inversión en activos duraderos; separar gasto pagado, nuevos arrendamientos y mantenimiento/expansión."
+    ],
+    [
+      "FCF",
+      "Flujo libre observado = CFO menos CAPEX efectivo. Es después de intereses y no equivale automáticamente al FCFF."
+    ],
+    [
+      "EBIT",
+      "Beneficio operativo antes de intereses e impuestos."
+    ],
+    [
+      "EBITDA",
+      "EBIT más depreciaciones y amortizaciones; no equivale al efectivo."
+    ],
+    [
+      "ROIC",
+      "Rentabilidad del capital invertido. Aquí es una estimación NOPAT / capital invertido medio."
+    ],
+    [
+      "ROE",
+      "Beneficio neto entre patrimonio medio de los accionistas."
+    ],
+    [
+      "NOPAT",
+      "Beneficio operativo después de impuestos teóricos sobre la actividad."
+    ],
+    [
+      "PER GAAP",
+      "Precio dividido entre beneficio por acción conforme a las normas contables de EE. UU."
+    ],
+    [
+      "EV",
+      "Enterprise Value = capitalización + deuda neta, antes de otros ajustes específicos."
+    ],
+    [
+      "EV/EBITDA",
+      "Valor total de la empresa dividido por el EBITDA. Depende de qué deuda/arrendamientos incluya el EV."
+    ],
+    [
+      "EV/FCF",
+      "Valor empresa dividido por FCF; útil como termómetro, pero EV y flujo al accionista no siempre son consistentes."
+    ],
+    [
+      "FCF Yield",
+      "FCF dividido entre capitalización bursátil. Indica cuánto efectivo libre representa el precio pagado."
+    ],
+    [
+      "DCF",
+      "Descuento de flujos futuros: calcula el valor hoy de la caja estimada, con tasa de descuento y valor terminal."
+    ],
+    [
+      "WACC",
+      "Coste medio ponderado del capital de deuda y accionistas; referencia usual para comparar con ROIC y descontar FCFF."
+    ],
+    [
+      "Margen de seguridad",
+      "Descuento del precio respecto al valor estimado para protegerse de errores de valoración."
+    ],
+    [
+      "RPO",
+      "Ingresos comprometidos contractualmente aún no reconocidos; no son caja cobrada ni todos ingresos garantizados a corto plazo."
+    ],
+    [
+      "GAAP",
+      "Normas de contabilidad estadounidenses; beneficio GAAP puede incluir partidas financieras no recurrentes."
+    ]
+  ],
+  "questions": [
+    [
+      "¿Por qué el EBIT sube y el FCF se estanca?",
+      "Porque el CFO aumentó de 89,0 a 182,9 B$, pero el CAPEX pagado subió de 23,9 a 115,9 B$. Es inversión de gran escala en nube e IA: habrá que medir la rentabilidad de esa capacidad instalada."
+    ],
+    [
+      "¿Es malo un ROIC que cae hasta ~30,6 %?",
+      "No implica por sí solo destrucción de valor: sigue alto en la fórmula proxy del agente. Pero muestra que el capital invertido crece deprisa y exige comprobar la rentabilidad incremental de los centros de datos."
+    ],
+    [
+      "¿Por qué el DCF puede diferir tanto del consenso?",
+      "El DCF arranca del FCF real de FY2026, deprimido por el pico de inversión. Los analistas pueden asumir más monetización y normalización futura. El valor terminal es además muy sensible a descuento y crecimiento."
+    ],
+    [
+      "¿Qué datos invalidarían la tesis alcista?",
+      "Tres señales conjuntas: desaceleración material de Azure/Copilot, CAPEX persistentemente creciente sin conversión en CFO y deterioro del margen operativo o del rendimiento de la inversión."
+    ],
+    [
+      "¿Cuándo podría convertirse en oportunidad de compra?",
+      "Si cae el precio sin deteriorarse los fundamentales, o si crece el FCF recurrente más deprisa de lo que descuenta la cotización. El simulador permite comprobar ambas rutas; nunca basta un umbral fijo."
+    ],
+    [
+      "¿Tiene un problema serio de endeudamiento?",
+      "Con deuda financiera identificada de 40,3 B$ frente a 76,8 B$ de efectivo más inversiones CP, la deuda bancaria/bonos no es el foco principal. Los arrendamientos y compromisos de inversión deben examinarse por separado."
+    ],
+    [
+      "¿Azure puede perder el MOAT?",
+      "Sí, por presión de AWS, Google Cloud, chips propios, modelos abiertos, regulación, precios y cambios de arquitectura. Deben vigilarse cuotas, retención empresarial y crecimiento de márgenes, no solo ingresos."
+    ],
+    [
+      "¿Beneficio neto FY2026 y PER GAAP están inflados?",
+      "FY2026 incluye alrededor de 4,96 B$ de ganancias netas asociadas a inversiones en OpenAI. Microsoft publica beneficio ajustado de 128,786 B$ y BPA ajustado de 17,28 $, frente a BPA GAAP de 17,95 $. La valoración ajustada es más exigente."
+    ],
+    [
+      "¿El chatbot del dashboard utiliza IA en directo?",
+      "No. Estas respuestas son una biblioteca interactiva curada de preguntas frecuentes. Para una IA en directo se necesitaría un backend seguro y costes controlados; aquí no se expone ninguna clave privada."
+    ]
+  ],
+  "footnote": "Flujos CFO-CAPEX pagados tratados como aproximación a caja para el accionista; tasa de descuento empleada como coste del capital propio; shares constantes y sin doble suma de caja/deuda. El crecimiento terminal determina mucho del valor."
+,
+  "peerHistory": [
+  {
+    "ticker": "MSFT",
+    "name": "Microsoft",
+    "business": "Software / cloud",
+    "color": "#4cdbbd",
+    "fiscalYearEnd": "2026-06-30",
+    "records": [
+      {
+        "year": 2022,
+        "close": "2022-06-30",
+        "revenue": 198.27,
+        "ebit": 83.383,
+        "net": 72.738,
+        "cfo": 89.035,
+        "capex": 23.886,
+        "fcf": 65.149,
+        "ebit_margin": 42.06,
+        "fcf_margin": 32.86
+      },
+      {
+        "year": 2023,
+        "close": "2023-06-30",
+        "revenue": 211.915,
+        "ebit": 88.523,
+        "net": 72.361,
+        "cfo": 87.582,
+        "capex": 28.107,
+        "fcf": 59.475,
+        "ebit_margin": 41.77,
+        "fcf_margin": 28.07
+      },
+      {
+        "year": 2024,
+        "close": "2024-06-30",
+        "revenue": 245.122,
+        "ebit": 109.433,
+        "net": 88.136,
+        "cfo": 118.548,
+        "capex": 44.477,
+        "fcf": 74.071,
+        "ebit_margin": 44.64,
+        "fcf_margin": 30.22
+      },
+      {
+        "year": 2025,
+        "close": "2025-06-30",
+        "revenue": 281.724,
+        "ebit": 128.528,
+        "net": 101.832,
+        "cfo": 136.162,
+        "capex": 64.551,
+        "fcf": 71.611,
+        "ebit_margin": 45.62,
+        "fcf_margin": 25.42
+      },
+      {
+        "year": 2026,
+        "close": "2026-06-30",
+        "revenue": 331.839,
+        "ebit": 155.237,
+        "net": 133.749,
+        "cfo": 182.935,
+        "capex": 115.948,
+        "fcf": 66.987,
+        "ebit_margin": 46.78,
+        "fcf_margin": 20.19
+      }
+    ],
+    "source": "SEC EDGAR / S&P 500 v6.9 (2026-10-13), métricas FY provisionales"
+  },
+  {
+    "ticker": "ORCL",
+    "name": "Oracle",
+    "business": "Software / infraestructura cloud",
+    "color": "#69aaf7",
+    "fiscalYearEnd": "2026-05-31",
+    "records": [
+      {
+        "year": 2022,
+        "close": "2022-05-31",
+        "revenue": 42.44,
+        "ebit": 10.926,
+        "net": 6.717,
+        "cfo": 9.539,
+        "capex": 4.511,
+        "fcf": 5.028,
+        "ebit_margin": 25.74,
+        "fcf_margin": 11.85
+      },
+      {
+        "year": 2023,
+        "close": "2023-05-31",
+        "revenue": 49.954,
+        "ebit": 13.093,
+        "net": 8.503,
+        "cfo": 17.165,
+        "capex": 8.695,
+        "fcf": 8.47,
+        "ebit_margin": 26.21,
+        "fcf_margin": 16.96
+      },
+      {
+        "year": 2024,
+        "close": "2024-05-31",
+        "revenue": 52.961,
+        "ebit": 15.353,
+        "net": 10.467,
+        "cfo": 18.673,
+        "capex": 6.866,
+        "fcf": 11.807,
+        "ebit_margin": 28.99,
+        "fcf_margin": 22.29
+      },
+      {
+        "year": 2025,
+        "close": "2025-05-31",
+        "revenue": 57.399,
+        "ebit": 17.678,
+        "net": 12.443,
+        "cfo": 20.821,
+        "capex": 21.215,
+        "fcf": -0.394,
+        "ebit_margin": 30.8,
+        "fcf_margin": -0.69
+      },
+      {
+        "year": 2026,
+        "close": "2026-05-31",
+        "revenue": 67.357,
+        "ebit": 20.606,
+        "net": 17.087,
+        "cfo": 31.977,
+        "capex": 55.663,
+        "fcf": -23.686,
+        "ebit_margin": 30.59,
+        "fcf_margin": -35.16
+      }
+    ],
+    "source": "SEC EDGAR / S&P 500 v6.9 (2026-10-13), métricas FY provisionales"
+  },
+  {
+    "ticker": "CRM",
+    "name": "Salesforce",
+    "business": "Software de gestión / SaaS",
+    "color": "#f6c46d",
+    "fiscalYearEnd": "2026-01-31",
+    "records": [
+      {
+        "year": 2022,
+        "close": "2022-01-31",
+        "revenue": 26.492,
+        "ebit": 0.548,
+        "net": 1.444,
+        "cfo": 6.0,
+        "capex": 0.717,
+        "fcf": 5.283,
+        "ebit_margin": 2.07,
+        "fcf_margin": 19.94
+      },
+      {
+        "year": 2023,
+        "close": "2023-01-31",
+        "revenue": 31.352,
+        "ebit": 1.03,
+        "net": 0.208,
+        "cfo": 7.111,
+        "capex": 0.798,
+        "fcf": 6.313,
+        "ebit_margin": 3.29,
+        "fcf_margin": 20.14
+      },
+      {
+        "year": 2024,
+        "close": "2024-01-31",
+        "revenue": 34.857,
+        "ebit": 5.011,
+        "net": 4.136,
+        "cfo": 10.234,
+        "capex": 0.736,
+        "fcf": 9.498,
+        "ebit_margin": 14.38,
+        "fcf_margin": 27.25
+      },
+      {
+        "year": 2025,
+        "close": "2025-01-31",
+        "revenue": 37.895,
+        "ebit": 7.205,
+        "net": 6.197,
+        "cfo": 13.092,
+        "capex": 0.658,
+        "fcf": 12.434,
+        "ebit_margin": 19.01,
+        "fcf_margin": 32.81
+      },
+      {
+        "year": 2026,
+        "close": "2026-01-31",
+        "revenue": 41.525,
+        "ebit": 8.331,
+        "net": 7.457,
+        "cfo": 14.996,
+        "capex": 0.594,
+        "fcf": 14.402,
+        "ebit_margin": 20.06,
+        "fcf_margin": 34.68
+      }
+    ],
+    "source": "SEC EDGAR / S&P 500 v6.9 (2026-10-13), métricas FY provisionales"
+  },
+  {
+    "ticker": "GOOGL",
+    "name": "Alphabet",
+    "business": "Google Cloud / IA (negocio diversificado)",
+    "color": "#ba94f6",
+    "fiscalYearEnd": "2025-12-31",
+    "records": [
+      {
+        "year": 2022,
+        "close": "2022-12-31",
+        "revenue": 282.836,
+        "ebit": 74.842,
+        "net": 59.972,
+        "cfo": 91.495,
+        "capex": 31.485,
+        "fcf": 60.01,
+        "ebit_margin": 26.46,
+        "fcf_margin": 21.22
+      },
+      {
+        "year": 2023,
+        "close": "2023-12-31",
+        "revenue": 307.394,
+        "ebit": 84.293,
+        "net": 73.795,
+        "cfo": 101.746,
+        "capex": 32.251,
+        "fcf": 69.495,
+        "ebit_margin": 27.42,
+        "fcf_margin": 22.61
+      },
+      {
+        "year": 2024,
+        "close": "2024-12-31",
+        "revenue": 350.018,
+        "ebit": 112.39,
+        "net": 100.118,
+        "cfo": 125.299,
+        "capex": 52.535,
+        "fcf": 72.764,
+        "ebit_margin": 32.11,
+        "fcf_margin": 20.79
+      },
+      {
+        "year": 2025,
+        "close": "2025-12-31",
+        "revenue": 402.836,
+        "ebit": 129.039,
+        "net": 132.17,
+        "cfo": 164.713,
+        "capex": 91.447,
+        "fcf": 73.266,
+        "ebit_margin": 32.03,
+        "fcf_margin": 18.19
+      }
+    ],
+    "source": "SEC EDGAR / S&P 500 v6.9 (2026-10-13), métricas FY provisionales"
+  },
+  {
+    "ticker": "AMZN",
+    "name": "Amazon",
+    "business": "AWS / cloud (negocio diversificado)",
+    "color": "#fa8790",
+    "fiscalYearEnd": "2025-12-31",
+    "records": [
+      {
+        "year": 2022,
+        "close": "2022-12-31",
+        "revenue": 513.983,
+        "ebit": 12.248,
+        "net": -2.722,
+        "cfo": 46.752,
+        "capex": 63.645,
+        "fcf": -16.893,
+        "ebit_margin": 2.38,
+        "fcf_margin": -3.29
+      },
+      {
+        "year": 2023,
+        "close": "2023-12-31",
+        "revenue": 574.785,
+        "ebit": 36.852,
+        "net": 30.425,
+        "cfo": 84.946,
+        "capex": 52.729,
+        "fcf": 32.217,
+        "ebit_margin": 6.41,
+        "fcf_margin": 5.61
+      },
+      {
+        "year": 2024,
+        "close": "2024-12-31",
+        "revenue": 637.959,
+        "ebit": 68.593,
+        "net": 59.248,
+        "cfo": 115.877,
+        "capex": 82.999,
+        "fcf": 32.878,
+        "ebit_margin": 10.75,
+        "fcf_margin": 5.15
+      },
+      {
+        "year": 2025,
+        "close": "2025-12-31",
+        "revenue": 716.924,
+        "ebit": 79.975,
+        "net": 77.67,
+        "cfo": 139.514,
+        "capex": 131.819,
+        "fcf": 7.695,
+        "ebit_margin": 11.16,
+        "fcf_margin": 1.07
+      }
+    ],
+    "source": "SEC EDGAR / S&P 500 v6.9 (2026-10-13), métricas FY provisionales"
+  }
+],
+  "peerHistoryNote": "Fuente: SEC EDGAR, base A.Fundamental v6.9 (13/10/2026). Cinco ejercicios como máximo; FY2026 aún no disponible para Alphabet y Amazon. Años fiscales no son trimestres coincidentes. Datos provisionales; no incluye estimaciones de mercado."
+};
+
+</script>
+<script>
+(()=>{'use strict';
+const DATA=window.AF_DATA;if(!DATA){document.body.prepend('No se cargaron los datos; comprueba data.js.');return;}
+const q=s=>document.querySelector(s),qa=s=>Array.from(document.querySelectorAll(s));
+const format=(v,n=1)=>Number(v).toLocaleString('es-ES',{minimumFractionDigits:n,maximumFractionDigits:n});
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pdf='https://drive.google.com/file/d/18uCHuVIYJfOYN6PzDzav63lwCgKOE4vw/view?usp=drivesdk';q('#pdf-main').href=pdf;q('#pdf-main').target='_blank';q('#pdf-main').rel='noopener noreferrer';
+const metrics={revenue:{name:'Ingresos',color:'#4cdbbd'},ebit:{name:'EBIT',color:'#61a6ee'},net:{name:'Beneficio neto',color:'#f5bb65'},cfo:{name:'Flujo operativo',color:'#a9c6ed'},capex:{name:'CAPEX pagado',color:'#f9a76e'},fcf:{name:'FCF',color:'#fb7884'},roic:{name:'ROIC proxy',color:'#4cdbbd'},roe:{name:'ROE',color:'#65a6f3'}};
+const plot=(selector,detailSelector,fields,initial=4,percent=false)=>{
+ const data=DATA.history;const colors=fields.map(f=>metrics[f].color);const values=data.flatMap(d=>fields.map(f=>d[f]));const max=Math.max(...values),min=Math.min(0,...values);
+ const W=900,H=262,left=56,right=24,top=17,bottom=45,w=W-left-right,h=H-top-bottom;
+ const x=i=>left+i*w/(data.length-1),y=v=>top+h-(v-min)/(max-min||1)*h;
+ const ticks=4;
+ let s=`<svg viewBox="0 0 ${W} ${H}" role="group" aria-label="Gráfico con ${fields.join(', ')}"><title>Series financieras FY2022 a FY2026</title>`;
+ for(let j=0;j<=ticks;j++){const val=min+(max-min)*j/ticks;const yy=y(val);s+=`<line class="chart-grid" x1="${left}" y1="${yy}" x2="${W-right}" y2="${yy}"/><text class="chart-label" x="${left-10}" y="${yy+4}" text-anchor="end">${format(val,0)}${percent?'%':''}</text>`}
+ data.forEach((d,i)=>{s+=`<text class="chart-label" x="${x(i)}" y="${H-8}" text-anchor="middle">${d.year}</text>`});
+ fields.forEach((f,k)=>{let path=data.map((d,i)=>(i?'L':'M')+x(i).toFixed(1)+','+y(d[f]).toFixed(1)).join(' ');s+=`<path class="chart-series" d="${path}" stroke="${colors[k]}"/>`;data.forEach((d,i)=>s+=`<circle class="chart-point" data-point="${i}" cx="${x(i)}" cy="${y(d[f])}" r="4.5" fill="${colors[k]}" stroke="#122738"><title>${d.year} ${metrics[f].name}: ${format(d[f],1)}${percent?' %':' B$'}</title></circle>`) });
+ s+='</svg><div class="chart-legend">'+fields.map((f,k)=>`<span><i style="background:${colors[k]}"></i>${metrics[f].name}</span>`).join('')+'</div>';
+ q(selector).innerHTML=s;const points=qa(selector+' .chart-point');
+ const activate=i=>{points.forEach(n=>n.classList.toggle('active',Number(n.dataset.point)===i));const d=data[i];const items=fields.map(f=>`<b style="color:${metrics[f].color}">${metrics[f].name}: ${format(d[f],1)}${percent?' %':' B$'}</b>`).join(' · ');q(detailSelector).innerHTML=`<strong>FY${d.year}</strong> · ${items}`;};
+ points.forEach(el=>{el.addEventListener('pointerenter',()=>activate(Number(el.dataset.point)));el.addEventListener('click',()=>activate(Number(el.dataset.point))) });
+ activate(initial);
+};
+const legendStyle=document.createElement('style');legendStyle.innerText='.chart-legend{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:-4px;font-size:10px;color:var(--muted)}.chart-legend span{display:flex;align-items:center;gap:6px}.chart-legend i{display:inline-block;width:10px;height:10px;border-radius:100%}';document.head.append(legendStyle);
+// Microsoft: simultaneous metric selection. All values are FY in USD billions.
+const growthAllowed=['revenue','ebit','net','cfo'];
+const growthInputs=qa('#growth-metrics input[type="checkbox"]');
+const selectedGrowth=()=>growthInputs.filter(e=>e.checked).map(e=>e.value);
+function updateGrowthChart(){
+  const chosen=selectedGrowth();
+  if(!chosen.length)return;
+  plot('#growth-chart','#growth-detail',chosen);
+  q('#growth-hint').textContent=chosen.length===1?'1 métrica seleccionada':`${chosen.length} métricas superpuestas · valores en miles de millones de USD`;
+}
+growthInputs.forEach(input=>input.addEventListener('change',()=>{
+  if(!selectedGrowth().length){input.checked=true;q('#growth-hint').textContent='Selecciona al menos una métrica.';return;}
+  updateGrowthChart();
+}));
+q('#growth-all').addEventListener('click',()=>{growthInputs.forEach(e=>e.checked=true);updateGrowthChart()});
+q('#growth-one').addEventListener('click',()=>{growthInputs.forEach(e=>e.checked=e.value==='revenue');updateGrowthChart()});
+updateGrowthChart();
+
+// Peers: chart ONE metric at a time for selected companies (keeps visual legible).
+// SEC data are annual, not necessarily on the same fiscal year-end date. Gaps stay gaps.
+const peerYears=[2022,2023,2024,2025,2026];
+const peerMetrics={
+ revenue:'Ingresos',ebit:'EBIT',net:'Beneficio neto',cfo:'CFO',capex:'CAPEX',fcf:'FCF',
+ ebit_margin:'Margen EBIT',fcf_margin:'Margen FCF'
+};
+const peers=DATA.peerHistory||[];
+const peerInputs=qa('#peer-companies input[type="checkbox"]');
+const peerSelected=()=>peers.filter(p=>peerInputs.some(i=>i.value===p.ticker&&i.checked));
+const missing=v=>!Number.isFinite(v);
+let peerActiveYear=2025;
+function renderPeers(){
+ const area=q('#peer-chart'),detail=q('#peer-detail');
+ const field=q('#peer-metric').value;
+ const pct=field.endsWith('_margin');
+ const indexChoice=q('#peer-scale');
+ if(pct){indexChoice.value='absolute';indexChoice.disabled=true;indexChoice.title='Los márgenes se comparan directamente en porcentaje.';}
+ else{indexChoice.disabled=false;indexChoice.title='';}
+ const indexed=indexChoice.value==='indexed'&&!pct;
+ const sel=peerSelected();
+ if(!sel.length){area.innerHTML='<p class="mini-caption">Marca al menos una empresa para mostrar el gráfico.</p>';detail.textContent='';return;}
+ const notes=[];
+ const all=[];
+ const series=sel.map(company=>{
+   const m=new Map(company.records.map(r=>[r.year,r]));
+   const base=m.get(2022)?.[field];
+   const badBaseline=indexed && (missing(base)||base<=0);
+   if(badBaseline)notes.push(`${company.name}: FY2022 es cero, negativo o ausente; índice no calculable.`);
+   const data=peerYears.map(yr=>{
+     const raw=m.get(yr)?.[field];
+     if(missing(raw)||badBaseline)return null;
+     const v=indexed?raw/base*100:raw;
+     if(Number.isFinite(v))all.push(v);
+     return v;
+   });
+   if(missing(m.get(2026)?.[field]))notes.push(`${company.name}: FY2026 aún no disponible (último FY${Math.max(...company.records.map(r=>r.year))}).`);
+   return {company,data};
+ });
+ if(!all.length){area.innerHTML='<p class="mini-caption">No hay datos suficientes para esta selección y este tipo de gráfico. Cambia la métrica o la escala.</p>';detail.textContent=notes.join(' ');return;}
+ const W=900,H=288,left=73,right=29,top=24,bottom=50,w=W-left-right,h=H-top-bottom;
+ let min=Math.min(0,...all),max=Math.max(0,...all);
+ if(max===min){max+=1;min-=1;}
+ const margin=(max-min)*.07;min=min<0?min-margin:min;max+=margin;
+ const x=i=>left+i*w/(peerYears.length-1);
+ const y=v=>top+h-(v-min)/(max-min)*h;
+ const units=indexed?'índice':pct?'%':' B$';
+ let svg=`<svg viewBox="0 0 ${W} ${H}" role="group" aria-label="Comparativa SEC de ${esc(peerMetrics[field])} por ejercicios 2022 a 2026"><title>Comparativa de ${esc(peerMetrics[field])}, ${indexed?'índice base FY2022':'datos anuales SEC'}</title>`;
+ for(let j=0;j<=4;j++){const value=min+(max-min)*j/4, yy=y(value);
+   svg+=`<line class="chart-grid" x1="${left}" y1="${yy}" x2="${W-right}" y2="${yy}"/><text class="chart-label" x="${left-12}" y="${yy+4}" text-anchor="end">${format(value, indexed?0:1)}${pct?'%':''}</text>`;
+ }
+ peerYears.forEach((yr,i)=>svg+=`<text class="chart-label" x="${x(i)}" y="${H-9}" text-anchor="middle">${yr}</text>`);
+ series.forEach(({company,data})=>{
+   let fragment=[];
+   const flush=()=>{if(fragment.length>1)svg+=`<path d="${fragment.join(' ')}" fill="none" stroke="${company.color}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>`;fragment=[];};
+   data.forEach((v,i)=>{
+     if(v===null){flush();return;}
+     fragment.push((fragment.length?'L':'M')+x(i).toFixed(1)+','+y(v).toFixed(1));
+   });flush();
+   data.forEach((v,i)=>{
+     if(v===null)return;
+     const actual=company.records.find(r=>r.year===peerYears[i]);
+     const label=`${company.name}, FY${peerYears[i]} (cierre ${actual?.close||'—'}), ${peerMetrics[field]}: ${format(v,indexed?1:2)} ${units}`;
+     svg+=`<circle class="chart-point peer-point" tabindex="0" role="button" data-year="${peerYears[i]}" cx="${x(i)}" cy="${y(v)}" r="5" fill="${company.color}" stroke="#152637" aria-label="${esc(label)}"><title>${esc(label)}</title></circle>`;
+   });
+ });
+ svg+='</svg>';
+ svg+='<div class="chart-legend peer-legend">'+series.map(({company})=>`<span><i style="background:${company.color}"></i>${esc(company.name)} (${company.ticker})</span>`).join('')+'</div>';
+ area.innerHTML=svg;
+ const active=year=>{
+   peerActiveYear=year;
+   qa('#peer-chart .peer-point').forEach(el=>el.classList.toggle('active',Number(el.dataset.year)===year));
+   const parts=series.map(({company,data})=>{
+     const v=data[peerYears.indexOf(year)];
+     const str=v==null?'sin dato':`${format(v,indexed?1:2)}${units}`;
+     const close=company.records.find(r=>r.year===year)?.close;
+     return `<span class="peer-detail-item" style="--series:${company.color}"><i></i><b>${esc(company.name)}</b>: ${str}${close?` <small>(${esc(close)})</small>`:''}</span>`;
+   });
+   detail.innerHTML=`<strong>FY${year}</strong><div class="peer-detail-items">${parts.join('')}</div>`;
+ };
+ qa('#peer-chart .peer-point').forEach(el=>{
+   const act=()=>active(Number(el.dataset.year));
+   el.addEventListener('pointerenter',act);el.addEventListener('focus',act);el.addEventListener('click',act);
+   el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();act();}});
+ });
+ active(peerActiveYear);
+ const footer=DATA.peerHistoryNote||'Fuente SEC EDGAR; años fiscales no totalmente sincronizados.';
+ q('#peer-footnote').textContent=footer+(notes.length?' ⚠ '+notes.join(' '):'');
+};
+qa('#peer-companies input').forEach(el=>el.addEventListener('change',()=>{
+ if(!peerSelected().length)el.checked=true;
+ renderPeers();
+}));
+q('#peer-metric').addEventListener('change',renderPeers);
+q('#peer-scale').addEventListener('change',renderPeers);
+q('#peer-all').addEventListener('click',()=>{peerInputs.forEach(el=>el.checked=true);renderPeers()});
+q('#peer-only-msft').addEventListener('click',()=>{peerInputs.forEach(el=>el.checked=el.value==='MSFT');renderPeers()});
+renderPeers();
+plot('#return-chart','#return-detail',['roic','roe'],4,true);
+plot('#cash-chart','#cash-detail',['cfo','capex','fcf']);
+const sum=DATA.business_segments.reduce((a,d)=>a+d.value,0);q('#segments').innerHTML=DATA.business_segments.map(d=>`<div class="segment-row"><div class="segment-label"><span>${esc(d.name)}</span><b>${format(d.value)} B$</b></div><div class="segment-track"><div class="segment-fill" style="width:${(d.value/sum*100).toFixed(2)}%"></div></div><div class="segment-grow">${d.growth>=0?'+':''}${d.growth}% en FY2026 · ${(d.value/sum*100).toFixed(1)}% de los segmentos</div></div>`).join('');
+q('#peer-rows').innerHTML=DATA.peers.map(d=>`<tr class="${d.ticker==='MSFT'?'focus-row':''}"><td>${esc(d.name)} <span style="font-size:10px;color:var(--muted)">${d.ticker}</span></td><td>${format(d.pe,1)}x</td><td>${format(d.ev_ebitda,1)}x</td><td style="color:${d.fcf_yield<0?'var(--red)':'var(--ink)'}">${format(d.fcf_yield,2)}%</td></tr>`).join('');
+const F=DATA.financial;
+const state={fcf0:DATA.dcf.starting_fcf,g1:18,g2:10,r:9,terminal:3.5,price:DATA.price};
+const dcf=(a,flag=false)=>{
+ const {fcf0,g1,g2,r,terminal}=a;if(r<=terminal)return {valid:false};let f=fcf0,pv=0;
+ for(let t=1;t<=10;t++){f*=1+(t<=5?g1:g2)/100;pv+=f/(1+r/100)**t}
+ const tv=f*(1+terminal/100)/(r/100-terminal/100)/(1+r/100)**10;
+ return {valid:true,value:(pv+tv)/DATA.shares_billion,terminalPct:100*tv/(pv+tv)};
+};
+const controls=['fcf0','g1','g2','r','terminal'];
+function updateDCF(){controls.forEach(k=>{if(k==='fcf0')q('#fcf0-v').textContent=format(state[k],1)+' B$';else q('#'+k+'-v').textContent=format(state[k],k==='terminal'?2:1)+' %'});q('#market-v').textContent=format(state.price,2)+' $';
+ const res=dcf(state),bad=q('#dcf-invalid');bad.hidden=res.valid;if(!res.valid){q('#dcf-value').innerHTML='— <span>$</span>';q('#dcf-sign').textContent='Hipótesis incompatibles';return}
+ q('#dcf-value').innerHTML=`${format(res.value,1)} <span>$</span>`;
+ const upside=(res.value/state.price-1)*100;q('#dcf-sign').textContent=`${upside>=0?'+':''}${format(upside,1)} % frente al precio de ${format(state.price,2)} $`;
+ q('#dcf-sign').style.color=upside>0?'var(--teal)':'var(--orange)';
+ const refs=[res.value,state.price,DATA.analysts.target],denom=Math.max(...refs)*1.12;
+ [['bar-dcf',refs[0]],['bar-market',refs[1]],['bar-consensus',refs[2]]].forEach(([id,val])=>q('#'+id).style.width=(val/denom*100)+'%');
+ q('#safety').textContent=format(res.value*.8,1)+' $';q('#terminal-weight').textContent=format(res.terminalPct,0)+' %';q('#fcf-input').textContent=format(state.fcf0,1)+' B$';
+ const target=state.price;let lo=-10,hi=90;const v0=dcf({...state,g1:lo}).value,v1=dcf({...state,g1:hi}).value;let reverse='Fuera de rango';
+ if(v0<=target&&v1>=target){for(let j=0;j<80;j++){const mid=(lo+hi)/2;if(dcf({...state,g1:mid}).value<target)lo=mid;else hi=mid}reverse='~'+format((lo+hi)/2,1)+' %'}
+ q('#reverse').textContent=reverse;
+}
+function preset(name){const c=DATA.dcf.cases[name];Object.assign(state,{fcf0:DATA.dcf.starting_fcf,g1:c.g1,g2:c.g2,r:c.r,terminal:c.terminal,price:DATA.price});controls.forEach(k=>q('#'+k).value=state[k]);q('#market-price').value=state.price;qa('[data-case]').forEach(el=>el.classList.toggle('selected',el.dataset.case===name));updateDCF()}
+qa('[data-case]').forEach(b=>b.addEventListener('click',()=>preset(b.dataset.case)));
+controls.forEach(k=>q('#'+k).addEventListener('input',e=>{state[k]=Number(e.target.value);qa('[data-case]').forEach(b=>b.classList.remove('selected'));updateDCF()}));
+q('#market-price').addEventListener('input',e=>{state.price=Math.max(1,Number(e.target.value)||1);updateDCF()});
+q('#reset-dcf').addEventListener('click',()=>preset('base'));preset('base');
+q('#question-list').innerHTML=DATA.questions.map(([question,answer])=>`<details><summary>${esc(question)}</summary><p>${esc(answer)}</p></details>`).join('');
+const glossary=new Map(DATA.glossary);
+const modal=q('#term-dialog');function openTerm(term){const info=glossary.get(term);if(!info)return;q('#term-title').textContent=term;q('#term-text').textContent=info;if(typeof modal.showModal==='function')modal.showModal();else alert(term+' — '+info)}
+qa('[data-term]').forEach(b=>b.addEventListener('click',()=>openTerm(b.dataset.term)));
+q('#glossary-list').innerHTML=DATA.glossary.map(([t,d])=>`<button type="button" data-gloss="${esc(t)}" title="${esc(d)}">${esc(t)} ↗</button>`).join('');
+qa('[data-gloss]').forEach(b=>b.addEventListener('click',()=>openTerm(b.dataset.gloss)));
+q('#gloss-search').addEventListener('input',e=>{const t=e.target.value.toLowerCase();qa('[data-gloss]').forEach(b=>{const term=b.dataset.gloss;b.hidden=!(term.toLowerCase().includes(t)||glossary.get(term).toLowerCase().includes(t))})});
+q('#sources-list').innerHTML=DATA.sources.map(s=>`<div class="source-card"><a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">[${esc(s.id)}] ${esc(s.name)} ↗</a><p>${esc(s.detail)}</p></div>`).join('');
+q('#ask-copy').addEventListener('click',async()=>{let userText=q('#custom-question').value.trim();if(!userText){q('#copy-status').textContent='Escribe una pregunta primero.';return}
+ const prompt=`Actúa como analista fundamental independiente y mentor. Analiza Microsoft (NASDAQ:MSFT) a fecha 13/10/2026 con datos verificables SEC FY2022–FY2026 (10-K y 10-Q), siguiendo ingresos→márgenes→ROIC→balance→CFO-CAPEX/FCF→valoración. Distingue dato SEC, hipótesis y estimaciones; no inventes cifras. El FCF FY2026 es 66,987 B$, CAPEX 115,948 B$, CFO 182,935 B$; precio de referencia 541,15 USD (12/10). Responde con escenarios negativo/base/positivo, indicadores que invalidan la tesis y riesgos. Mi pregunta es: ${userText}`;
+ try{await navigator.clipboard.writeText(prompt);q('#copy-status').textContent='✓ Consulta copiada. Pégala en ChatGPT.'}catch(_){let f=document.createElement('textarea');f.value=prompt;document.body.append(f);f.select();document.execCommand('copy');f.remove();q('#copy-status').textContent='Consulta preparada. Puedes pegarla en ChatGPT.'}
+});
+const root=document.documentElement;let saved=null;try{saved=localStorage.getItem('af-theme')}catch(_){/* local-only preview */}if(saved==='light')root.dataset.theme='light';
+q('#theme-btn').addEventListener('click',()=>{root.dataset.theme=root.dataset.theme==='light'?'dark':'light';try{localStorage.setItem('af-theme',root.dataset.theme)}catch(_){}});
+const obs=new IntersectionObserver(entries=>{entries.filter(e=>e.isIntersecting).forEach(e=>{qa('.sidebar a').forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id))})},{rootMargin:'-15% 0px -75% 0px'});qa('main > section[id]').forEach(s=>obs.observe(s));
+})();
+
+</script>
+</body></html>
