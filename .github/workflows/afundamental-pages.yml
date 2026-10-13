@@ -36,6 +36,8 @@ jobs:
           console.log('Datos FY, DCF y sitio validados')
           JS
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: docs
