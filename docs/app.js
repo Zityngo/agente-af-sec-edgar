@@ -21,7 +21,122 @@ const plot=(selector,detailSelector,fields,initial=4,percent=false)=>{
  activate(initial);
 };
 const legendStyle=document.createElement('style');legendStyle.innerText='.chart-legend{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:-4px;font-size:10px;color:var(--muted)}.chart-legend span{display:flex;align-items:center;gap:6px}.chart-legend i{display:inline-block;width:10px;height:10px;border-radius:100%}';document.head.append(legendStyle);
-q('#growth-series').addEventListener('change',e=>plot('#growth-chart','#growth-detail',[e.target.value]));plot('#growth-chart','#growth-detail',['revenue']);
+// Microsoft: simultaneous metric selection. All values are FY in USD billions.
+const growthAllowed=['revenue','ebit','net','cfo'];
+const growthInputs=qa('#growth-metrics input[type="checkbox"]');
+const selectedGrowth=()=>growthInputs.filter(e=>e.checked).map(e=>e.value);
+function updateGrowthChart(){
+  const chosen=selectedGrowth();
+  if(!chosen.length)return;
+  plot('#growth-chart','#growth-detail',chosen);
+  q('#growth-hint').textContent=chosen.length===1?'1 métrica seleccionada':`${chosen.length} métricas superpuestas · valores en miles de millones de USD`;
+}
+growthInputs.forEach(input=>input.addEventListener('change',()=>{
+  if(!selectedGrowth().length){input.checked=true;q('#growth-hint').textContent='Selecciona al menos una métrica.';return;}
+  updateGrowthChart();
+}));
+q('#growth-all').addEventListener('click',()=>{growthInputs.forEach(e=>e.checked=true);updateGrowthChart()});
+q('#growth-one').addEventListener('click',()=>{growthInputs.forEach(e=>e.checked=e.value==='revenue');updateGrowthChart()});
+updateGrowthChart();
+
+// Peers: chart ONE metric at a time for selected companies (keeps visual legible).
+// SEC data are annual, not necessarily on the same fiscal year-end date. Gaps stay gaps.
+const peerYears=[2022,2023,2024,2025,2026];
+const peerMetrics={
+ revenue:'Ingresos',ebit:'EBIT',net:'Beneficio neto',cfo:'CFO',capex:'CAPEX',fcf:'FCF',
+ ebit_margin:'Margen EBIT',fcf_margin:'Margen FCF'
+};
+const peers=DATA.peerHistory||[];
+const peerInputs=qa('#peer-companies input[type="checkbox"]');
+const peerSelected=()=>peers.filter(p=>peerInputs.some(i=>i.value===p.ticker&&i.checked));
+const missing=v=>!Number.isFinite(v);
+let peerActiveYear=2025;
+function renderPeers(){
+ const area=q('#peer-chart'),detail=q('#peer-detail');
+ const field=q('#peer-metric').value;
+ const pct=field.endsWith('_margin');
+ const indexChoice=q('#peer-scale');
+ if(pct){indexChoice.value='absolute';indexChoice.disabled=true;indexChoice.title='Los márgenes se comparan directamente en porcentaje.';}
+ else{indexChoice.disabled=false;indexChoice.title='';}
+ const indexed=indexChoice.value==='indexed'&&!pct;
+ const sel=peerSelected();
+ if(!sel.length){area.innerHTML='<p class="mini-caption">Marca al menos una empresa para mostrar el gráfico.</p>';detail.textContent='';return;}
+ const notes=[];
+ const all=[];
+ const series=sel.map(company=>{
+   const m=new Map(company.records.map(r=>[r.year,r]));
+   const base=m.get(2022)?.[field];
+   const badBaseline=indexed && (missing(base)||base<=0);
+   if(badBaseline)notes.push(`${company.name}: FY2022 es cero, negativo o ausente; índice no calculable.`);
+   const data=peerYears.map(yr=>{
+     const raw=m.get(yr)?.[field];
+     if(missing(raw)||badBaseline)return null;
+     const v=indexed?raw/base*100:raw;
+     if(Number.isFinite(v))all.push(v);
+     return v;
+   });
+   if(missing(m.get(2026)?.[field]))notes.push(`${company.name}: FY2026 aún no disponible (último FY${Math.max(...company.records.map(r=>r.year))}).`);
+   return {company,data};
+ });
+ if(!all.length){area.innerHTML='<p class="mini-caption">No hay datos suficientes para esta selección y este tipo de gráfico. Cambia la métrica o la escala.</p>';detail.textContent=notes.join(' ');return;}
+ const W=900,H=288,left=73,right=29,top=24,bottom=50,w=W-left-right,h=H-top-bottom;
+ let min=Math.min(0,...all),max=Math.max(0,...all);
+ if(max===min){max+=1;min-=1;}
+ const margin=(max-min)*.07;min=min<0?min-margin:min;max+=margin;
+ const x=i=>left+i*w/(peerYears.length-1);
+ const y=v=>top+h-(v-min)/(max-min)*h;
+ const units=indexed?'índice':pct?'%':' B$';
+ let svg=`<svg viewBox="0 0 ${W} ${H}" role="group" aria-label="Comparativa SEC de ${esc(peerMetrics[field])} por ejercicios 2022 a 2026"><title>Comparativa de ${esc(peerMetrics[field])}, ${indexed?'índice base FY2022':'datos anuales SEC'}</title>`;
+ for(let j=0;j<=4;j++){const value=min+(max-min)*j/4, yy=y(value);
+   svg+=`<line class="chart-grid" x1="${left}" y1="${yy}" x2="${W-right}" y2="${yy}"/><text class="chart-label" x="${left-12}" y="${yy+4}" text-anchor="end">${format(value, indexed?0:1)}${pct?'%':''}</text>`;
+ }
+ peerYears.forEach((yr,i)=>svg+=`<text class="chart-label" x="${x(i)}" y="${H-9}" text-anchor="middle">${yr}</text>`);
+ series.forEach(({company,data})=>{
+   let fragment=[];
+   const flush=()=>{if(fragment.length>1)svg+=`<path d="${fragment.join(' ')}" fill="none" stroke="${company.color}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>`;fragment=[];};
+   data.forEach((v,i)=>{
+     if(v===null){flush();return;}
+     fragment.push((fragment.length?'L':'M')+x(i).toFixed(1)+','+y(v).toFixed(1));
+   });flush();
+   data.forEach((v,i)=>{
+     if(v===null)return;
+     const actual=company.records.find(r=>r.year===peerYears[i]);
+     const label=`${company.name}, FY${peerYears[i]} (cierre ${actual?.close||'—'}), ${peerMetrics[field]}: ${format(v,indexed?1:2)} ${units}`;
+     svg+=`<circle class="chart-point peer-point" tabindex="0" role="button" data-year="${peerYears[i]}" cx="${x(i)}" cy="${y(v)}" r="5" fill="${company.color}" stroke="#152637" aria-label="${esc(label)}"><title>${esc(label)}</title></circle>`;
+   });
+ });
+ svg+='</svg>';
+ svg+='<div class="chart-legend peer-legend">'+series.map(({company})=>`<span><i style="background:${company.color}"></i>${esc(company.name)} (${company.ticker})</span>`).join('')+'</div>';
+ area.innerHTML=svg;
+ const active=year=>{
+   peerActiveYear=year;
+   qa('#peer-chart .peer-point').forEach(el=>el.classList.toggle('active',Number(el.dataset.year)===year));
+   const parts=series.map(({company,data})=>{
+     const v=data[peerYears.indexOf(year)];
+     const str=v==null?'sin dato':`${format(v,indexed?1:2)}${units}`;
+     const close=company.records.find(r=>r.year===year)?.close;
+     return `<span class="peer-detail-item" style="--series:${company.color}"><i></i><b>${esc(company.name)}</b>: ${str}${close?` <small>(${esc(close)})</small>`:''}</span>`;
+   });
+   detail.innerHTML=`<strong>FY${year}</strong><div class="peer-detail-items">${parts.join('')}</div>`;
+ };
+ qa('#peer-chart .peer-point').forEach(el=>{
+   const act=()=>active(Number(el.dataset.year));
+   el.addEventListener('pointerenter',act);el.addEventListener('focus',act);el.addEventListener('click',act);
+   el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();act();}});
+ });
+ active(peerActiveYear);
+ const footer=DATA.peerHistoryNote||'Fuente SEC EDGAR; años fiscales no totalmente sincronizados.';
+ q('#peer-footnote').textContent=footer+(notes.length?' ⚠ '+notes.join(' '):'');
+};
+qa('#peer-companies input').forEach(el=>el.addEventListener('change',()=>{
+ if(!peerSelected().length)el.checked=true;
+ renderPeers();
+}));
+q('#peer-metric').addEventListener('change',renderPeers);
+q('#peer-scale').addEventListener('change',renderPeers);
+q('#peer-all').addEventListener('click',()=>{peerInputs.forEach(el=>el.checked=true);renderPeers()});
+q('#peer-only-msft').addEventListener('click',()=>{peerInputs.forEach(el=>el.checked=el.value==='MSFT');renderPeers()});
+renderPeers();
 plot('#return-chart','#return-detail',['roic','roe'],4,true);
 plot('#cash-chart','#cash-detail',['cfo','capex','fcf']);
 const sum=DATA.business_segments.reduce((a,d)=>a+d.value,0);q('#segments').innerHTML=DATA.business_segments.map(d=>`<div class="segment-row"><div class="segment-label"><span>${esc(d.name)}</span><b>${format(d.value)} B$</b></div><div class="segment-track"><div class="segment-fill" style="width:${(d.value/sum*100).toFixed(2)}%"></div></div><div class="segment-grow">${d.growth>=0?'+':''}${d.growth}% en FY2026 · ${(d.value/sum*100).toFixed(1)}% de los segmentos</div></div>`).join('');
