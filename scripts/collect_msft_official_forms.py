@@ -54,7 +54,7 @@ def main():
                "items":item or "","primary_document":primary,"url":url})
  rows.sort(key=lambda x:x["filing_date"],reverse=True)
  fiveks=[r for r in rows if r["form"]=="10-K" and r["report_date"].startswith(tuple(f"{y}-" for y in range(2022,2027)))]
- qs=[r for r in rows if r["form"]=="10-Q" and r["report_date"].startswith(tuple(f"{y}-" for y in range(2022,2027)))]
+ qs=[r for r in rows if r["form"]=="10-Q" and "2021-07-01" <= r["report_date"] <= "2026-06-30"]  # FY2022 Q1/Q2 close in 2021
  eightks=[r for r in rows if r["form"]=="8-K" and ("2.02" in r["items"] or r["filing_date"]>="2026-06-01")]
  # prioritization: 5 annual K + all 15 interim Q + 2026 K results and selected material 8K
  selected={(r["accession"]):r for r in fiveks+qs+eightks}
