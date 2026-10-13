@@ -23,3 +23,14 @@ La estructura procede del material del curso FUNDAMENTAL 1–9 y DEUDA Y CAJA de
 - https://stockanalysis.com/stocks/msft/statistics/
 
 El material didáctico no representa recomendación individualizada ni promesa de rentabilidad. Copyright del proyecto: contenido analítico propio; no se publica la documentación privada del curso ni se redistribuyen archivos privados de proveedores.
+
+
+## Actualización 2.1 — Selección múltiple y pares SEC (13/10/2026)
+
+La primera gráfica admite selección simultánea de **Ingresos, EBIT, beneficio neto y CFO**, además de accesos «Mostrar todas» y «Solo ingresos». Debajo se incorpora el comparador de **Microsoft, Oracle, Salesforce, Alphabet y Amazon** con ocho métricas y dos escalas: miles de millones USD (márgenes en %) o evolución relativa **FY2022 = 100**. Se seleccionan varias compañías a la vez y se consultan cierres fiscales individuales en cada punto.
+
+Datos de origen **S&P 500 SEC EDGAR v6.9 (snapshot 2026-10-13)**, no de InvestingPro, FMP de pago ni estimaciones. FY2026 aún no disponible para Alphabet y Amazon en esta fotografía; no se imputan valores faltantes. Los cierres fiscales varían por emisor y la comparación es **anual, orientativa, no de periodos calendarios idénticos**. Algunas cifras normalizadas están marcadas como PROVISIONAL; cotejar un dato importante con el 10-K original antes de invertir.
+
+El índice base FY2022 se omite para compañías con métrica inicial negativa o nula, porque produciría porcentajes engañosos (p.ej., FCF Amazon). Los márgenes se comparan directamente en puntos porcentuales y no se indexan. Los competidores son comparables parciales por línea de negocio: Oracle/Salesforce software, Alphabet/Amazon grandes plataformas cloud diversificadas.
+
+La **web es una fotografía estática fechada**; publicar la actualización no activa datos de bolsa en tiempo real ni recalcula automáticamente todas las empresas. Un futuro actualizador deberá regenerar las series y verificar nuevas presentaciones oficiales.
