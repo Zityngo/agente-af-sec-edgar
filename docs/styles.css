@@ -10,3 +10,48 @@ html{scroll-behavior:smooth}*{box-sizing:border-box}body{margin:0;background:var
 @media(max-width:810px){.layout{display:block}.sidebar{display:none}.content{padding:18px 18px 45px}.topbar{height:66px;padding:0 16px}.topbar .brand{font-size:13px}.topbar .brand small{font-size:9px}.topbar .btn{padding:8px 11px}.hero-grid{grid-template-columns:1fr}.hero-score{flex-direction:row;justify-content:start}.score-rings{display:none}.hero-bottom{grid-template-columns:repeat(3,1fr);gap:12px}.hero-bottom strong{font-size:18px}.hero-bottom span{font-size:9px}.section{padding-top:31px}.section-head{align-items:start}.split,.dcf-layout,.questions,.sources-list{grid-template-columns:1fr}.signal-grid,.balance-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.signal{padding:14px}.signal>strong{font-size:28px}.signal>p{font-size:11px}.decision-grid{grid-template-columns:1fr}.glossary-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.hero{padding:23px 18px}.hero h1{font-size:54px}.hero-desc{font-size:13px}.hero-score{display:none}.hero-bottom{grid-template-columns:1fr 1fr}.hero-bottom span:nth-of-type(3){grid-column:1}.section-head{display:block}.section-head>.doc-badge,.section-head>.learn-btn{margin-top:12px;display:inline-block}.signal-grid,.balance-grid{grid-template-columns:1fr}.signal>strong{font-size:32px}.two-metrics{grid-template-columns:1fr}.graph-head{display:block}.graph-controls{margin-top:11px}.dcf-mini-grid{grid-template-columns:1fr 1fr}.ask-row{flex-direction:column}.glossary-grid{grid-template-columns:1fr 1fr}.eyebrow-right{display:none}.mini-metric b{font-size:21px}.cash-summary{flex-direction:column}.hero-bottom strong{font-size:19px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}
+
+/* A.Fundamental 2.1: multi-series + SEC peer comparison */
+.multi-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.mini-btn{border:1px solid #406578;border-radius:8px;background:#193449;color:#c7e7ec;font-size:11px;font-weight:780;padding:8px 11px;line-height:1.3}
+.mini-btn:hover,.mini-btn:focus-visible{border-color:var(--teal);background:#245169}
+.metric-toggle-set{border:1px solid var(--border);border-radius:10px;margin:17px 0 6px;padding:12px 14px 13px;display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;min-width:0}
+.metric-toggle-set legend{padding:0 8px;color:var(--muted);font-weight:760;font-size:11px}
+.metric-toggle-set label{display:inline-flex;gap:7px;align-items:center;border:1px solid #345169;border-radius:8px;padding:7px 10px;background:#142b3e;color:var(--ink);font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap;min-height:35px}
+.metric-toggle-set label:has(input:checked){border-color:#4a8185;background:#204247}
+.metric-toggle-set label:hover{border-color:var(--teal)}
+.metric-toggle-set input[type=checkbox]{accent-color:var(--teal);height:15px;width:15px;margin:0;padding:0;cursor:pointer}
+.series-dot{width:9px;height:9px;background:var(--series);border-radius:99px;flex:none;display:inline-block}
+.chart-feedback{font-size:11px;color:var(--soft);padding:3px 4px}
+.peers-panel{margin-top:20px;background:linear-gradient(140deg,#12283a,#101f32)}
+.peer-toolbar{display:flex;gap:15px;flex-wrap:wrap;align-items:end;margin-top:17px}
+.peer-toolbar-col{display:flex;flex-direction:column;gap:4px;min-width:175px;flex:1}
+.peer-toolbar-col>label,.peer-toolbar-label{color:var(--muted);font-size:11px;font-weight:700}
+.peer-toolbar-col select{width:100%;font-size:12px;min-height:40px}
+.peer-quick>div{display:flex;gap:6px;align-items:center;min-height:40px}
+.peer-selection{margin:15px 0 11px}
+.peers-panel .interactive-chart{margin-top:6px;min-height:265px}
+.peer-legend{margin-top:0;gap:9px 18px}
+.peer-legend span{font-weight:700}
+.peers-panel .chart-detail{background:#112638;border-radius:9px;padding:12px 14px;min-height:55px;margin:15px 0 10px}
+.peer-detail-items{display:flex;gap:8px 18px;flex-wrap:wrap;margin-top:5px;font-size:11px}
+.peer-detail-item{display:inline-flex;gap:5px;align-items:baseline;color:var(--muted)}
+.peer-detail-item i{background:var(--series);width:8px;height:8px;border-radius:50%;display:inline-block;align-self:center}
+.peer-detail-item b{color:var(--ink)}
+.peer-detail-item small{color:var(--soft);font-size:9px}
+.peer-point:focus{outline:none;stroke:#fff;stroke-width:3}
+.peers-panel .mini-caption{margin:10px 0 0!important}
+[data-theme=light] .metric-toggle-set label{background:#f3fbff;color:#102338}
+[data-theme=light] .metric-toggle-set label:has(input:checked){background:#d8f5ec}
+[data-theme=light] .mini-btn{background:#e6f5f8;color:#174d60}
+[data-theme=light] .peers-panel{background:#fff}
+[data-theme=light] .peers-panel .chart-detail{background:#e9f4f6}
+@media(max-width:740px){.peer-toolbar-col{min-width:135px}.peer-toolbar{gap:10px}.multi-actions{margin-top:9px}.peer-quick{width:100%}}
+@media(max-width:490px){.metric-toggle-set label{padding:7px 9px;font-size:10.5px}.peer-toolbar-col{min-width:100%;max-width:100%}.peer-quick>div{min-height:auto}.graph-head .multi-actions{align-items:start}}
+/* On narrow screens keep chart points and labels readable while the chart itself scrolls. */
+@media(max-width:560px){
+  #growth-chart, #peer-chart {overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#51758b transparent}
+  #growth-chart svg, #peer-chart svg {width:660px;min-width:660px;max-width:none;height:260px}
+  #growth-chart .chart-legend, #peer-chart .chart-legend {min-width:660px;justify-content:flex-start;padding:6px 3px 9px}
+  #peer-footnote::before{content:"↔ Desliza el gráfico horizontalmente para ver cada ejercicio. ";color:var(--teal);font-weight:700}
+}
