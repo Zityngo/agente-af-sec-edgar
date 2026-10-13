@@ -74,7 +74,7 @@ def main():
    # and never mark the inaccessible document as archived.
    entry.update(status="SOURCE_URL_ONLY",reason=(type(exc).__name__ + " " + str(exc))[:150])
   manifest.append(entry)
-  if i%10==0:print("DOC_PROGRESS",i+1,"of",len(selected),"archived",sum(x["status"]=="ARCHIVED_OFFICIAL_HTML" for x in manifest))
+  if i%10==0:print("DOC_PROGRESS",i+1,"of",len(selected),"archived",sum(x["status"].startswith("ARCHIVED_OFFICIAL") for x in manifest))
   time.sleep(0.35)
  # latest official IR content; do not claim source fetched on failures
  official=[
@@ -93,6 +93,30 @@ def main():
    entry.update(status="ARCHIVED_OFFICIAL_HTML",size_bytes=len(blob),sha256=hashlib.sha256(blob).hexdigest())
   except Exception as exc:entry["reason"]=(type(exc).__name__+" "+str(exc))[:150]
   manifest.append(entry)
+ # Official downloadable earnings pack: slide deck, outlook and financial workbook.
+ # Stored privately as GitHub artifact, not committed as public repo content.
+ official_assets=[
+  ("FY26Q4_Slides.pptx","https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/SlidesFY26Q4.pptx"),
+  ("FY26Q4_FinancialStatements.xlsx","https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/FinancialStatementFY26Q4.xlsx"),
+  ("FY27Q1_Outlook.pptx","https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/OutlookFY27Q1.pptx"),
+  ("FY26Q4_OfficialAssetPackage.zip","https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/FY26Q4-zip"),
+ ]
+ for filename,url in official_assets:
+  dest=f"OFFICIAL_IR_ASSETS/{filename}"
+  entry={"form":"IR_ASSET","accession":"","filing_date":"2026-07-29","report_date":"2026-06-30",
+         "items":filename,"primary_document":"","url":url,"archive_path":dest,
+         "status":"SOURCE_URL_ONLY","size_bytes":"","sha256":"","reason":""}
+  try:
+   blob,ctype=get(url,"Mozilla/5.0 (compatible; AgenteAFundamental/1.0)",34_000_000)
+   if not zipfile.is_zipfile(io.BytesIO(blob)):
+    raise ValueError("File not a valid ZIP/OOXML archive")
+   (OUT/"OFFICIAL_IR_ASSETS").mkdir(exist_ok=True)
+   (OUT/dest).write_bytes(blob)
+   entry.update(status="ARCHIVED_OFFICIAL_BINARY",size_bytes=len(blob),
+                sha256=hashlib.sha256(blob).hexdigest())
+  except Exception as exc:
+   entry["reason"]=(type(exc).__name__+" "+str(exc))[:150]
+  manifest.append(entry)
  # Full public filing inventory even when heavy original documents not downloaded
  with (OUT/"MSFT_FILINGS_ALL_SEC.csv").open("w",newline="",encoding="utf-8") as f:
   w=csv.DictWriter(f,fieldnames=rows[0].keys());w.writeheader();w.writerows(rows)
@@ -101,7 +125,7 @@ def main():
  report={"ticker":"MSFT","cik":CIK,"asof":TODAY,"sec_api_snapshot":"live","public_forms_in_inventory":len(rows),
          "five_year_10k":len(fiveks),"five_year_10q":len(qs),"archive_attempts":len(manifest),
          "download_success":sum(x["status"]=="ARCHIVED_OFFICIAL_HTML" for x in manifest),
-         "download_failures":sum(x["status"]!="ARCHIVED_OFFICIAL_HTML" for x in manifest),
+         "download_failures":sum(not x["status"].startswith("ARCHIVED_OFFICIAL") for x in manifest),
          "by_type":{t:sum(x["status"]=="ARCHIVED_OFFICIAL_HTML" and x["form"]==t for x in manifest) for t in ("10-K","10-Q","8-K","IR")},
          "rules":["never claim failed HTML was archived","raw SEC XBRL downloaded from SEC API",
                   "not used for trading until latest 10-K and investor data reconciled"]}
