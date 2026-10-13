@@ -1,0 +1,45 @@
+name: FMP Basic - contraste P0 nueve empresas
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  p0-crosscheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Pruebas de comparador (sin API)
+        run: python scripts/test_fmp_free_crosscheck.py -q
+      - name: Obtener cinco ejercicios SEC por empresa (fuente primaria)
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: python scripts/sec_p0_reference.py --years 5 --out /tmp/sec_p0_5y.csv
+      - name: FMP Basic - contrastar P0 (27 llamadas maximas)
+        env:
+          FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
+        run: |
+          if [ -z "$FMP_API_KEY" ]; then
+            echo "FMP_API_KEY ausente: no se consume ninguna llamada"
+            exit 1
+          fi
+          python scripts/fmp_free_crosscheck.py \
+            --sec-csv /tmp/sec_p0_5y.csv \
+            --tickers AAPL,APP,CSCO,MCK,MU,NTAP,NVDA,OTIS,SNDK \
+            --max-companies 9 --max-calls 27 --delay 1 \
+            --out-dir /tmp/fmp_p0_private
+          python - <<'PY'
+          import json
+          from collections import Counter
+          p=json.load(open('/tmp/fmp_p0_private/fmp_qa_summary.json'))
+          print('P0: Resumen SEC vs FMP:',p['comparison_status_counts'])
+          print('Consultas HTTP FMP:',p['http_calls_consumed'])
+          for e in p['endpoint_events']:
+              print('Endpoint:',e['ticker'],e['endpoint'],e['status'],
+                    'ejercicios='+str(e.get('annual_periods','')),
+                    'error='+str(e.get('code','')))
+          print('Valores de FMP: no publicados; SEC original: no sobrescrito')
+          PY
