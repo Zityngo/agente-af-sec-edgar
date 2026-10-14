@@ -6,10 +6,11 @@ Este repositorio es **público** y sólo debe contener datos empresariales que l
 
 ## Estado
 
-- Código del descargador instalado.
-- Primera ejecución **pendiente de validar**.
-- Programación diaria **no activada todavía** para no repetir un eventual error SEC 403.
-- Destino final Google Drive: **pendiente de sincronización** tras validar la descarga.
+- Descarga SEC y seguimiento diario **operativos**: el 14/10/2026 el workflow descargó 40/40 empresas sin errores de integridad.
+- Programación diaria de GitHub Actions **activa**, por lotes de unas 40 empresas (13 lotes para todo el universo).
+- Nuevo control **SEC_AUTO_STAGING**: ejecución real 14/10/2026 generó 80 candidatos (40 empresas x máximo FY y último Q) y aprobó cuatro pruebas automáticas; resultados conservados como artefacto SEC.
+- Escritura automática en el Google Sheets maestro **DESACTIVADA hasta conceder los permisos seguros a la cuenta de servicio de Google** y habilitar la variable SEC_SHEETS_ENABLE_WRITE. No actualiza aún los fundamentales verificados.
+- Manual de activación: [docs/SEC_SHEETS_PILOT.md](docs/SEC_SHEETS_PILOT.md).
 
 ## Paso 1 — configurar contacto SEC (secreto)
 
