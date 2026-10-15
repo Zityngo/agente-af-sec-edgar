@@ -5,7 +5,7 @@ on:
     - cron: '17 9 * * *'
   push:
     branches: [main]
-    paths: ['.github/workflows/actualizar-sec.yml', 'scripts/qa_sec_daily_batch.py', 'scripts/test_qa_sec_daily_batch.py', 'scripts/sec_auto_staging.py', 'scripts/test_sec_auto_staging.py']
+    paths: ['.github/workflows/actualizar-sec.yml', 'scripts/qa_sec_daily_batch.py', 'scripts/test_qa_sec_daily_batch.py', 'scripts/sec_auto_staging.py', 'scripts/sec_quarterly_cashflow.py', 'scripts/test_sec_auto_staging.py']
 
 permissions:
   contents: read

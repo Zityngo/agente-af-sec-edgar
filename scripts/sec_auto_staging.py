@@ -13,6 +13,7 @@ import os
 from datetime import date, datetime, timezone
 from pathlib import Path
 from urllib.parse import quote
+from sec_quarterly_cashflow import isolate_ytd_flow
 
 TAB = "SEC_AUTO_STAGING"
 COLUMNS = ["clave", "ticker", "cik", "form", "periodo", "cierre", "filed",
@@ -123,6 +124,8 @@ def build(root):
             evidence = {}
             for name in TAGS:
                 values[name], source = metric(cf["facts"], name, filing)
+                if values[name] is None and filing["kind"] == "Q" and name in ("cfo", "capex"):
+                    values[name], source = isolate_ytd_flow(cf["facts"], TAGS[name], filing, name)
                 if source is not None:
                     evidence[name] = source
             cfo, capex = values["cfo"], values["capex"]
@@ -130,10 +133,11 @@ def build(root):
             status = "FY_CANDIDATO" if filing["kind"] == "FY" else "Q_CANDIDATO"
             if values["revenue"] is None or values["ni"] is None:
                 status = "QA_TAGS_INCOMPLETOS"
-            if filing["kind"] == "Q" and fcf is None:
+            elif filing["kind"] == "Q" and fcf is None:
                 status = "QA_FCF_TRIMESTRAL_FALTANTE"
-            note = ("Datos sin auditar concepto/ajustes. No recalcular TTM/ROIC/PER. "
-                    "Nunca interpretar CFO acumulado 6M/9M como un único trimestre.")
+            note = ("Candidatos sin validar concepto/ajustes. No actualizar TTM/ROIC/PER. "
+                    "CFO/CapEx trimestrales aislados sólo con el mismo tag y comienzo fiscal; "
+                    "ver trazas_xbrl para los dos accn usados en la resta YTD.")
             source_url = (f"https://www.sec.gov/Archives/edgar/data/{int(cik)}/"
                           f"{filing['acc'].replace('-', '')}/{filing['doc']}")
             key = "|".join((cik, filing["kind"], filing["end"], filing["acc"]))
@@ -147,6 +151,18 @@ def build(root):
     if len({r[0] for r in rows}) != len(rows):
         raise ValueError("Claves SEC duplicadas")
     return rows
+
+def same_accounting_candidate(old, candidate):
+    # Ignore generated timestamp (T). A parser change must trigger an update even
+    # if the exact same SEC companyfacts SHA256 is reused.
+    for idx, value in enumerate(candidate):
+        if idx == 19:
+            continue
+        left = old[idx] if idx < len(old) else ""
+        right = "" if value is None else value
+        if str(left) != str(right):
+            return False
+    return True
 
 def write_staging(rows, sheet_id, service_account_json, enabled=False):
     if not enabled:
@@ -184,7 +200,7 @@ def write_staging(rows, sheet_id, service_account_json, enabled=False):
         if record[0] in ids:
             n = ids[record[0]]
             old = current[n-1]
-            if len(old) >= 19 and old[18] == record[18]:
+            if same_accounting_candidate(old, vals):
                 ignored += 1
                 continue
             changed.append({"range": f"{TAB}!A{n}:U{n}", "values": [vals]})
