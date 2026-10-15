@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/sec_auto_staging.py'
+      - 'scripts/sec_quarterly_cashflow.py'
       - 'scripts/test_sec_auto_staging.py'
       - '.github/workflows/actualizar-sec.yml'
       - '.github/workflows/sec-staging-qa.yml'
