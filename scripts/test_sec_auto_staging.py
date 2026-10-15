@@ -7,7 +7,8 @@ import tempfile
 import unittest
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from sec_auto_staging import verified, build, metric, write_staging, COLUMNS
+from sec_auto_staging import verified, build, metric, write_staging, COLUMNS, same_accounting_candidate
+from sec_quarterly_cashflow import isolate_ytd_flow
 
 def fixture(root, tamper=False):
     cik="0000320187"
@@ -72,6 +73,51 @@ class StageQaTests(unittest.TestCase):
                 {"accn":"X","form":"10-Q","start":"2025-06-01",
                  "end":"2025-11-30","val":700})
             self.assertEqual(metric(facts,"cfo",filing),(None,None))
+
+    def test_ytd_delta_Q2_Q3_and_evidence(self):
+        tag="NetCashProvidedByUsedInOperatingActivities"
+        def obs(acc, filing, start, end, filed, value):
+            return {"accn":acc, "form":filing, "start":start, "end":end, "filed":filed, "val":value}
+        facts={"us-gaap":{tag:{"units":{"USD":[
+            obs("Q1","10-Q","2026-01-01","2026-03-31","2026-04-29",100),
+            obs("Q2","10-Q","2026-01-01","2026-06-30","2026-07-29",240),
+            obs("Q3","10-Q","2026-01-01","2026-09-30","2026-10-10",400),
+        ]}}}}
+        preferred=[("us-gaap",tag)]
+        q2={"acc":"Q2","form":"10-Q","kind":"Q","end":"2026-06-30","filed":"2026-07-29"}
+        q3={"acc":"Q3","form":"10-Q","kind":"Q","end":"2026-09-30","filed":"2026-10-10"}
+        val, provenance = isolate_ytd_flow(facts,preferred,q2,"cfo")
+        self.assertEqual(val,140)
+        self.assertEqual(provenance["derived_from"],"SAME_TAG_YTD_MINUS_PREVIOUS_YTD")
+        self.assertEqual(provenance["previous"]["accn"],"Q1")
+        self.assertEqual(isolate_ytd_flow(facts,preferred,q3,"cfo")[0],160)
+
+    def test_ytd_rejects_different_tags_fiscal_years_and_future_publication(self):
+        tag="PaymentsToAcquirePropertyPlantAndEquipment"
+        current={"accn":"Q2","form":"10-Q","start":"2026-01-01","end":"2026-06-30","filed":"2026-07-29","val":100}
+        prior={"accn":"Q1","form":"10-Q","start":"2026-01-01","end":"2026-03-31","filed":"2026-08-01","val":30}
+        facts={"us-gaap":{tag:{"units":{"USD":[current,prior]}}}}
+        filing={"acc":"Q2","form":"10-Q","kind":"Q","end":"2026-06-30","filed":"2026-07-29"}
+        preferred=[("us-gaap",tag)]
+        self.assertEqual(isolate_ytd_flow(facts,preferred,filing,"capex"),(None,None))
+        prior["filed"]="2026-04-29"
+        prior["start"]="2026-01-02"
+        self.assertEqual(isolate_ytd_flow(facts,preferred,filing,"capex"),(None,None))
+        prior["start"]="2026-01-01"
+        self.assertEqual(isolate_ytd_flow(facts,preferred,filing,"capex")[0],70)
+        current["val"]=20
+        self.assertEqual(isolate_ytd_flow(facts,preferred,filing,"capex"),(None,None))
+
+    def test_staging_upsert_does_not_ignore_extractor_fixes(self):
+        row=["x"]*21
+        previous=row.copy()
+        row[19]="new timestamp"
+        self.assertTrue(same_accounting_candidate(previous,row))
+        row[11]="200"
+        self.assertFalse(same_accounting_candidate(previous,row))
+        row[11]=previous[11]
+        row[14]="Q_CANDIDATO"
+        self.assertFalse(same_accounting_candidate(previous,row))
 
     def test_write_requires_credentials(self):
         with self.assertRaisesRegex(ValueError,"Faltan"):
