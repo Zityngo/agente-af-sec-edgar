@@ -21,8 +21,7 @@ patches=[
   '                values[name], source = metric(cf["facts"], name, filing, cik)'),
  ('            elif filing["kind"] == "Q" and fcf is None:\n                status = "QA_FCF_TRIMESTRAL_FALTANTE"',
   '            elif filing["kind"] == "Q" and fcf is None:\n                status = "QA_FCF_TRIMESTRAL_FALTANTE"\n'
-  '            if amendment_backfill:\n'
-  '                status = "QA_ENMIENDA_PENDIENTE"\n'
+  '            if amendment_backfill:\n                status = "QA_ENMIENDA_PENDIENTE"\n'
   '                evidence["amendment_backfill"] = amendment_backfill\n'
   '            if evidence.get("ni", {}).get("tag") == "ProfitLoss":\n'
   '                status = "QA_BENEFICIO_CONSOLIDADO_NO_ATRIBUIDO"'),
