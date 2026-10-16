@@ -1,0 +1,67 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A.Fundamental · MVP</title>
+<style>
+:root{--bg:#0f1720;--card:#17212d;--tx:#e7edf3;--mut:#8ea0b3;--ac:#4cc2ff;--ok:#38c172;--wa:#f6c343;--bl:#ef5350;--na:#6b7a8a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 system-ui,Segoe UI,Roboto,sans-serif}
+header{padding:14px 20px;border-bottom:1px solid #243242;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+h1{font-size:18px;margin:0}main{padding:16px 20px;max-width:1200px;margin:auto}
+input,select,button{background:#0c131b;color:var(--tx);border:1px solid #2a3b4e;border-radius:6px;padding:7px 10px}button{cursor:pointer}button:hover{border-color:var(--ac)}
+.tabs button.on{background:var(--ac);color:#04121b;border-color:var(--ac)}
+.card{background:var(--card);border-radius:10px;padding:14px;margin:12px 0}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.m{background:#0f1923;border-radius:8px;padding:10px}.m b{display:block;font-size:18px}.m small{color:var(--mut)}
+.badge{font-size:11px;padding:1px 6px;border-radius:9px;color:#04121b;margin-left:6px}.OK{background:var(--ok)}.PROXY{background:var(--wa)}.BLOCKED{background:var(--bl)}.NA_SECTOR,.NULL{background:var(--na);color:#fff}
+.warn{border-left:4px solid var(--wa);padding:6px 10px;margin:6px 0}.BLOCKc{border-left-color:var(--bl)}.INFOc{border-left-color:var(--ac)}
+table{width:100%;border-collapse:collapse}td,th{padding:6px 8px;border-bottom:1px solid #243242;text-align:right}td:first-child,th:first-child{text-align:left}
+.banner{background:#3a2a10;border:1px solid var(--wa);padding:8px 12px;border-radius:8px;margin-bottom:10px}
+.hit{cursor:pointer;padding:6px 8px;border-radius:6px}.hit:hover{background:#1f2f40}
+</style></head><body>
+<header><h1>A.Fundamental · MVP</h1>
+<input id="q" placeholder="Buscar ticker o nombre…" size="28" autofocus>
+<span class="tabs"><button id="t-co" class="on">Ficha</button> <button id="t-cmp">Comparar</button> <button id="t-scr">Screener</button></span></header>
+<main>
+<div class="banner">Estados: <span class="badge OK">OK</span> <span class="badge PROXY">PROXY</span> aproximado · <span class="badge BLOCKED">BLOCKED</span> no fiable · <span class="badge NA_SECTOR">NA_SECTOR</span> no aplica · <span class="badge NULL">NULL</span> no disponible (nunca 0). Importes en M USD. Los tickers SYN* son sintéticos.</div>
+<div id="hits"></div><section id="v-co"></section>
+<section id="v-cmp" hidden><div class="card">Tickers (máx. 5, separados por coma) <input id="cmpT" value="" size="30"> Métrica
+<select id="cmpM"></select> Ámbito <select id="cmpS"><option>FY</option><option>TTM</option></select> <button id="cmpGo">Comparar</button><div id="cmpChart"></div></div></section>
+<section id="v-scr" hidden><div class="card">Métrica <select id="scM"></select> mín <input id="scMin" size="6"> máx <input id="scMax" size="6">
+Ámbito <select id="scS"><option>TTM</option><option>FY</option></select> <button id="scGo">Filtrar</button>
+<p style="color:var(--mut)">El screener excluye NULL, BLOCKED y NA_SECTOR. Las filas PROXY se marcan. Los porcentajes se escriben en decimal (0.15 = 15 %).</p><div id="scOut"></div></div></section>
+</main>
+<script>
+const $=s=>document.querySelector(s),api=(p,o)=>fetch('/api/'+p+'?'+new URLSearchParams(o)).then(r=>r.json());
+const PCT=['gross_margin','ebit_margin','net_margin','fcf_margin','roe_avg','roic','revenue_yoy','ebit_margin_ttm','fcf_margin_ttm','fcf_yield'];
+const MULT=['debt_ebitda','interest_coverage','per_fy','per_ttm','ev_ebitda','debt_ebitda_ttm'];
+const MET=[...PCT,...MULT,'ebit','ebitda','fcf','net_debt','revenue_ttm','ebit_ttm','ebitda_ttm','fcf_ttm','cfo_ttm','net_income_ttm','market_cap','ev'];
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function fmt(m,v){if(v==null)return '—';if(PCT.includes(m))return (v*100).toFixed(1)+'%';if(MULT.includes(m))return v.toFixed(1)+'x';if(m.startsWith('eps'))return v.toFixed(2);return (v/1e6).toLocaleString('es-ES',{maximumFractionDigits:0})+' M'}
+const badge=s=>`<span class="badge ${esc(s)}">${esc(s)}</span>`;
+for(const id of ['cmpM','scM'])$('#'+id).innerHTML=MET.map(m=>`<option>${m}</option>`).join('');
+function tab(n){for(const t of ['co','cmp','scr']){$('#v-'+t).hidden=t!=n;$('#t-'+t).classList.toggle('on',t==n)}}
+$('#t-co').onclick=()=>tab('co');$('#t-cmp').onclick=()=>tab('cmp');$('#t-scr').onclick=()=>tab('scr');
+let to;$('#q').oninput=()=>{clearTimeout(to);to=setTimeout(async()=>{const q=$('#q').value.trim();if(!q){$('#hits').innerHTML='';return}
+const r=await api('search',{q});$('#hits').innerHTML='<div class="card">'+(r.length?r.map(c=>`<div class="hit" data-t="${esc(c.ticker)}"><b>${esc(c.ticker)}</b> ${esc(c.name)} · ${esc(c.sector||'sector n/d')} · último cierre ${esc(c.last_period||'n/d')} ${c.blocks?badge('BLOCKED')+' '+c.blocks+' bloqueos':''} ${c.warns?'⚠ '+c.warns+' avisos':''}</div>`).join(''):'Sin resultados')+'</div>';
+document.querySelectorAll('.hit').forEach(h=>h.onclick=()=>{tab('co');ficha(h.dataset.t);$('#hits').innerHTML='';});},200)};
+async function ficha(t){const d=await api('company',{ticker:t});if(d.error){$('#v-co').innerHTML=esc(d.error);return}
+const c=d.company,order=['revenue_ttm','ebit_ttm','ebitda_ttm','net_income_ttm','cfo_ttm','fcf_ttm','ebit_margin_ttm','fcf_margin_ttm','net_debt','debt_ebitda_ttm','eps_ttm','per_fy','per_ttm','fcf_yield','ev_ebitda','market_cap','ev'];
+const cells=order.map(k=>{const m=d.ttm[k];if(!m)return `<div class="m"><small>${k}</small><b>—</b><small>sin cálculo</small></div>`;
+return `<div class="m" title="${esc(m.definition)}"><small>${k} ${badge(m.status)}</small><b>${fmt(k,m.value)}</b><small>${esc(m.reason||m.period_end)}</small></div>`}).join('');
+const chk=d.checks.map(x=>`<div class="warn ${x.severity=='BLOCK'?'BLOCKc':x.severity=='INFO'?'INFOc':''}"><b>${esc(x.severity)}</b> ${esc(x.check_id)} ${esc(x.period_ref)} — ${esc(x.detail)}</div>`).join('')||'<i>Sin avisos</i>';
+const hopts=MET.filter(m=>!m.endsWith('_ttm')&&!['per_fy','per_ttm','fcf_yield','ev_ebitda','market_cap','ev'].includes(m)).map(m=>`<option>${m}</option>`).join('');
+$('#v-co').innerHTML=`<div class="card"><h2 style="margin:0">${esc(c.ticker)} · ${esc(c.name)}</h2><small>CIK ${esc(c.cik)} · ${esc(c.sector||'sector n/d')}${c.is_financial?' · financiera: EBITDA/deuda neta no aplican':''}</small></div>
+<div class="card"><h3>Últimos 12 meses y valoración</h3><div class="grid">${cells}</div></div><div class="card"><h3>Avisos de calidad</h3>${chk}</div>
+<div class="card"><h3>Histórico anual</h3><select id="hm">${hopts}</select><div id="hchart"></div><div id="htab"></div></div>`;
+const draw=async()=>{const m=$('#hm').value,s=await api('series',{ticker:t,metric:m,scope:'FY'});
+$('#hchart').innerHTML=chart({[t]:s},m);$('#htab').innerHTML='<table><tr><th>Ejercicio</th><th>Valor</th><th>Estado</th><th>Motivo</th><th>Origen</th></tr>'+s.map(r=>`<tr><td>FY${r.fiscal_year}</td><td>${fmt(m,r.value)}</td><td>${badge(r.status)}</td><td>${esc(r.reason)}</td><td><button data-y="${r.fiscal_year}">ver origen</button></td></tr>`).join('')+'</table><pre id="prov" style="white-space:pre-wrap;color:var(--mut)"></pre>';
+document.querySelectorAll('[data-y]').forEach(b=>b.onclick=async()=>{const p=await api('provenance',{ticker:t,ptype:'FY',fy:b.dataset.y});$('#prov').textContent=JSON.stringify(p,null,2)})};
+$('#hm').onchange=draw;draw()}
+function chart(data,m){const W=640,H=220,P=36;const all=Object.values(data).flat().filter(r=>r.value!=null);if(!all.length)return '<p style="color:var(--mut)">Sin valores disponibles (NULL/BLOCKED/NA) para esta métrica.</p>';
+const xs=[...new Set(Object.values(data).flat().map(r=>r.period_end))].sort(),vs=all.map(r=>r.value),lo=Math.min(0,...vs),hi=Math.max(...vs)||1;
+const X=e=>P+(xs.length>1?xs.indexOf(e)*(W-2*P)/(xs.length-1):(W-2*P)/2),Y=v=>H-P-(v-lo)/(hi-lo||1)*(H-2*P);const col=['#4cc2ff','#38c172','#f6c343','#ef5350','#b388ff'];
+let g=`<svg viewBox="0 0 ${W} ${H}" width="100%"><line x1="${P}" y1="${Y(0)}" x2="${W-P}" y2="${Y(0)}" stroke="#2a3b4e"/>`;
+Object.entries(data).forEach(([t,rows],i)=>{const pts=rows.filter(r=>r.value!=null);g+=`<polyline fill="none" stroke="${col[i%5]}" stroke-width="2" points="${pts.map(r=>X(r.period_end)+','+Y(r.value)).join(' ')}"/>`+pts.map(r=>`<circle cx="${X(r.period_end)}" cy="${Y(r.value)}" r="3.5" fill="${col[i%5]}"><title>${esc(t)} ${r.period_end}: ${fmt(m,r.value)} (${r.status})</title></circle>`).join('')+`<text x="${W-P-60}" y="${14+i*14}" fill="${col[i%5]}" font-size="11">● ${esc(t)}</text>`});
+xs.forEach(e=>g+=`<text x="${X(e)}" y="${H-12}" fill="#8ea0b3" font-size="10" text-anchor="middle">${e.slice(0,7)}</text>`);
+g+=`<text x="4" y="${Y(hi)+4}" fill="#8ea0b3" font-size="10">${fmt(m,hi)}</text><text x="4" y="${Y(lo)+4}" fill="#8ea0b3" font-size="10">${fmt(m,lo)}</text></svg>`;return g}
+$('#cmpGo').onclick=async()=>{const m=$('#cmpM').value,t=$('#cmpT').value.replace(/\s/g,'').toUpperCase(),d=await api('compare',{tickers:t,metric:m,scope:$('#cmpS').value});$('#cmpChart').innerHTML=d.error?esc(d.error):chart(d,m)};
+$('#scGo').onclick=async()=>{const m=$('#scM').value,r=await api('screener',{metric:m,min:$('#scMin').value,max:$('#scMax').value,scope:$('#scS').value});
+$('#scOut').innerHTML='<table><tr><th>Ticker</th><th>Empresa</th><th>Sector</th><th>Valor</th><th>Estado</th></tr>'+r.map(x=>`<tr><td>${esc(x.ticker)}</td><td>${esc(x.name)}</td><td>${esc(x.sector)}</td><td>${fmt(m,x.value)}</td><td>${badge(x.status)}</td></tr>`).join('')+'</table>'};
+</script></body></html>
