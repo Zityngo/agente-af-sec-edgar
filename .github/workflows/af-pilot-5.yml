@@ -1,0 +1,30 @@
+name: AF piloto 5 emisores
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: af-pilot-5
+  cancel-in-progress: false
+jobs:
+  piloto:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Pruebas del nucleo (sin red)
+        run: python -m unittest discover -s tests -v
+      - name: Piloto AAPL MSFT JPM ADP AEP (SEC oficial, solo lectura, sin Sheets)
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: python scripts/pilot_5.py --out publico/pilot
+      - name: Conservar informe y base del piloto
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: af-piloto-5
+          path: publico/pilot/
+          retention-days: 30
+          if-no-files-found: warn
