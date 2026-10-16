@@ -44,7 +44,7 @@ jobs:
       - name: Pruebas del filtro de concordancia contable (sin red)
         run: python -m unittest discover -s scripts -p 'test_sec_sync_gate.py' -v
       - name: Sincronizar SOLO candidatos SEC a la hoja maestra
-        if: ${{ vars.SEC_SHEETS_ENABLE_WRITE == 'true' }}
+        if: ${{ github.ref == 'refs/heads/main' && vars.SEC_SHEETS_ENABLE_WRITE == 'true' }}
         env:
           GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
@@ -52,7 +52,7 @@ jobs:
           python -m pip install --quiet google-auth requests
           python scripts/sec_auto_staging.py --write
       - name: Reconciliar SEC contra históricos y actualizar SOLO SEC_AUTO_QA
-        if: ${{ vars.SEC_SHEETS_ENABLE_WRITE == 'true' }}
+        if: ${{ github.ref == 'refs/heads/main' && vars.SEC_SHEETS_ENABLE_WRITE == 'true' }}
         env:
           GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
