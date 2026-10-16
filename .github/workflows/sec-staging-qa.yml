@@ -7,6 +7,10 @@ on:
       - 'scripts/sec_auto_staging.py'
       - 'scripts/sec_quarterly_cashflow.py'
       - 'scripts/test_sec_auto_staging.py'
+      - 'scripts/sec_sync_gate.py'
+      - 'scripts/test_sec_sync_gate.py'
+      - 'scripts/sec_tag_resolution.py'
+      - 'scripts/test_sec_tag_resolution.py'
       - '.github/workflows/actualizar-sec.yml'
       - '.github/workflows/sec-staging-qa.yml'
   workflow_dispatch:
@@ -27,3 +31,7 @@ jobs:
         run: python -m py_compile scripts/sec_auto_staging.py
       - name: Ejecutar pruebas de identidad y periodos
         run: python -m unittest discover -s scripts -p 'test_sec_auto_staging.py' -v
+      - name: Ejecutar pruebas de etiquetado SEC y enmiendas
+        run: python -m unittest discover -s scripts -p 'test_sec_tag_resolution.py' -v
+      - name: Ejecutar pruebas de reconciliación SEC y Sheets
+        run: python -m unittest discover -s scripts -p 'test_sec_sync_gate.py' -v

@@ -14,6 +14,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from urllib.parse import quote
 from sec_quarterly_cashflow import isolate_ytd_flow
+from sec_tag_resolution import preferred_tags, recover_amendment
 
 TAB = "SEC_AUTO_STAGING"
 COLUMNS = ["clave", "ticker", "cik", "form", "periodo", "cierre", "filed",
@@ -28,7 +29,7 @@ TAGS = {
                 ("ifrs-full", "Revenue")],
     "ebit": [("us-gaap", "OperatingIncomeLoss"),
              ("ifrs-full", "ProfitLossFromOperatingActivities")],
-    "ni": [("us-gaap", "NetIncomeLoss"), ("ifrs-full", "ProfitLoss")],
+    "ni": [("us-gaap", "NetIncomeLoss"), ("us-gaap", "ProfitLoss"), ("ifrs-full", "ProfitLoss")],
     "cfo": [("us-gaap", "NetCashProvidedByUsedInOperatingActivities"),
             ("ifrs-full", "CashFlowsFromUsedInOperatingActivities")],
     "capex": [("us-gaap", "PaymentsToAcquirePropertyPlantAndEquipment"),
@@ -94,8 +95,8 @@ def recent_forms(sub):
         latest.setdefault(row["kind"], row)
     return list(latest.values())
 
-def metric(facts, name, filing):
-    for taxonomy, tag in TAGS[name]:
+def metric(facts, name, filing, cik=None):
+    for taxonomy, tag in preferred_tags(cik, name, TAGS[name]):
         for v in facts.get(taxonomy, {}).get(tag, {}).get("units", {}).get("USD", []):
             if (v.get("val") is None or v.get("form") != filing["form"]
                 or v.get("accn") != filing["acc"] or v.get("end") != filing["end"]
@@ -120,10 +121,11 @@ def build(root):
     for company, subs, cf, sha in verified(root):
         cik = company["cik"]
         for filing in recent_forms(subs):
+            filing, amendment_backfill = recover_amendment(subs, cf["facts"], filing, cik, metric)
             values = {}
             evidence = {}
             for name in TAGS:
-                values[name], source = metric(cf["facts"], name, filing)
+                values[name], source = metric(cf["facts"], name, filing, cik)
                 if values[name] is None and filing["kind"] == "Q" and name in ("cfo", "capex"):
                     values[name], source = isolate_ytd_flow(cf["facts"], TAGS[name], filing, name)
                 if source is not None:
@@ -135,9 +137,18 @@ def build(root):
                 status = "QA_TAGS_INCOMPLETOS"
             elif filing["kind"] == "Q" and fcf is None:
                 status = "QA_FCF_TRIMESTRAL_FALTANTE"
+            if amendment_backfill:
+                status = "QA_ENMIENDA_PENDIENTE"
+                evidence["amendment_backfill"] = amendment_backfill
+            if evidence.get("ni", {}).get("tag") == "ProfitLoss":
+                status = "QA_BENEFICIO_CONSOLIDADO_NO_ATRIBUIDO"
             note = ("Candidatos sin validar concepto/ajustes. No actualizar TTM/ROIC/PER. "
                     "CFO/CapEx trimestrales aislados sólo con el mismo tag y comienzo fiscal; "
                     "ver trazas_xbrl para los dos accn usados en la resta YTD.")
+            if amendment_backfill:
+                note += " ENMIENDA: datos recuperados del 10-K original; revisar 10-K/A antes de promover."
+            if cik == "0001381197":
+                note += " FINANCIERA: ProfitLoss consolidado no equivale al resultado atribuible al accionista común."
             source_url = (f"https://www.sec.gov/Archives/edgar/data/{int(cik)}/"
                           f"{filing['acc'].replace('-', '')}/{filing['doc']}")
             key = "|".join((cik, filing["kind"], filing["end"], filing["acc"]))

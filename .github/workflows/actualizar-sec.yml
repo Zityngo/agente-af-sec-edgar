@@ -5,7 +5,7 @@ on:
     - cron: '17 9 * * *'
   push:
     branches: [main]
-    paths: ['.github/workflows/actualizar-sec.yml', 'scripts/qa_sec_daily_batch.py', 'scripts/test_qa_sec_daily_batch.py', 'scripts/sec_auto_staging.py', 'scripts/sec_quarterly_cashflow.py', 'scripts/test_sec_auto_staging.py']
+    paths: ['.github/workflows/actualizar-sec.yml', 'scripts/qa_sec_daily_batch.py', 'scripts/test_qa_sec_daily_batch.py', 'scripts/sec_auto_staging.py', 'scripts/sec_quarterly_cashflow.py', 'scripts/test_sec_auto_staging.py', 'scripts/sec_sync_gate.py', 'scripts/test_sec_sync_gate.py', 'scripts/sec_tag_resolution.py', 'scripts/test_sec_tag_resolution.py']
 
 permissions:
   contents: read
@@ -17,7 +17,7 @@ concurrency:
 jobs:
   descargar:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 16
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -37,8 +37,12 @@ jobs:
         run: python scripts/qa_sec_daily_batch.py
       - name: Pruebas locales - SEC a Sheets con control de calidad
         run: python -m unittest discover -s scripts -p 'test_sec_auto_staging.py' -v
+      - name: Pruebas de etiquetas XBRL y enmiendas financieras (sin red)
+        run: python -m unittest discover -s scripts -p 'test_sec_tag_resolution.py' -v
       - name: Generar candidatos SEC sin alterar datos financieros
         run: python scripts/sec_auto_staging.py
+      - name: Pruebas del filtro de concordancia contable (sin red)
+        run: python -m unittest discover -s scripts -p 'test_sec_sync_gate.py' -v
       - name: Sincronizar SOLO candidatos SEC a la hoja maestra
         if: ${{ vars.SEC_SHEETS_ENABLE_WRITE == 'true' }}
         env:
@@ -47,6 +51,12 @@ jobs:
         run: |
           python -m pip install --quiet google-auth requests
           python scripts/sec_auto_staging.py --write
+      - name: Reconciliar SEC contra históricos y actualizar SOLO SEC_AUTO_QA
+        if: ${{ vars.SEC_SHEETS_ENABLE_WRITE == 'true' }}
+        env:
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: python scripts/sec_sync_gate.py --write
       - name: Conservar resultados para validación
         if: always()
         uses: actions/upload-artifact@v4
