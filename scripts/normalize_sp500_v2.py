@@ -19,7 +19,7 @@ TAG = {
  'operating_expenses':['OperatingExpenses'],
  'selling_general_admin':['SellingGeneralAndAdministrativeExpense'],
  'research_development':['ResearchAndDevelopmentExpense'],
- 'net_income':['NetIncomeLoss','ProfitLoss'],
+ 'net_income':['NetIncomeLossAvailableToCommonStockholdersBasic','NetIncomeLoss','ProfitLoss'],
  'eps_diluted':['EarningsPerShareDiluted'],
  'cfo':['NetCashProvidedByUsedInOperatingActivities'],
  'capex':['PaymentsToAcquirePropertyPlantAndEquipment','PaymentsToAcquireProductiveAssets','PaymentsToAcquireOtherPropertyPlantAndEquipment','PaymentsToAcquireOtherProductiveAssets'],
@@ -155,7 +155,8 @@ def derived(m,sources=None):
         m['da']=m['depreciation'];m['da_method']='depreciation_only_proxy'
     else: m['da_method']='unavailable'
     if m.get('operating_income') is not None:
-        m['ebit']=m['operating_income'];m['ebit_method']='operating_income_proxy'
+        m['ebit']=m['operating_income']
+        m['ebit_method']='reported_OperatingIncomeLoss' if m.get('operating_income_method')=='reported_OperatingIncomeLoss' else 'derived_operating_income_UNVERIFIED'
     elif m.get('pretax') is not None and m.get('interest') is not None:
         m['ebit']=m['pretax']+m['interest'];m['ebit_method']='pretax_plus_interest_proxy'
     else:
@@ -221,7 +222,14 @@ def quarterly(f,cik,entity,ticker,annual_rows,first,last):
             if k in INSTANT:
                 m[k]=a[k]
                 if k in a['sources']: src[k]={'from':'FY','source':a['sources'][k]}
-            elif k=='eps_diluted': continue
+            elif k=='eps_diluted':
+                # A Q4 EPS figure may only be used if explicitly reported for ~90 days.
+                # Weighted-average diluted EPS cannot be backed out as FY minus 9M.
+                explicit,proof=select(f,k,end,ANNUAL_FORMS,year,'FY',(70,112),a.get('filing_accession'))
+                if explicit is not None and proof and proof.get('start'):
+                    m[k]=explicit
+                    src[k]={'derived_from':'reported_Q4_90day','source':proof}
+                continue
             else:
                 ytd,s=select(f,k,q3_end,QUARTER_FORMS,year,'Q3',(230,300),q3a.get('accn'))
                 if a[k] is not None and ytd is not None:
