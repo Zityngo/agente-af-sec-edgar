@@ -122,10 +122,10 @@ def ttm_metrics(w):
     ebs = [_ebit(r) for r in w]; blocked = [x for x in ebs if x.s == "BLOCKED"]
     if blocked: out["ebit_ttm"] = R(None, "BLOCKED", blocked[0].why)
     elif any(x.v is None for x in ebs): out["ebit_ttm"] = R(None, "NULL", "falta ebit en algún trimestre")
-    else: out["ebit_ttm"] = R(sum(x.v for x in ebs), "OK")
+    else: out["ebit_ttm"] = R(sum(x.v for x in ebs), "PROXY" if any(x.s=="PROXY" for x in ebs) else "OK", "incluye Q4 FY-9M" if any(x.s=="PROXY" for x in ebs) else "")
     et = out["ebit_ttm"]
-    out["ebitda_ttm"] = R(None, et.s, et.why) if et.v is None else (R(et.v+da,"OK") if da is not None else R(None,"NULL","falta da en algún trimestre"))
-    out["ebit_margin_ttm"] = R(None, et.s, et.why) if et.v is None else _div(et.v, rev, "ebit")
+    out["ebitda_ttm"] = R(None, et.s, et.why) if et.v is None else (R(et.v+da,et.s,et.why) if da is not None else R(None,"NULL","falta da en algún trimestre"))
+    out["ebit_margin_ttm"] = R(None, et.s, et.why) if et.v is None else _div(et.v, rev, "ebit",status=et.s)
     f = out["fcf_ttm"]; out["fcf_margin_ttm"] = R(None, f.s, f.why) if f.v is None else _div(f.v, rev, "fcf")
     eps = [r["eps_diluted"] for r in w]
     out["eps_ttm"] = R(sum(eps),"PROXY","EPS trimestral sumado; splits/pesos por trimestre pendientes") if all(x is not None for x in eps) else R(None,"NULL","falta EPS Q4 expresamente reportado; prohibido FY - 9M EPS")
