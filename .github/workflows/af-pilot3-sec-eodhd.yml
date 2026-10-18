@@ -1,0 +1,43 @@
+name: AF A - piloto SEC EODHD Apple Tesla Amazon
+on:
+  workflow_dispatch:
+  push:
+    branches: ['agent/chatgpt-a']
+    paths:
+      - '.github/workflows/af-pilot3-sec-eodhd.yml'
+      - 'af_core/**'
+      - 'tests/test_verification_sec.py'
+      - 'scripts/pilot_3_sec_eodhd.py'
+      - 'scripts/pilot_5.py'
+      - 'scripts/normalize_sp500_v2.py'
+permissions:
+  contents: read
+concurrency:
+  group: af-a-pilot3-readonly
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Pruebas del motor existente y de la nueva verificación
+        run: python -m unittest discover -s tests -v
+      - name: SEC + EODHD demo (tres empresas, solo lectura)
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: python scripts/pilot_3_sec_eodhd.py --out publico/pilot3
+      - name: Guardar informe y auditoría sin dump del proveedor
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: af-a-pilot3-sec-eodhd
+          path: |
+            publico/pilot3/analisis_piloto_3.md
+            publico/pilot3/auditoria_piloto_3.json
+            publico/pilot3/pilot.db
+          retention-days: 30
+          if-no-files-found: warn
