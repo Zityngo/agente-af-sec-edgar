@@ -7,7 +7,7 @@ from __future__ import annotations
 import json
 import re
 
-SEC_ACCESSION = re.compile(r"^\\d{10}-\\d{2}-\\d{6}$")
+SEC_ACCESSION = re.compile(r"^\d{10}-\d{2}-\d{6}$")
 CAPEX_ALLOWED = {"PaymentsToAcquirePropertyPlantAndEquipment",
                  "PaymentsToAcquireProductiveAssets"}
 NET_INCOME_COMMON = {"NetIncomeLossAvailableToCommonStockholdersBasic",
@@ -44,7 +44,7 @@ def capex_quality(period):
         return ("BLOCKED","capex SEC sin etiqueta/origen verificable") if sec_filing(period) else ("OK","dato sintetico de pruebas")
     rejected=[t for t in tags if t not in CAPEX_ALLOWED]
     if rejected:return "BLOCKED","CapEx tag no validado: "+", ".join(rejected)
-    if isinstance(e,dict) and "derived_from" in e and not isinstance(e.get("source"),dict):
+    if isinstance(e,dict) and e.get("derived_from") in ("ytd_delta","ytd_Q1") and not isinstance(e.get("source"),dict):
         return "BLOCKED","Delta de CapEx no tiene fuente YTD"
     if isinstance(e,dict) and e.get("derived_from")=="FY_minus_9M":
         if not isinstance(e.get("annual_source"),dict) or not isinstance(e.get("nine_month_source"),dict):
