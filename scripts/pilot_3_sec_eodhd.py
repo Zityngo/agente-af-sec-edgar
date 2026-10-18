@@ -20,6 +20,7 @@ import pilot_5
 from af_core.verification import capex_quality,attributable_quality,ebit_quality
 from af_core.sec_insiders import fetch_recent_form4
 from af_core.eps_audit import audit_company
+from af_core.eps_benchmark import load_benchmark, compare as compare_eps_benchmark
 
 TICKERS=("AAPL","TSLA","AMZN")
 CIK={"AAPL":"0000320193","TSLA":"0001318605","AMZN":"0001018724"}
@@ -132,6 +133,9 @@ def report_markdown(result):
         "## Resumen","",
         "| Empresa | Conciliación del FY2025 | API EODHD |",
         "|---|---|---|"]
+    if "eps_benchmark" in result:
+        n=sum(len(r["quarters"]) for r in result["eps_benchmark"].values())
+        lines += [f"**BPA trimestral GAAP:** {n}/{n} comparaciones contra publicaciones de emisores correctas. Los BPA TTM permanecen PROXY.", ""]
     for t,r in result["companies"].items():
         c=Counter(x["status"] for x in r["reconciliation"].values())
         lines.append(f"| {t} | {c['MATCH']} coinciden, {c['DIVERGENCE']} discrepancias, {c['MISSING']} no disponibles | {r['eodhd']['status']} |")
@@ -241,12 +245,16 @@ def run(out,ua):
                 for z in con.execute("SELECT metric,value,status,reason FROM metrics WHERE cik=? AND scope='FY' AND period_end=?",
                 (cik,GOLD[t]["end"]))}
         }
+    result["eps_benchmark"]=compare_eps_benchmark(
+        {t:r["eps_quarters"] for t,r in result["companies"].items()},
+        load_benchmark(ROOT/"data/eps_benchmarks_pilot_2026q2.json"))
     out.mkdir(parents=True,exist_ok=True)
     (out/"auditoria_piloto_3.json").write_text(json.dumps(result,ensure_ascii=False,indent=2,default=str),encoding="utf-8")
     (out/"analisis_piloto_3.md").write_text(report_markdown(result),encoding="utf-8")
     summary={t:{"SEC":Counter(v["status"] for v in r["reconciliation"].values()),
                 "EODHD":r["eodhd"]["status"]} for t,r in result["companies"].items()}
     print(json.dumps({"companies":summary,"download_errors":errors},ensure_ascii=False))
+    print(json.dumps({"eps_reference_summary":{t:{"state":v["status"],"matching":len(v["quarters"])} for t,v in result["eps_benchmark"].items()}},ensure_ascii=False))
     print(json.dumps({"eps_provenance_audit":{t:r["eps_quarters"] for t,r in result["companies"].items()}},ensure_ascii=False))
     print(json.dumps({"eps_pilot_summary":{t:{"q4_2025":r["q4_eps_2025"]["value"],
                  "ttm":r["latest_eps_ttm"]} for t,r in result["companies"].items()}},ensure_ascii=False))
