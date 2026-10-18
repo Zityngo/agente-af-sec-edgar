@@ -146,7 +146,9 @@ def derived(m,sources=None):
         elif m['gross_profit'] is not None and m['selling_general_admin'] is not None and m['research_development'] is None:
             m['operating_income']=m['gross_profit']-m['selling_general_admin'];m['operating_income_method']='gross_profit_minus_SG&A_proxy'
         else: m['operating_income_method']='unavailable'
-    else: m['operating_income_method']='reported_OperatingIncomeLoss'
+    else:
+        evidence=sources.get('operating_income') or {}
+        m['operating_income_method']='derived_Q4_FY_minus_9M' if evidence.get('derived_from')=='FY_minus_9M' else 'reported_OperatingIncomeLoss'
     if m.get('da') is not None:
         m['da_method']='reported_combined_D&A:'+str((sources.get('da') or {}).get('tag',''))
     elif m.get('depreciation') is not None and m.get('amortization_intangibles') is not None:
