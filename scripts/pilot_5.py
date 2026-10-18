@@ -27,7 +27,7 @@ def resolve_ciks(tickers, ua, fetch=fetch_json):
     if missing: raise SystemExit("Tickers no resueltos en la SEC: " + ",".join(missing))
     return {t: by[t] for t in tickers}
 
-def run(out, first, last, ua, fetch=fetch_json, norm=None, sleep=0.25):
+def run(out, first, last, ua, fetch=fetch_json, norm=None, sleep=0.25, official_q4_path=None):
     import normalize_sp500_v2 as nm0
     nm = norm or nm0
     out.mkdir(parents=True, exist_ok=True)
@@ -43,6 +43,10 @@ def run(out, first, last, ua, fetch=fetch_json, norm=None, sleep=0.25):
             ann_rows += ann[-5:]; q_rows += nm.quarterly(f, cik, d.get("entityName", ""), tk, ann, first, last)[-21:]
         except Exception as e:
             errors.append({"ticker": tk, "cik": cik, "error": repr(e)})
+    if official_q4_path is not None:
+        from official_eps_pilot import load_registry, apply
+        summary = apply(q_rows, load_registry(official_q4_path))
+        print(json.dumps({"q4_eps_official":summary}, ensure_ascii=False))
     nm.write_csv(out / "pilot_annual.csv", ann_rows); nm.write_csv(out / "pilot_quarterly.csv", q_rows)
     from af_core.db import connect_rw
     from af_core import ingest
