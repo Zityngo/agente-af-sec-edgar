@@ -154,8 +154,24 @@ def report_markdown(result):
             "Form 4 XML examinados: "+str(len(r.get("insider_forms",[])))+"; parseados: "+
                str(sum(x.get("status")=="PARSED_NOT_CERTIFIED" for x in r.get("insider_forms",[])))+
                "; no disponibles o bloqueados: "+str(sum(x.get("status")!="PARSED_NOT_CERTIFIED" for x in r.get("insider_forms",[])))+".",
-            "PENDIENTE: parsear cada Form 4 con códigos P/S/M/A/F y planes 10b5-1; procesar 13D/G y cambios 13F. No se han inferido compras o ventas individuales.",
+            "Form 4: códigos P/S/M/A/F extraídos en muestra reciente. PENDIENTE: verificar notas/planes 10b5-1, estado de tenencia y 13D/G/13F; una operación aislada no es señal de inversión.",
             "","### Eventos relevantes SEC",""]
+        recent=[]
+        for form in r.get("insider_forms",[]):
+            if form.get("status")!="PARSED_NOT_CERTIFIED":continue
+            for tx in form.get("transactions",[]):
+                if tx.get("kind")=="SHARE" and tx.get("code") in ("P","S"):
+                    recent.append((tx,form))
+        recent=sorted(recent,key=lambda x:x[0].get("date") or "",reverse=True)
+        lines+=["","### Form 4 · operaciones P/S identificadas (no señales de inversión)",""]
+        if recent:
+            for tx,form in recent[:6]:
+                who=", ".join(form.get("owners",[])) or "Declarante"
+                lines.append(f"- {tx.get('date') or 'sin fecha'} · {who} · {tx['code']} "+
+                    f"({tx['label']}) · {tx.get('shares') if tx.get('shares') is not None else 'cantidad no disponible'} acciones. "+
+                    f"Fuente SEC: {form['source_url']} · plan 10b5-1 NO VERIFICADO.")
+        else:
+            lines.append("- Sin códigos P/S en la muestra reciente (no implica ausencia de actividad).")
         ev=[x for x in r["filings"]["filings"] if x["form"]=="8-K"][:4]
         lines.extend([f"- {x['date']}: 8-K pendiente de clasificación: {x['url']}" for x in ev] or ["- Sin 8-K en la muestra indexada."])
         if t=="AMZN":lines+=["","**Amazon:** FCF según empresa 11.194 MUSD (CapEx neto 128.320); FCF con CapEx bruto 7.695 MUSD. Distintos métodos."]
