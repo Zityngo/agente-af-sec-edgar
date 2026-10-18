@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "scope": "THREE_COMPANY_EPS_BENCHMARK_2026Q2",
+  "unit": "USD/share",
+  "accounting": "GAAP diluted EPS",
+  "rows": [
+    {
+      "ticker": "AAPL",
+      "period_type": "Q4",
+      "fiscal_year": 2025,
+      "period_end": "2025-09-27",
+      "eps_diluted_gaap": 1.85,
+      "source_url": "https://www.apple.com/newsroom/2025/10/apple-reports-fourth-quarter-results/",
+      "verified": "2026-10-18"
+    },
+    {
+      "ticker": "AAPL",
+      "period_type": "Q1",
+      "fiscal_year": 2026,
+      "period_end": "2025-12-27",
+      "eps_diluted_gaap": 2.84,
+      "source_url": "https://www.apple.com/newsroom/2026/01/apple-reports-first-quarter-results/",
+      "verified": "2026-10-18"
+    },
+    {
+      "ticker": "AAPL",
+      "period_type": "Q2",
+      "fiscal_year": 2026,
+      "period_end": "2026-03-28",
+      "eps_diluted_gaap": 2.01,
+      "source_url": "https://www.apple.com/newsroom/2026/04/apple-reports-second-quarter-results/",
+      "verified": "2026-10-18"
+    },
+    {
+      "ticker": "AAPL",
+      "period_type": "Q3",
+      "fiscal_year": 2026,
+      "period_end": "2026-06-27",
+      "eps_diluted_gaap": 2.02,
+      "source_url": "https://www.apple.com/newsroom/2026/07/apple-reports-third-quarter-results/",
+      "verified": "2026-10-18"
+    },
+    {
+      "ticker": "TSLA",
+      "period_type": "Q3",
+      "fiscal_year": 2025,
+      "period_end": "2025-09-30",
+      "eps_diluted_gaap": 0.39,
+      "source_url": "https://ir.tesla.com/_flysystem/s3/sec/000162828026049213/tsla-20260722-gen.pdf",
+      "verified": "2026-10-18"
+    },
+    {
+      "ticker": "TSLA",
+      "period_type": "Q4",
+      "fiscal_year": 2025,
+      "period_end": "2025-12-31",
+      "eps_diluted_gaap": 0.24,
+      "source_url": "https://ir.tesla.com/_flysystem/s3/sec/000162828026049213/tsla-20260722-gen.pdf",
+      "verified": "2026-10-18"
+    },
+    {
+      "ticker": "TSLA",
+      "period_type": "Q1",
+      "fiscal_year": 2026,
+      "period_end": "2026-03-31",
+      "eps_diluted_gaap": 0.13,
+      "source_url": "https://ir.tesla.com/_flysystem/s3/sec/000162828026049213/tsla-20260722-gen.pdf",
+      "verified": "2026-10-18"
+    },
+    {
+      "ticker": "TSLA",
+      "period_type": "Q2",
+      "fiscal_year": 2026,
+      "period_end": "2026-06-30",
+      "eps_diluted_gaap": 0.32,
+      "source_url": "https://ir.tesla.com/_flysystem/s3/sec/000162828026049213/tsla-20260722-gen.pdf",
+      "verified": "2026-10-18"
+    },
+    {
+      "ticker": "AMZN",
+      "period_type": "Q3",
+      "fiscal_year": 2025,
+      "period_end": "2025-09-30",
+      "eps_diluted_gaap": 1.95,
+      "source_url": "https://ir.aboutamazon.com/news-release/news-release-details/2026/Amazon-com-Announces-Second-Quarter-Results/default.aspx",
+      "verified": "2026-10-18"
+    },
+    {
+      "ticker": "AMZN",
+      "period_type": "Q4",
+      "fiscal_year": 2025,
+      "period_end": "2025-12-31",
+      "eps_diluted_gaap": 1.95,
+      "source_url": "https://ir.aboutamazon.com/news-release/news-release-details/2026/Amazon-com-Announces-Second-Quarter-Results/default.aspx",
+      "verified": "2026-10-18"
+    },
+    {
+      "ticker": "AMZN",
+      "period_type": "Q1",
+      "fiscal_year": 2026,
+      "period_end": "2026-03-31",
+      "eps_diluted_gaap": 2.78,
+      "source_url": "https://ir.aboutamazon.com/news-release/news-release-details/2026/Amazon-com-Announces-Second-Quarter-Results/default.aspx",
+      "verified": "2026-10-18"
+    },
+    {
+      "ticker": "AMZN",
+      "period_type": "Q2",
+      "fiscal_year": 2026,
+      "period_end": "2026-06-30",
+      "eps_diluted_gaap": 5.75,
+      "source_url": "https://ir.aboutamazon.com/news-release/news-release-details/2026/Amazon-com-Announces-Second-Quarter-Results/default.aspx",
+      "verified": "2026-10-18"
+    }
+  ],
+  "limits": [
+    "Benchmarks are snapshots of issuer-published EPS; not a general extraction engine.",
+    "Amazon GAAP EPS includes material Anthropic investment gains in 2026.",
+    "Aggregated quarterly EPS may differ from issuer TTM EPS due to share weighting and rounding."
+  ]
+}
