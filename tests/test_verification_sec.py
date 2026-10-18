@@ -42,7 +42,7 @@ class TestSECGates(unittest.TestCase):
         ok={"tag":"PaymentsToAcquirePropertyPlantAndEquipment"}
         p=sec_period(sources_json=json.dumps({"capex":{"derived_from":"FY_minus_9M",
                         "annual_source":ok,"nine_month_source":ok}}))
-        self.assertEqual(capex_quality(p)[0],"OK")
+        self.assertEqual(capex_quality(p)[0],"PROXY")
     def test_sec_without_capex_provenance_block(self):
         p=sec_period(sources_json="{}")
         self.assertEqual(_fcf(p).s,"BLOCKED")
@@ -54,6 +54,13 @@ class TestSECGates(unittest.TestCase):
         self.assertEqual(attributable_quality(p)[0],"PROXY")
     def test_common_profit_ok(self):
         self.assertEqual(attributable_quality(sec_period())[0],"OK")
+    def test_q4_ebit_derived_is_proxy_not_reported(self):
+        proof={"tag":"OperatingIncomeLoss","accession":"0000320193-25-000079"}
+        p=sec_period(operating_income_method="derived_Q4_FY_minus_9M",
+            sources_json=json.dumps({"operating_income":{
+                "derived_from":"FY_minus_9M",
+                "annual_source":proof,"nine_month_source":proof}}))
+        self.assertEqual(_ebit(p).s,"PROXY")
     def test_no_inferred_q4_eps(self):
         # A genuine Q4 EPS must have a reporting start/end and an acceptable form.
         self.assertNotIn("FY_minus_9M",nm.TAG["eps_diluted"])
