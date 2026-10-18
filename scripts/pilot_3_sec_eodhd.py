@@ -18,6 +18,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path[:0]=[str(ROOT),str(ROOT/"scripts")]
 import pilot_5
 from af_core.verification import capex_quality,attributable_quality,ebit_quality
+from af_core.sec_insiders import fetch_recent_form4
 
 TICKERS=("AAPL","TSLA","AMZN")
 CIK={"AAPL":"0000320193","TSLA":"0001318605","AMZN":"0001018724"}
@@ -150,6 +151,9 @@ def report_markdown(result):
             "","### Directiva, insiders y grandes accionistas","",
             f"Índice SEC de filings: {r['filings']['url']}.",
             "Formularios indexados en muestra: "+", ".join(f"{f}: {n}" for f,n in sorted(Counter(x["form"] for x in r["filings"]["filings"]).items()))+".",
+            "Form 4 XML examinados: "+str(len(r.get("insider_forms",[])))+"; parseados: "+
+               str(sum(x.get("status")=="PARSED_NOT_CERTIFIED" for x in r.get("insider_forms",[])))+
+               "; no disponibles o bloqueados: "+str(sum(x.get("status")!="PARSED_NOT_CERTIFIED" for x in r.get("insider_forms",[])))+".",
             "PENDIENTE: parsear cada Form 4 con códigos P/S/M/A/F y planes 10b5-1; procesar 13D/G y cambios 13F. No se han inferido compras o ventas individuales.",
             "","### Eventos relevantes SEC",""]
         ev=[x for x in r["filings"]["filings"] if x["form"]=="8-K"][:4]
@@ -185,13 +189,16 @@ def run(out,ua):
         provider["fy_income_field_names"]=list(next(iter(((financials.get("Income_Statement") or {}).get("yearly") or {}).values()),{}).keys()) if financials else []
         provider["insider_section_type"]=type(payload.get("InsiderTransactions")).__name__ if payload else "missing"
         provider["holder_section_type"]=type(payload.get("Holders")).__name__ if payload else "missing"
+        filings=latest_filings(cik,ua)
+        insider_forms=fetch_recent_form4(filings["filings"],t,limit=4,user_agent=ua)
         result["companies"][t]={
+            "insider_forms":insider_forms,
             "cik":cik,"accession":row["accession"] if row else None,
             "reconciliation":reconcile(row,GOLD[t]),"quality":q,
             "source_tags":json.loads(row["sources_json"] or "{}") if row else {},
             "eodhd":provider,"eodhd_comparison":compare_external(row,external),
             "eodhd_coverage":{k:v is not None for k,v in external.items()},
-            "filings":latest_filings(cik,ua),
+            "filings":filings,
             "engine_fy":{z["metric"]:{"value":z["value"],"status":z["status"],"reason":z["reason"]}
                 for z in con.execute("SELECT metric,value,status,reason FROM metrics WHERE cik=? AND scope='FY' AND period_end=?",
                 (cik,GOLD[t]["end"]))}
