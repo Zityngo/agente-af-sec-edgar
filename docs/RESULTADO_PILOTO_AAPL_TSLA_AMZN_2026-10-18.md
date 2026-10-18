@@ -1,6 +1,19 @@
 # A.Fundamental A — Primera auditoría de empresas reales
 **Fecha de ejecución: 2026-10-18 (UTC)** · **Estado: ensayo interno, NO análisis totalmente certificado**
 
+## Actualización final auditada — ejecución 18/10/2026, 10:49 UTC
+
+**Estado reproducible y archivos:** ejecución [GitHub Actions #39120769252](https://github.com/Zityngo/agente-af-sec-edgar/actions/runs/39120769252) OK; **44/44 pruebas** (incluye parser de Form 4, controles de EBIT, CapEx y atribución de beneficio); artefacto [#12134510455](https://github.com/Zityngo/agente-af-sec-edgar/actions/runs/39120769252/artifacts/12134510455). Respaldo privado permanente en [Google Drive, carpeta A](https://drive.google.com/file/d/1xjPvBrsahhlyn82t_8N7-KSSL6VHQrub/view). El artefacto incluye `analisis_piloto_3.md`, `auditoria_piloto_3.json` y `pilot.db`.
+
+- Las tres empresas descargadas sin errores; **18/18** campos FY2025 en conformidad con los valores publicados en sus 10-K, seis por emisor. Los **15/15** contrastes disponibles con EODHD demo proceden de la auditoría anterior; la ejecución final confirma disponibilidad del endpoint, sin implicar licencia comercial.
+- Form 4: **12 XML SEC recientes examinados y 12 parseados** (4 por empresa); identifica operaciones con códigos P/S y diferencia adquisiciones/ventas de ejercicios, concesiones y retenciones. El estado sigue siendo `PARSED_NOT_CERTIFIED`; el contexto del plan 10b5-1 **no se ha verificado**. No extrapolar estos 12 formularios a todas las operaciones ni recomendar trading.
+- FY2025 Apple: EBIT y CapEx verificados; beneficio atribuible `PROXY` para tratamiento de acciones y preferentes. Tesla: resultado atribuible ordinario verificado (3.794 MUSD, distinto de 3.855 consolidados). Amazon: diferenciar FCF bruto 7.695 MUSD de FCF publicado con CapEx neto 11.194 MUSD.
+- TTM EBIT y FCF: `PROXY` cuando se derivan de FY−9M o CFO/CapEx YTD; **BPA TTM NULL** por Q4 no certificado. Precios, PER, EV, DCF, principales tenedores institucionales, calidad de directiva y noticias cualitativas completas **PENDIENTES**. Ninguna empresa está certificada como análisis integral.
+- EODHD demo se utiliza para prueba personal. No guardar ni redistribuir su payload completo ni publicar series comerciales sin licencia explícita.
+- Operaciones efectuadas únicamente en `agent/chatgpt-a`; `main`, Proyecto B y Google Sheets financieros no modificados por esta ejecución.
+
+---
+
 ## Resultado reproducible
 
 Ejecución CI: https://github.com/Zityngo/agente-af-sec-edgar/actions/runs/39119957783
