@@ -66,9 +66,17 @@ def attributable_quality(period):
 def ebit_quality(period):
     val=period.get("operating_income")
     if val is None:return "NULL","sin operating_income"
-    if period.get("operating_income_method") != "reported_OperatingIncomeLoss":
+    method=period.get("operating_income_method")
+    e=source(period,"operating_income")
+    tags=tags_from_evidence(e)
+    if method=="derived_Q4_FY_minus_9M":
+        good=isinstance(e,dict) and e.get("derived_from")=="FY_minus_9M" and all(
+            isinstance(e.get(k),dict) and e[k].get("tag")=="OperatingIncomeLoss" and e[k].get("accession")
+            for k in ("annual_source","nine_month_source"))
+        if good:return "PROXY","EBIT Q4=10-K FY menos 10-Q 9M (trazable, no reportado)"
+        return "BLOCKED","EBIT Q4 sin fuentes SEC FY/9M concordantes"
+    if method!="reported_OperatingIncomeLoss":
         return "BLOCKED","EBIT derivado sin linea OperatingIncomeLoss"
-    tags=tags_from_evidence(source(period,"operating_income"))
     if sec_filing(period) and tags != ["OperatingIncomeLoss"]:
         return "BLOCKED","EBIT SEC sin etiqueta OperatingIncomeLoss"
     return "OK","EBIT reportado"
