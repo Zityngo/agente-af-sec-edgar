@@ -2,6 +2,7 @@
 Estados: OK | PROXY | BLOCKED | NA_SECTOR | NULL (dato no disponible; nunca 0)."""
 from __future__ import annotations
 from datetime import date
+from .verification import capex_quality, attributable_quality, ebit_quality
 
 ENGINE_VERSION = "0.1.0"
 EBIT_OK_METHOD = "reported_OperatingIncomeLoss"
@@ -41,16 +42,16 @@ def _div(n, d, nname, dname="revenue", status="OK"):
     return R(n / d, status)
 
 def _ebit(p):
-    if p["operating_income"] is None: return R(None, "NULL", "falta operating_income")
-    if p["operating_income_method"] != EBIT_OK_METHOD:
-        return R(None, "BLOCKED", f"EBIT no reportado ({p['operating_income_method']}); conciliar antes de usar")
-    return R(p["operating_income"], "OK")
+    status,why=ebit_quality(p)
+    if status in ("BLOCKED","NULL"): return R(None,status,why)
+    return R(p["operating_income"],status)
 
 def _fcf(p):
     miss = [k for k in ("cfo","capex") if p[k] is None]
     if miss: return R(None, "NULL", "falta " + ",".join(miss))
-    if p["capex"] < 0: return R(None, "BLOCKED", "capex negativo: signo/concepto a revisar")
-    return R(p["cfo"] - p["capex"], "OK")
+    status,why=capex_quality(p)
+    if status=="BLOCKED": return R(None,status,why)
+    return R(p["cfo"]-p["capex"],status,why)
 
 def period_metrics(p, prev_fy=None):
     out = {}
@@ -60,7 +61,8 @@ def period_metrics(p, prev_fy=None):
     if e.v is None: out["ebitda"] = R(None, e.s, e.why)
     elif p["da"] is None: out["ebitda"] = R(None, "NULL", "falta da")
     else: out["ebitda"] = R(e.v + p["da"], "PROXY" if (p["da_method"] or "").startswith(("depreciation_only","unavailable")) else "OK")
-    out["net_margin"] = _div(p["net_income"], p["revenue"], "net_income")
+    ni_status,ni_why=attributable_quality(p)
+    out["net_margin"] = R(None,ni_status,ni_why) if ni_status in ("BLOCKED","NULL") else _div(p["net_income"],p["revenue"],"net_income",status=ni_status)
     f = _fcf(p); out["fcf"] = f
     out["fcf_margin"] = R(None, f.s, f.why) if f.v is None else _div(f.v, p["revenue"], "fcf")
     if p["debt_total"] is None or p["cash"] is None: out["net_debt"] = R(None, "NULL", "falta debt_total/cash")
@@ -107,9 +109,16 @@ def ttm_metrics(w):
     rev, ni, cfo, cap, da = (tsum(k) for k in ("revenue","net_income","cfo","capex","da"))
     for name, v in (("revenue_ttm",rev),("net_income_ttm",ni),("cfo_ttm",cfo),("capex_ttm",cap)):
         out[name] = R(v, "OK") if v is not None else R(None,"NULL",f"falta {name[:-4]} en algún trimestre")
+    ni_checks=[attributable_quality(q) for q in w]
+    if any(st=="BLOCKED" for st,_ in ni_checks):
+        out["net_income_ttm"]=R(None,"BLOCKED","beneficio consolidado/no atribuible en trimestre")
+    elif ni is not None and any(st=="PROXY" for st,_ in ni_checks):
+        out["net_income_ttm"]=R(ni,"PROXY","beneficio de matriz; preferentes pendientes")
     if cfo is None or cap is None: out["fcf_ttm"] = R(None,"NULL","falta cfo/capex")
-    elif any(r["capex"] < 0 for r in w): out["fcf_ttm"] = R(None,"BLOCKED","capex negativo en algún trimestre")
-    else: out["fcf_ttm"] = R(cfo-cap, "OK")
+    else:
+        qchecks=[capex_quality(q) for q in w]
+        if any(st=="BLOCKED" for st,_ in qchecks):out["fcf_ttm"]=R(None,"BLOCKED","CapEx trimestral no conciliado")
+        else:out["fcf_ttm"]=R(cfo-cap,"OK","FCF bruto CFO - CapEx; NO FCF ajustado corporativo")
     ebs = [_ebit(r) for r in w]; blocked = [x for x in ebs if x.s == "BLOCKED"]
     if blocked: out["ebit_ttm"] = R(None, "BLOCKED", blocked[0].why)
     elif any(x.v is None for x in ebs): out["ebit_ttm"] = R(None, "NULL", "falta ebit en algún trimestre")
@@ -119,7 +128,7 @@ def ttm_metrics(w):
     out["ebit_margin_ttm"] = R(None, et.s, et.why) if et.v is None else _div(et.v, rev, "ebit")
     f = out["fcf_ttm"]; out["fcf_margin_ttm"] = R(None, f.s, f.why) if f.v is None else _div(f.v, rev, "fcf")
     eps = [r["eps_diluted"] for r in w]
-    out["eps_ttm"] = R(sum(eps),"OK") if all(x is not None for x in eps) else R(None,"NULL","falta EPS trimestral (Q4 no se publica por separado)")
+    out["eps_ttm"] = R(sum(eps),"PROXY","EPS trimestral sumado; splits/pesos por trimestre pendientes") if all(x is not None for x in eps) else R(None,"NULL","falta EPS Q4 expresamente reportado; prohibido FY - 9M EPS")
     last = w[-1]
     if last["debt_total"] is None or last["cash"] is None: out["net_debt"] = R(None,"NULL","falta debt_total/cash")
     else: out["net_debt"] = R(last["debt_total"]-last["cash"], "OK")
