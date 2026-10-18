@@ -9,7 +9,7 @@ Q=["Q3","Q4","Q1","Q2"]
 class FakeDB:
     def __init__(self, rows): self.rows=rows
     def execute(self, query, args): return self
-    def fetchall(self): return self.rows
+    def fetchall(self): return self.rows[::-1]  # SQL uses ORDER BY period_end DESC
 
 def fixture():
     rows=[]
