@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "scope": "AAPL_TSLA_AMZN_FY2025_Q4_PILOT_ONLY",
+  "note": "Pilot: cifras GAAP diluidas Q4 expresamente publicadas, con URL oficial. NO extrapolar; no es un extractor automático ni una fuente comercial redistribuible.",
+  "observations": [
+    {
+      "ticker": "AAPL",
+      "cik": "0000320193",
+      "fiscal_year": 2025,
+      "period_type": "Q4",
+      "period_start": "2025-06-29",
+      "period_end": "2025-09-27",
+      "metric": "eps_diluted_gaap",
+      "value": 1.85,
+      "currency": "USD/share",
+      "source_type": "ISSUER_RELEASE",
+      "source_url": "https://www.apple.com/newsroom/2025/10/apple-reports-fourth-quarter-results/",
+      "reviewed_on": "2026-10-18"
+    },
+    {
+      "ticker": "TSLA",
+      "cik": "0001318605",
+      "fiscal_year": 2025,
+      "period_type": "Q4",
+      "period_start": "2025-10-01",
+      "period_end": "2025-12-31",
+      "metric": "eps_diluted_gaap",
+      "value": 0.24,
+      "currency": "USD/share",
+      "source_type": "SEC_8K_EXHIBIT",
+      "source_url": "https://ir.tesla.com/_flysystem/s3/sec/000162828026003837/tsla-20260128-gen.pdf",
+      "sec_accession": "0001628280-26-003837",
+      "reviewed_on": "2026-10-18"
+    },
+    {
+      "ticker": "AMZN",
+      "cik": "0001018724",
+      "fiscal_year": 2025,
+      "period_type": "Q4",
+      "period_start": "2025-10-01",
+      "period_end": "2025-12-31",
+      "metric": "eps_diluted_gaap",
+      "value": 1.95,
+      "currency": "USD/share",
+      "source_type": "ISSUER_RELEASE",
+      "source_url": "https://ir.aboutamazon.com/news-release/news-release-details/2026/Amazon-com-Announces-Fourth-Quarter-Results/default.aspx",
+      "reviewed_on": "2026-10-18"
+    }
+  ]
+}
