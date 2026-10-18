@@ -57,10 +57,10 @@ def period_metrics(p, prev_fy=None):
     out = {}
     out["gross_margin"] = _div(p["gross_profit"], p["revenue"], "gross_profit")
     e = _ebit(p); out["ebit"] = e
-    out["ebit_margin"] = R(None, e.s, e.why) if e.v is None else _div(e.v, p["revenue"], "ebit")
+    out["ebit_margin"] = R(None, e.s, e.why) if e.v is None else _div(e.v, p["revenue"], "ebit",status=e.s)
     if e.v is None: out["ebitda"] = R(None, e.s, e.why)
     elif p["da"] is None: out["ebitda"] = R(None, "NULL", "falta da")
-    else: out["ebitda"] = R(e.v + p["da"], "PROXY" if (p["da_method"] or "").startswith(("depreciation_only","unavailable")) else "OK")
+    else: out["ebitda"] = R(e.v + p["da"], "PROXY" if e.s=="PROXY" or (p["da_method"] or "").startswith(("depreciation_only","unavailable")) else "OK")
     ni_status,ni_why=attributable_quality(p)
     out["net_margin"] = R(None,ni_status,ni_why) if ni_status in ("BLOCKED","NULL") else _div(p["net_income"],p["revenue"],"net_income",status=ni_status)
     f = _fcf(p); out["fcf"] = f
@@ -118,7 +118,7 @@ def ttm_metrics(w):
     else:
         qchecks=[capex_quality(q) for q in w]
         if any(st=="BLOCKED" for st,_ in qchecks):out["fcf_ttm"]=R(None,"BLOCKED","CapEx trimestral no conciliado")
-        else:out["fcf_ttm"]=R(cfo-cap,"OK","FCF bruto CFO - CapEx; NO FCF ajustado corporativo")
+        else:out["fcf_ttm"]=R(cfo-cap,"PROXY" if any(st=="PROXY" for st,_ in qchecks) else "OK","FCF bruto CFO - CapEx; alguno de los trimestres procede de YTD/FY, NO FCF ajustado corporativo")
     ebs = [_ebit(r) for r in w]; blocked = [x for x in ebs if x.s == "BLOCKED"]
     if blocked: out["ebit_ttm"] = R(None, "BLOCKED", blocked[0].why)
     elif any(x.v is None for x in ebs): out["ebit_ttm"] = R(None, "NULL", "falta ebit en algún trimestre")
