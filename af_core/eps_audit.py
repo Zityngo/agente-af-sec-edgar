@@ -8,7 +8,7 @@ from datetime import date
 import json
 import re
 
-SEC_ACC = re.compile(r"^\\d{10}-\\d{2}-\\d{6}$")
+SEC_ACC = re.compile(r"^\d{10}-\d{2}-\d{6}$")
 
 
 def _days(start, end):
