@@ -19,6 +19,7 @@ sys.path[:0]=[str(ROOT),str(ROOT/"scripts")]
 import pilot_5
 from af_core.verification import capex_quality,attributable_quality,ebit_quality
 from af_core.sec_insiders import fetch_recent_form4
+from af_core.eps_audit import audit_company
 
 TICKERS=("AAPL","TSLA","AMZN")
 CIK={"AAPL":"0000320193","TSLA":"0001318605","AMZN":"0001018724"}
@@ -149,6 +150,14 @@ def report_markdown(result):
             f"Último BPA TTM: {ttm.get('value') if ttm.get('value') is not None else 'NULL'} USD/acción; estado {ttm.get('status','NULL')} al {ttm.get('period_end','sin fecha')}.",
             "El registro Q4 es un puente experimental revisado, NO extracción automatizada para 500 emisores.",
             "","### Controles del motor",""]
+        qa_eps=r.get("eps_quarters") or {}
+        lines+=["","### BPA: procedencia de los cuatro trimestres","",
+            f"Estado auditoría: {qa_eps.get('status','NULL')} — {qa_eps.get('reason','')}",
+            "| Período | Fin | BPA GAAP | Origen | SEC accession | Documento Q4 |",
+            "|---|---|---:|---|---|---|"]
+        for q in qa_eps.get("quarters",[]):
+            lines.append(f"| {q['quarter']} | {q['period_end']} | {q['eps']} | {q['provenance']} | {q.get('source_accession') or q.get('filing_accession') or '-'} | {q.get('source_url') or 'SEC XBRL'} |")
+        lines+=["", "La suma de BPA trimestrales se mantiene como PROXY; no constituye BPA TTM certificado.", ""]
         for metric,quality in r["quality"].items():lines.append(f"- {metric}: {quality[0]} — {quality[1]}")
         lines+=["","### Negocio, MOAT y tesis a contrastar","",
             f"- Hipótesis competitiva: {MOAT[t][0]}.",
@@ -217,6 +226,7 @@ def run(out,ua):
         q4=con.execute("SELECT eps_diluted,sources_json FROM periods WHERE cik=? AND period_type='Q4' AND fiscal_year=2025",(cik,)).fetchone()
         ttm_eps=con.execute("SELECT value,status,reason,period_end FROM metrics WHERE cik=? AND scope='TTM' AND metric='eps_ttm' ORDER BY period_end DESC LIMIT 1",(cik,)).fetchone()
         result["companies"][t]={
+            "eps_quarters":audit_company(con,cik),
             "q4_eps_2025":{"value":q4["eps_diluted"] if q4 else None,
                 "evidence":json.loads(q4["sources_json"] or "{}").get("eps_diluted") if q4 else None},
             "latest_eps_ttm":dict(ttm_eps) if ttm_eps else None,
@@ -237,6 +247,7 @@ def run(out,ua):
     summary={t:{"SEC":Counter(v["status"] for v in r["reconciliation"].values()),
                 "EODHD":r["eodhd"]["status"]} for t,r in result["companies"].items()}
     print(json.dumps({"companies":summary,"download_errors":errors},ensure_ascii=False))
+    print(json.dumps({"eps_provenance_audit":{t:r["eps_quarters"] for t,r in result["companies"].items()}},ensure_ascii=False))
     print(json.dumps({"eps_pilot_summary":{t:{"q4_2025":r["q4_eps_2025"]["value"],
                  "ttm":r["latest_eps_ttm"]} for t,r in result["companies"].items()}},ensure_ascii=False))
     return len(errors)==0 and len(result["companies"])==3
