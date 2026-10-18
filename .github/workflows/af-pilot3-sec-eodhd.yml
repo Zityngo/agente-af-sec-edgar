@@ -6,7 +6,7 @@ on:
     paths:
       - '.github/workflows/af-pilot3-sec-eodhd.yml'
       - 'af_core/**'
-      - 'tests/test_verification_sec.py'
+      - 'tests/**'
       - 'scripts/pilot_3_sec_eodhd.py'
       - 'scripts/pilot_5.py'
       - 'scripts/normalize_sp500_v2.py'
