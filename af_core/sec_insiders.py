@@ -42,10 +42,10 @@ def parse_form4_xml(data,source_url="",accession=""):
     return {"issuer":issuer,"owners":owners,"transactions":transactions,
             "source_url":source_url,"accession":accession,"status":"PARSED_NOT_CERTIFIED"}
 
-def fetch_recent_form4(filings,ticker,limit=5,fetch=None):
+def fetch_recent_form4(filings,ticker,limit=5,fetch=None,user_agent=None):
     """Select the newest SEC filings; record any fetch/parse errors, never guess."""
     def _http(url):
-        req=urllib.request.Request(url,headers={"User-Agent":"AFundamental-Research-Agent/1.0",
+        req=urllib.request.Request(url,headers={"User-Agent":user_agent or "AFundamental-Research-Agent/1.0",
                  "Accept":"application/xml","Accept-Encoding":"identity"})
         with urllib.request.urlopen(req,timeout=40) as r:return r.read()
     fetch=fetch or _http
