@@ -6,6 +6,8 @@ No full XML or names are committed to public GitHub; use source filing URLs.
 from __future__ import annotations
 import urllib.request
 import xml.etree.ElementTree as ET
+import re
+from urllib.parse import urlsplit,urlunsplit
 
 EVENTS={"P":"Compra (código P)","S":"Venta (código S)",
         "A":"Concesión/adjudicación","M":"Ejercicio o conversión","F":"Retención fiscal"}
@@ -42,6 +44,16 @@ def parse_form4_xml(data,source_url="",accession=""):
     return {"issuer":issuer,"owners":owners,"transactions":transactions,
             "source_url":source_url,"accession":accession,"status":"PARSED_NOT_CERTIFIED"}
 
+def raw_form4_url(url):
+    """The SEC submissions primaryDocument can include an XSL transform subfolder.
+    Strip only the official xslF345XNN directory to request the real XML source."""
+    p=urlsplit(url)
+    if p.scheme!="https" or p.hostname!="www.sec.gov" or "/Archives/edgar/data/" not in p.path:
+        raise ValueError("Untrusted SEC Form 4 URL")
+    path=re.sub(r"/xslF345X[0-9]+/","/",p.path,flags=re.IGNORECASE)
+    if not path.lower().endswith(".xml"):raise ValueError("Form 4 filing must be XML")
+    return urlunsplit((p.scheme,p.netloc,path,"",""))
+
 def fetch_recent_form4(filings,ticker,limit=5,fetch=None,user_agent=None):
     """Select the newest SEC filings; record any fetch/parse errors, never guess."""
     def _http(url):
@@ -52,7 +64,8 @@ def fetch_recent_form4(filings,ticker,limit=5,fetch=None,user_agent=None):
     out=[]
     for entry in [x for x in filings if x.get("form") in ("4","4/A")][:limit]:
         try:
-            parsed=parse_form4_xml(fetch(entry["url"]),entry["url"],entry["accession"])
+            raw_url=raw_form4_url(entry["url"])
+            parsed=parse_form4_xml(fetch(raw_url),raw_url,entry["accession"])
             if parsed["issuer"] and parsed["issuer"].upper()!=ticker:
                 parsed["status"]="BLOCKED_TICKER_MISMATCH"
             out.append(parsed)
