@@ -10,6 +10,7 @@ import json
 import os
 import sys
 import urllib.request
+from datetime import date
 from collections import Counter
 from datetime import datetime,timezone
 from pathlib import Path
@@ -62,7 +63,20 @@ def financial_year(payload,period_end):
         annual=(fs.get(key) or {}).get("yearly") or {}
         if not isinstance(annual,dict):return {}
         if period_end in annual:return annual[period_end] or {}
-        return next((v for v in annual.values() if isinstance(v,dict) and v.get("date")==period_end),{})
+        exact=next((v for v in annual.values() if isinstance(v,dict) and v.get("date")==period_end),None)
+        if exact is not None:return exact
+        # Provider calendar labels can use a month-end close while the SEC
+        # fiscal week ends a few days earlier. No more than 10 days of tolerance.
+        target=date.fromisoformat(period_end)
+        candidates=[]
+        for k,v in annual.items():
+            if not isinstance(v,dict):continue
+            try:
+                reported=date.fromisoformat(str(v.get("date") or k)[:10])
+                delta=abs((reported-target).days)
+                if delta<=10:candidates.append((delta,v))
+            except ValueError:pass
+        return sorted(candidates,key=lambda x:x[0])[0][1] if candidates else {}
     inc,cf=item("Income_Statement"),item("Cash_Flow")
     values={"revenue":inc.get("totalRevenue"),"operating_income":inc.get("operatingIncome"),
             "net_income":inc.get("netIncomeApplicableToCommonShares"),
@@ -166,6 +180,11 @@ def run(out,ua):
                "beneficio_atribuible":attributable_quality(row)}
         provider,payload=eodhd(t)
         external=financial_year(payload,GOLD[t]["end"]) if payload else {}
+        financials=payload.get("Financials") or {}
+        provider["fy_income_dates"]=list(((financials.get("Income_Statement") or {}).get("yearly") or {}).keys())[-8:]
+        provider["fy_income_field_names"]=list(next(iter(((financials.get("Income_Statement") or {}).get("yearly") or {}).values()),{}).keys()) if financials else []
+        provider["insider_section_type"]=type(payload.get("InsiderTransactions")).__name__ if payload else "missing"
+        provider["holder_section_type"]=type(payload.get("Holders")).__name__ if payload else "missing"
         result["companies"][t]={
             "cik":cik,"accession":row["accession"] if row else None,
             "reconciliation":reconcile(row,GOLD[t]),"quality":q,
