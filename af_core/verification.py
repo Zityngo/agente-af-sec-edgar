@@ -49,6 +49,8 @@ def capex_quality(period):
     if isinstance(e,dict) and e.get("derived_from")=="FY_minus_9M":
         if not isinstance(e.get("annual_source"),dict) or not isinstance(e.get("nine_month_source"),dict):
             return "BLOCKED","CapEx Q4 requiere fuentes FY y 9M"
+    if isinstance(e,dict) and e.get("derived_from") in ("FY_minus_9M","ytd_delta"):
+        return "PROXY","CapEx trimestral calculado por diferencia YTD/FY; fuentes compatibles, no declarado aislado"
     return "OK","CapEx PP&E fuente SEC compatible; comparabilidad economica por verificar"
 
 def attributable_quality(period):
