@@ -140,7 +140,17 @@ def valuation_metrics(price, ttm, fy_eps):
     out = {}; close = price["close"]; sh = price.get("shares")
     out["per_fy"] = R(close/fy_eps, "OK") if fy_eps and fy_eps > 0 else R(None,"NULL","EPS FY ausente o <=0")
     e = ttm.get("eps_ttm")
-    out["per_ttm"] = R(close/e.v,"OK") if e and e.v and e.v > 0 else R(None, "NULL", (e.why if e and e.v is None else "EPS TTM <=0"))
+    if e is None:
+        out["per_ttm"] = R(None, "NULL", "EPS TTM no disponible")
+    elif e.s not in ("OK", "PROXY"):
+        status = e.s if e.s in ("NULL", "BLOCKED", "NA_SECTOR") else "BLOCKED"
+        out["per_ttm"] = R(None, status, e.why or "EPS TTM sin calidad aceptable")
+    elif e.v is None:
+        out["per_ttm"] = R(None, "NULL", e.why or "EPS TTM no disponible")
+    elif e.v <= 0:
+        out["per_ttm"] = R(None, "NULL", "EPS TTM <=0")
+    else:
+        out["per_ttm"] = R(close/e.v, e.s, e.why)
     if not sh:
         for k in ("market_cap","ev","fcf_yield","ev_ebitda"): out[k] = R(None,"NULL","falta shares en prices")
         return out
