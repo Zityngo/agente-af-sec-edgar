@@ -237,6 +237,8 @@ def run(out,ua):
     summary={t:{"SEC":Counter(v["status"] for v in r["reconciliation"].values()),
                 "EODHD":r["eodhd"]["status"]} for t,r in result["companies"].items()}
     print(json.dumps({"companies":summary,"download_errors":errors},ensure_ascii=False))
+    print(json.dumps({"eps_pilot_summary":{t:{"q4_2025":r["q4_eps_2025"]["value"],
+                 "ttm":r["latest_eps_ttm"]} for t,r in result["companies"].items()}},ensure_ascii=False))
     return len(errors)==0 and len(result["companies"])==3
 
 def main():
