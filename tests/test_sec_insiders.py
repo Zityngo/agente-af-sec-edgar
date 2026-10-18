@@ -27,11 +27,11 @@ class InsiderChecks(unittest.TestCase):
  def test_no_form4_not_assumed_no_activity(self):
   self.assertEqual(fetch_recent_form4([{"form":"10-K"}],"AAPL",fetch=lambda u:BUY),[])
  def test_wrong_issuer_is_blocked(self):
-  x=fetch_recent_form4([{"form":"4","url":"https://www.sec.gov/x.xml","accession":"A"}],
+  x=fetch_recent_form4([{"form":"4","url":"https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/xslF345X06/form4.xml","accession":"A"}],
           "TSLA",fetch=lambda u:BUY)
   self.assertEqual(x[0]["status"],"BLOCKED_TICKER_MISMATCH")
  def test_missing_document_is_unavailable(self):
-  x=fetch_recent_form4([{"form":"4","url":"https://www.sec.gov/x.xml","accession":"A"}],
+  x=fetch_recent_form4([{"form":"4","url":"https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/xslF345X06/form4.xml","accession":"A"}],
           "AAPL",fetch=lambda u: (_ for _ in ()).throw(OSError("missing")))
   self.assertEqual(x[0]["status"],"UNAVAILABLE")
 if __name__=="__main__": unittest.main()
