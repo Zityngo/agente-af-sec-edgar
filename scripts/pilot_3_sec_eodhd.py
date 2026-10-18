@@ -142,7 +142,13 @@ def report_markdown(result):
             "|---|---:|---:|---|"]
         for metric,c in r["reconciliation"].items():
             lines.append(f"| {metric} | {format_usd(c['official'],metric=='eps_diluted')} | {format_usd(c['extracted'],metric=='eps_diluted')} | {c['status']} |")
-        lines+=["","### Controles del motor",""]
+        q4=r.get("q4_eps_2025") or {}
+        ttm=r.get("latest_eps_ttm") or {}
+        lines+=["","### BPA trimestral y TTM (piloto)","",
+            f"BPA diluido GAAP Q4 2025: {q4.get('value') if q4.get('value') is not None else 'NULL'} USD/acción. Fuente oficial: {(q4.get('evidence') or {}).get('issuer_url','NO DISPONIBLE')}.",
+            f"Último BPA TTM: {ttm.get('value') if ttm.get('value') is not None else 'NULL'} USD/acción; estado {ttm.get('status','NULL')} al {ttm.get('period_end','sin fecha')}.",
+            "El registro Q4 es un puente experimental revisado, NO extracción automatizada para 500 emisores.",
+            "","### Controles del motor",""]
         for metric,quality in r["quality"].items():lines.append(f"- {metric}: {quality[0]} — {quality[1]}")
         lines+=["","### Negocio, MOAT y tesis a contrastar","",
             f"- Hipótesis competitiva: {MOAT[t][0]}.",
@@ -188,7 +194,8 @@ def report_markdown(result):
 
 def run(out,ua):
     pilot_5.TICKERS=list(TICKERS)
-    con,errors=pilot_5.run(out,2021,2026,ua,sleep=.4)
+    con,errors=pilot_5.run(out,2021,2026,ua,sleep=.4,
+        official_q4_path=ROOT/"data/q4_eps_official_pilot_2025.json")
     result={"generated_at":datetime.now(timezone.utc).isoformat(),"companies":{},"errors":errors}
     for t in TICKERS:
         cik=CIK[t]
@@ -207,7 +214,12 @@ def run(out,ua):
         provider["holder_section_type"]=type(payload.get("Holders")).__name__ if payload else "missing"
         filings=latest_filings(cik,ua)
         insider_forms=fetch_recent_form4(filings["filings"],t,limit=4,user_agent=ua)
+        q4=con.execute("SELECT eps_diluted,sources_json FROM periods WHERE cik=? AND period_type='Q4' AND fiscal_year=2025",(cik,)).fetchone()
+        ttm_eps=con.execute("SELECT value,status,reason,period_end FROM metrics WHERE cik=? AND scope='TTM' AND metric='eps_ttm' ORDER BY period_end DESC LIMIT 1",(cik,)).fetchone()
         result["companies"][t]={
+            "q4_eps_2025":{"value":q4["eps_diluted"] if q4 else None,
+                "evidence":json.loads(q4["sources_json"] or "{}").get("eps_diluted") if q4 else None},
+            "latest_eps_ttm":dict(ttm_eps) if ttm_eps else None,
             "insider_forms":insider_forms,
             "cik":cik,"accession":row["accession"] if row else None,
             "reconciliation":reconcile(row,GOLD[t]),"quality":q,
