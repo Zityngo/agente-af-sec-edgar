@@ -21,6 +21,7 @@ from af_core.verification import capex_quality,attributable_quality,ebit_quality
 from af_core.sec_insiders import fetch_recent_form4
 from af_core.eps_audit import audit_company
 from af_core.eps_benchmark import load_benchmark, compare as compare_eps_benchmark
+from af_core.earnings_audit import load_events, audit_window
 
 TICKERS=("AAPL","TSLA","AMZN")
 CIK={"AAPL":"0000320193","TSLA":"0001318605","AMZN":"0001018724"}
@@ -162,6 +163,13 @@ def report_markdown(result):
         for q in qa_eps.get("quarters",[]):
             lines.append(f"| {q['quarter']} | {q['period_end']} | {q['eps']} | {q['provenance']} | {q.get('source_accession') or q.get('filing_accession') or '-'} | {q.get('source_url') or 'SEC XBRL'} |")
         lines+=["", "La suma de BPA trimestrales se mantiene como PROXY; no constituye BPA TTM certificado.", ""]
+        event_audit=r.get("earnings_events") or {}
+        lines+=["","### Hechos extraordinarios y recurrencia (catálogo manual parcial)",
+                f"Estado: {event_audit.get('status','NO_DISPONIBLE')} — {event_audit.get('reason','')}",
+                "El BPA GAAP permanece intacto. Los importes antes de impuestos no se restan directamente del BPA diluido."]
+        for ev in event_audit.get("events",[]):
+            lines.append(f"- {ev['period_type']} {ev['period_end']}: {ev['amount']} [{ev['basis']}]. {ev['description']} Fuente: {ev['source_url']}")
+        lines.append("BPA ajustado: BLOQUEADO hasta disponer de conciliación fiscal y acciones diluidas.")
         for metric,quality in r["quality"].items():lines.append(f"- {metric}: {quality[0]} — {quality[1]}")
         lines+=["","### Negocio, MOAT y tesis a contrastar","",
             f"- Hipótesis competitiva: {MOAT[t][0]}.",
@@ -210,6 +218,7 @@ def run(out,ua):
     con,errors=pilot_5.run(out,2021,2026,ua,sleep=.4,
         official_q4_path=ROOT/"data/q4_eps_official_pilot_2025.json")
     result={"generated_at":datetime.now(timezone.utc).isoformat(),"companies":{},"errors":errors}
+    unusual_events=load_events(ROOT/"data/earnings_events_pilot_2026q2.json")
     for t in TICKERS:
         cik=CIK[t]
         row=con.execute("SELECT * FROM periods WHERE cik=? AND period_type='FY' AND period_end=?",(cik,GOLD[t]["end"])).fetchone()
@@ -229,8 +238,12 @@ def run(out,ua):
         insider_forms=fetch_recent_form4(filings["filings"],t,limit=4,user_agent=ua)
         q4=con.execute("SELECT eps_diluted,sources_json FROM periods WHERE cik=? AND period_type='Q4' AND fiscal_year=2025",(cik,)).fetchone()
         ttm_eps=con.execute("SELECT value,status,reason,period_end FROM metrics WHERE cik=? AND scope='TTM' AND metric='eps_ttm' ORDER BY period_end DESC LIMIT 1",(cik,)).fetchone()
+        quarterly_ends=[z["period_end"] for z in con.execute(
+            "SELECT period_end FROM periods WHERE cik=? AND period_type IN ('Q1','Q2','Q3','Q4') ORDER BY period_end DESC LIMIT 4",(cik,))]
+        nonrecurring_audit=audit_window(t,quarterly_ends,unusual_events)
         result["companies"][t]={
             "eps_quarters":audit_company(con,cik),
+            "earnings_events":nonrecurring_audit,
             "q4_eps_2025":{"value":q4["eps_diluted"] if q4 else None,
                 "evidence":json.loads(q4["sources_json"] or "{}").get("eps_diluted") if q4 else None},
             "latest_eps_ttm":dict(ttm_eps) if ttm_eps else None,

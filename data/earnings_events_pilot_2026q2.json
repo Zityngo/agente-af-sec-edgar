@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "scope": "THREE_COMPANY_NONRECURRING_EARNINGS_PILOT_2026Q2",
+  "unit_policy": "Store original disclosure units; no after-tax conversion, no automatic EPS adjustments",
+  "events": [
+    {
+      "ticker": "AMZN",
+      "period_type": "Q1",
+      "period_end": "2026-03-31",
+      "basis": "PRETAX_INVESTMENT_GAINS_USD_MILLIONS",
+      "amount": 16800,
+      "description": "Ganancias preimpuestos no operativas procedentes de inversiones en Anthropic; no equivalen a BPA atribuible normalizado.",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000012/amzn-20260331xex991.htm"
+    },
+    {
+      "ticker": "AMZN",
+      "period_type": "Q2",
+      "period_end": "2026-06-30",
+      "basis": "PRETAX_OTHER_INCOME_USD_MILLIONS",
+      "amount": 53400,
+      "description": "Otros ingresos no operativos preimpuestos, principalmente por inversiones en Anthropic; no atribuir la cifra íntegra a Anthropic.",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000024/amzn-20260630xex991.htm"
+    },
+    {
+      "ticker": "AAPL",
+      "period_type": "Q3",
+      "period_end": "2026-06-27",
+      "basis": "EPS_FAVORABLE_IMPACT_USD_PER_SHARE",
+      "amount": 0.11,
+      "description": "Impacto favorable por devoluciones arancelarias en el BPA diluido Q3 FY2026, según Apple.",
+      "source_url": "https://www.apple.com/newsroom/2026/07/apple-reports-third-quarter-results/"
+    }
+  ]
+}

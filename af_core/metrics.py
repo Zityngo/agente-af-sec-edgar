@@ -64,7 +64,7 @@ def period_metrics(p, prev_fy=None):
     ni_status,ni_why=attributable_quality(p)
     out["net_margin"] = R(None,ni_status,ni_why) if ni_status in ("BLOCKED","NULL") else _div(p["net_income"],p["revenue"],"net_income",status=ni_status)
     f = _fcf(p); out["fcf"] = f
-    out["fcf_margin"] = R(None, f.s, f.why) if f.v is None else _div(f.v, p["revenue"], "fcf")
+    out["fcf_margin"] = R(None, f.s, f.why) if f.v is None else _div(f.v, p["revenue"], "fcf", status=f.s)
     if p["debt_total"] is None or p["cash"] is None: out["net_debt"] = R(None, "NULL", "falta debt_total/cash")
     else: out["net_debt"] = R(p["debt_total"] - p["cash"], "PROXY" if p["debt_method"] and "proxy" in p["debt_method"] else "OK")
     if p["period_type"] == "FY":
@@ -124,16 +124,26 @@ def ttm_metrics(w):
     elif any(x.v is None for x in ebs): out["ebit_ttm"] = R(None, "NULL", "falta ebit en algún trimestre")
     else: out["ebit_ttm"] = R(sum(x.v for x in ebs), "PROXY" if any(x.s=="PROXY" for x in ebs) else "OK", "incluye Q4 FY-9M" if any(x.s=="PROXY" for x in ebs) else "")
     et = out["ebit_ttm"]
-    out["ebitda_ttm"] = R(None, et.s, et.why) if et.v is None else (R(et.v+da,et.s,et.why) if da is not None else R(None,"NULL","falta da en algún trimestre"))
+    da_proxy = any((q.get("da_method") or "").startswith(("depreciation_only","unavailable")) for q in w)
+    out["ebitda_ttm"] = (R(None, et.s, et.why) if et.v is None else
+                         R(None, "NULL", "falta da en algún trimestre") if da is None else
+                         R(et.v + da, "PROXY" if et.s == "PROXY" or da_proxy else "OK",
+                           "D&A parcial o EBIT Q4 derivado" if da_proxy or et.s == "PROXY" else ""))
     out["ebit_margin_ttm"] = R(None, et.s, et.why) if et.v is None else _div(et.v, rev, "ebit",status=et.s)
-    f = out["fcf_ttm"]; out["fcf_margin_ttm"] = R(None, f.s, f.why) if f.v is None else _div(f.v, rev, "fcf")
+    f = out["fcf_ttm"]; out["fcf_margin_ttm"] = R(None, f.s, f.why) if f.v is None else _div(f.v, rev, "fcf", status=f.s)
     eps = [r["eps_diluted"] for r in w]
     out["eps_ttm"] = R(sum(eps),"PROXY","EPS trimestral sumado; splits/pesos por trimestre pendientes") if all(x is not None for x in eps) else R(None,"NULL","falta EPS Q4 expresamente reportado; prohibido FY - 9M EPS")
     last = w[-1]
     if last["debt_total"] is None or last["cash"] is None: out["net_debt"] = R(None,"NULL","falta debt_total/cash")
-    else: out["net_debt"] = R(last["debt_total"]-last["cash"], "OK")
+    else: out["net_debt"] = R(last["debt_total"]-last["cash"],
+                              "PROXY" if "proxy" in (last.get("debt_method") or "").lower() else "OK",
+                              "Deuda financiera basada en proxy" if "proxy" in (last.get("debt_method") or "").lower() else "")
     eb = out["ebitda_ttm"]
-    out["debt_ebitda_ttm"] = R(None, eb.s, eb.why) if eb.v is None else (R(last["debt_total"]/eb.v,"OK") if last["debt_total"] is not None and eb.v > 0 else R(None,"NULL","ebitda<=0 o falta deuda"))
+    out["debt_ebitda_ttm"] = (R(None, eb.s, eb.why) if eb.v is None else
+                              R(None, "NULL", "ebitda<=0 o falta deuda") if last["debt_total"] is None or eb.v <= 0 else
+                              R(last["debt_total"]/eb.v,
+                                "PROXY" if "PROXY" in (eb.s, out["net_debt"].s) else "OK",
+                                "EBITDA o deuda proxy" if "PROXY" in (eb.s, out["net_debt"].s) else ""))
     return out
 
 def valuation_metrics(price, ttm, fy_eps):
@@ -156,11 +166,27 @@ def valuation_metrics(price, ttm, fy_eps):
         return out
     mc = close*sh; out["market_cap"] = R(mc,"OK")
     nd, f, eb = ttm.get("net_debt"), ttm.get("fcf_ttm"), ttm.get("ebitda_ttm")
-    out["ev"] = R(mc+nd.v,"OK") if nd and nd.v is not None else R(None,"NULL","falta net_debt")
-    out["fcf_yield"] = R(f.v/mc,"OK") if f and f.v is not None else R(None, f.s if f else "NULL", f.why if f else "falta fcf_ttm")
-    if not (eb and eb.v is not None): out["ev_ebitda"] = R(None, eb.s if eb else "NULL", eb.why if eb else "falta ebitda_ttm")
-    elif out["ev"].v is None or eb.v <= 0: out["ev_ebitda"] = R(None,"NULL","EV ausente o ebitda<=0")
-    else: out["ev_ebitda"] = R(out["ev"].v/eb.v,"OK")
+    # No ratio is more reliable than the metric feeding it.
+    def usable(r):
+        return r is not None and r.v is not None and r.s in ("OK", "PROXY")
+    if usable(nd):
+        out["ev"] = R(mc + nd.v, nd.s, nd.why)
+    else:
+        out["ev"] = R(None, nd.s if nd else "NULL", nd.why if nd else "falta net_debt")
+    if usable(f):
+        out["fcf_yield"] = R(f.v / mc, f.s, f.why) if mc > 0 else R(None, "NULL", "market cap <=0")
+    else:
+        out["fcf_yield"] = R(None, f.s if f else "NULL", f.why if f else "falta fcf_ttm")
+    if not usable(eb):
+        out["ev_ebitda"] = R(None, eb.s if eb else "NULL", eb.why if eb else "falta ebitda_ttm")
+    elif not usable(out["ev"]):
+        out["ev_ebitda"] = R(None, out["ev"].s, out["ev"].why)
+    elif eb.v <= 0:
+        out["ev_ebitda"] = R(None, "NULL", "ebitda<=0")
+    else:
+        status = "PROXY" if "PROXY" in (out["ev"].s, eb.s) else "OK"
+        out["ev_ebitda"] = R(out["ev"].v / eb.v, status,
+                              "EV o EBITDA TTM proxy" if status == "PROXY" else "")
     return out
 
 def compute_company(con, cik):
