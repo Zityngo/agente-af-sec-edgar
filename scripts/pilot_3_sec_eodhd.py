@@ -22,6 +22,7 @@ from af_core.sec_insiders import fetch_recent_form4
 from af_core.eps_audit import audit_company
 from af_core.eps_benchmark import load_benchmark, compare as compare_eps_benchmark
 from af_core.earnings_audit import load_events, audit_window
+from af_core.ttm_rollforward import audit_ttm
 
 TICKERS=("AAPL","TSLA","AMZN")
 CIK={"AAPL":"0000320193","TSLA":"0001318605","AMZN":"0001018724"}
@@ -170,6 +171,18 @@ def report_markdown(result):
         for ev in event_audit.get("events",[]):
             lines.append(f"- {ev['period_type']} {ev['period_end']}: {ev['amount']} [{ev['basis']}]. {ev['description']} Fuente: {ev['source_url']}")
         lines.append("BPA ajustado: BLOQUEADO hasta disponer de conciliación fiscal y acciones diluidas.")
+        bridge=r.get("ttm_rollforward") or {}
+        lines+=["","### Auditoría independiente TTM: SEC FY + YTD actual - YTD anterior","",
+                f"Estado: {bridge.get('status','NO_DISPONIBLE')} — {bridge.get('reason','')}",
+                "| Métrica | TTM motor (USD) | Puente SEC (USD) | Estado |",
+                "|---|---:|---:|---|"]
+        for name, item in bridge.get("metrics",{}).items():
+            fmt=lambda v: "NULL" if v is None else f"{v:,.0f}"
+            lines.append(f"| {name} | {fmt(item.get('engine_value'))} | {fmt(item.get('reference'))} | {item.get('status')} |")
+            if item.get("status") not in ("MATCH",):
+                lines.append(f"- {name}: {item.get('reason','sin origen')}")
+        lines.append("MATCH prueba identidad aritmética con filings originales y fechas compatibles, "
+                     "no certifica FCF sostenible, BPA recurrente ni clasificación contable.")
         for metric,quality in r["quality"].items():lines.append(f"- {metric}: {quality[0]} — {quality[1]}")
         lines+=["","### Negocio, MOAT y tesis a contrastar","",
             f"- Hipótesis competitiva: {MOAT[t][0]}.",
@@ -241,9 +254,12 @@ def run(out,ua):
         quarterly_ends=[z["period_end"] for z in con.execute(
             "SELECT period_end FROM periods WHERE cik=? AND period_type IN ('Q1','Q2','Q3','Q4') ORDER BY period_end DESC LIMIT 4",(cik,))]
         nonrecurring_audit=audit_window(t,quarterly_ends,unusual_events)
+        raw_facts=json.loads((out/f"companyfacts_{t}.json").read_text(encoding="utf-8"))
+        rolling_audit=audit_ttm(con,cik,raw_facts)
         result["companies"][t]={
             "eps_quarters":audit_company(con,cik),
             "earnings_events":nonrecurring_audit,
+            "ttm_rollforward":rolling_audit,
             "q4_eps_2025":{"value":q4["eps_diluted"] if q4 else None,
                 "evidence":json.loads(q4["sources_json"] or "{}").get("eps_diluted") if q4 else None},
             "latest_eps_ttm":dict(ttm_eps) if ttm_eps else None,
@@ -268,6 +284,9 @@ def run(out,ua):
                 "EODHD":r["eodhd"]["status"]} for t,r in result["companies"].items()}
     print(json.dumps({"companies":summary,"download_errors":errors},ensure_ascii=False))
     print(json.dumps({"eps_reference_summary":{t:{"state":v["status"],"matching":len(v["quarters"])} for t,v in result["eps_benchmark"].items()}},ensure_ascii=False))
+    print(json.dumps({"ttm_rollforward_summary":{t:{"status":v["ttm_rollforward"]["status"],"metrics":{k:x["status"] for k,x in v["ttm_rollforward"]["metrics"].items()}} for t,v in result["companies"].items()}},ensure_ascii=False))
+    if any(v["ttm_rollforward"]["status"]=="DIVERGENCE" for v in result["companies"].values()):
+        raise ValueError("Divergencia entre motor TTM y puente SEC FY+YTD-YTD; análisis no aprobado")
     print(json.dumps({"eps_provenance_audit":{t:r["eps_quarters"] for t,r in result["companies"].items()}},ensure_ascii=False))
     print(json.dumps({"eps_pilot_summary":{t:{"q4_2025":r["q4_eps_2025"]["value"],
                  "ttm":r["latest_eps_ttm"]} for t,r in result["companies"].items()}},ensure_ascii=False))
