@@ -109,6 +109,24 @@ def ttm_metrics(w):
     rev, ni, cfo, cap, da = (tsum(k) for k in ("revenue","net_income","cfo","capex","da"))
     for name, v in (("revenue_ttm",rev),("net_income_ttm",ni),("cfo_ttm",cfo),("capex_ttm",cap)):
         out[name] = R(v, "OK") if v is not None else R(None,"NULL",f"falta {name[:-4]} en algún trimestre")
+    # SEC cash-flow quarters commonly come from YTD deltas, not direct 3M figures.
+    # Sum reconciles via FY+YTD-YTD; keep derivation quality visible.
+    import json
+    def cfo_is_derived(q):
+        try:
+            raw=json.loads(q.get("sources_json") or "{}")
+            entry=raw.get("cfo")
+            return isinstance(entry,dict) and entry.get("derived_from") in ("FY_minus_9M","ytd_delta")
+        except (ValueError,TypeError,AttributeError):
+            return True
+    if cfo is not None and any(cfo_is_derived(q) for q in w):
+        out["cfo_ttm"]=R(cfo,"PROXY","CFO trimestral reconstruido de acumulados YTD/FY, contrastar puente SEC")
+    capchecks=[capex_quality(q) for q in w]
+    if cap is not None:
+        if any(status=="BLOCKED" for status,_ in capchecks):
+            out["capex_ttm"]=R(None,"BLOCKED","CapEx trimestral con etiqueta/origen no aprobado")
+        elif any(status=="PROXY" for status,_ in capchecks):
+            out["capex_ttm"]=R(cap,"PROXY","CapEx trimestral por diferencias YTD/FY")
     ni_checks=[attributable_quality(q) for q in w]
     if any(st=="BLOCKED" for st,_ in ni_checks):
         out["net_income_ttm"]=R(None,"BLOCKED","beneficio consolidado/no atribuible en trimestre")
@@ -116,9 +134,9 @@ def ttm_metrics(w):
         out["net_income_ttm"]=R(ni,"PROXY","beneficio de matriz; preferentes pendientes")
     if cfo is None or cap is None: out["fcf_ttm"] = R(None,"NULL","falta cfo/capex")
     else:
-        qchecks=[capex_quality(q) for q in w]
+        qchecks=capchecks
         if any(st=="BLOCKED" for st,_ in qchecks):out["fcf_ttm"]=R(None,"BLOCKED","CapEx trimestral no conciliado")
-        else:out["fcf_ttm"]=R(cfo-cap,"PROXY" if any(st=="PROXY" for st,_ in qchecks) else "OK","FCF bruto CFO - CapEx; alguno de los trimestres procede de YTD/FY, NO FCF ajustado corporativo")
+        else:out["fcf_ttm"]=R(cfo-cap,"PROXY" if any(st=="PROXY" for st,_ in qchecks) or out["cfo_ttm"].s=="PROXY" else "OK","FCF bruto CFO - CapEx; alguno de los trimestres procede de YTD/FY, NO FCF ajustado corporativo")
     ebs = [_ebit(r) for r in w]; blocked = [x for x in ebs if x.s == "BLOCKED"]
     if blocked: out["ebit_ttm"] = R(None, "BLOCKED", blocked[0].why)
     elif any(x.v is None for x in ebs): out["ebit_ttm"] = R(None, "NULL", "falta ebit en algún trimestre")

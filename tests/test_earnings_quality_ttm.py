@@ -46,6 +46,7 @@ class QualityPropagation(unittest.TestCase):
                              "sources_json":json.dumps(source),"eps_diluted":1,
                              "debt_total":30,"debt_method":"proxy_bonds","cash":5})
         r = ttm_metrics(quarters)
+        self.assertEqual(r["capex_ttm"].s,"PROXY")
         for name in ("fcf_ttm","fcf_margin_ttm","ebitda_ttm","debt_ebitda_ttm","net_debt"):
             self.assertEqual(r[name].s, "PROXY", name)
 
@@ -86,3 +87,4 @@ class ExceptionalEarningsAudit(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
