@@ -10,6 +10,9 @@ on:
       - 'scripts/pilot_3_sec_eodhd.py'
       - 'scripts/pilot_5.py'
       - 'scripts/normalize_sp500_v2.py'
+      - 'scripts/build_jons_review.py'
+      - 'data/pilot_price_reference_2026-10-20.json'
+      - 'app/jon_review_template.html'
 permissions:
   contents: read
 concurrency:
@@ -30,6 +33,11 @@ jobs:
         env:
           SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
         run: python scripts/pilot_3_sec_eodhd.py --out publico/pilot3
+      - name: Construir informe piloto para revisión de Jon (HTML, PDF, JSON)
+        run: |
+          python -m pip install reportlab==4.2.5 pypdf
+          python scripts/build_jons_review.py --db publico/pilot3/pilot.db --audit publico/pilot3/auditoria_piloto_3.json --out publico/pilot3/revision_jon
+          python -c "from pypdf import PdfReader; from pathlib import Path; p=Path('publico/pilot3/revision_jon/jon_review.pdf'); r=PdfReader(str(p)); assert len(r.pages)>=4; assert 'A.FUNDAMENTAL' in (r.pages[0].extract_text() or '')"
       - name: Guardar informe y auditoría sin dump del proveedor
         if: always()
         uses: actions/upload-artifact@v4
@@ -39,5 +47,8 @@ jobs:
             publico/pilot3/analisis_piloto_3.md
             publico/pilot3/auditoria_piloto_3.json
             publico/pilot3/pilot.db
+            publico/pilot3/revision_jon/jon_review.html
+            publico/pilot3/revision_jon/jon_review.pdf
+            publico/pilot3/revision_jon/jon_review.json
           retention-days: 30
           if-no-files-found: warn
