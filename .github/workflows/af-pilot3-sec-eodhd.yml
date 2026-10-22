@@ -12,6 +12,7 @@ on:
       - 'scripts/normalize_sp500_v2.py'
       - 'scripts/build_jons_review.py'
       - 'data/pilot_price_reference_2026-10-20.json'
+      - 'data/eps_benchmarks_pilot_2026q2.json'
       - 'app/jon_review_template.html'
 permissions:
   contents: read
