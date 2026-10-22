@@ -111,11 +111,21 @@
       "eps_diluted_gaap": 5.75,
       "source_url": "https://ir.aboutamazon.com/news-release/news-release-details/2026/Amazon-com-Announces-Second-Quarter-Results/default.aspx",
       "verified": "2026-10-18"
+    },
+    {
+      "ticker": "TSLA",
+      "period_type": "Q3",
+      "fiscal_year": 2026,
+      "period_end": "2026-09-30",
+      "eps_diluted_gaap": 0.22,
+      "source_url": "https://ir.tesla.com/_flysystem/s3/sec/000162828026066738/tsla-20261021-gen.pdf",
+      "verified": "2026-10-22"
     }
   ],
   "limits": [
     "Benchmarks are snapshots of issuer-published EPS; not a general extraction engine.",
     "Amazon GAAP EPS includes material Anthropic investment gains in 2026.",
-    "Aggregated quarterly EPS may differ from issuer TTM EPS due to share weighting and rounding."
+    "Aggregated quarterly EPS may differ from issuer TTM EPS due to share weighting and rounding.",
+    "Extended from 2026Q2 baseline through Tesla Q3 FY2026, matching Tesla 8-K Exhibit 99.1 financial summary; Apple/Amazon fiscal Q3 current periods unchanged until issuer publication."
   ]
 }
