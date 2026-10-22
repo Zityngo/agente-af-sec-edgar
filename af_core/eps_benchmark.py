@@ -12,8 +12,8 @@ def load_benchmark(path):
     if obj.get("schema_version")!=1 or obj.get("scope")!="THREE_COMPANY_EPS_BENCHMARK_2026Q2":
         raise ValueError("Benchmark fuera del piloto")
     rows=obj.get("rows")
-    if not isinstance(rows,list) or len(rows)!=12:
-        raise ValueError("Se exigen exactamente doce referencias oficiales")
+    if not isinstance(rows,list) or len(rows)<12:
+        raise ValueError("Se exigen al menos doce referencias oficiales")
     keys=set()
     for r in rows:
         key=(r["ticker"],r["period_type"],r["period_end"])
