@@ -29,3 +29,12 @@ Se retoma la revisión previa de 291 coincidencias SEC y 14 conciliaciones ident
 ## Siguiente bloque
 Paso 3B: revisar con los adjuntos de emisor el calendario de pagos de CapEx comprometido y conversiones de WC, desagregar cash tax/gains con evidencia y plantear bandas explícitas para FCF *sostenible*. Solo con financiación e intereses tras impuestos homogéneos decidir FCFE/Ke y FCFF/WACC. Ningún dato de mantenimiento/expansión divulgado se sustituirá silenciosamente por D&A.
 No enviar nada a Jon ni tocar `main`, Proyecto B, Cartera David, broker o proveedores.
+
+## Comprobaciones de cierre (23/10/2026)
+- CI sobre commit de código `d528f6704bb3dbc0e3defc8ec796b13c0bf99865`: https://github.com/Zityngo/agente-af-sec-edgar/actions/runs/39934814776, resultado **SUCCESS, 116/116 tests**.
+- No se deterioraron los 12/12 BPA auditados ni los 12/12 puentes TTM del piloto histórico (AAPL/TSLA/AMZN); estas pruebas son de regresión del motor y NO amplían el universo priorizado Tesla/PepsiCo.
+- Entregables locales generados: `AF_PASO3_FCF_TESLA_PEPSICO_20261023.pdf` (3 páginas renderizadas), `AF_PASO3_FCF_INTERACTIVO.html` y `AF_PASO3_FCF_DATOS.json`.
+- QA local: 8 pruebas de modelo, 8 controles JSON, 5 controles funcionales de Chromium; PDF 3 páginas con texto no vacío; ZIP íntegro.
+- Método auditado en este cierre no declara CapEx maintenance/expansion ni el FCF sostenible como oficiales.
+- Rama `main` observada en `c3d536c95dd0003ef6c26774a2c7db41a4f06fcd`, no alterada en este trabajo.
+- **Paso 3A cerrado**. Pendiente 3B: validación económica de ciclo/normalizaciones e integración posterior DCF FCFE/FCFF.
