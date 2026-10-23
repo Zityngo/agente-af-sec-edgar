@@ -1,0 +1,34 @@
+name: AF A - Tesla PepsiCo Q3 balance official SEC
+on:
+  workflow_dispatch:
+  push:
+    branches: [agent/chatgpt-a]
+    paths:
+      - 'scripts/inspect_q3_balance_sources.py'
+      - 'tests/test_q3_balance_source.py'
+      - '.github/workflows/af-balance-pep-tsla.yml'
+permissions:
+  contents: read
+jobs:
+  financial-source-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: SEC balance source checks
+        run: python -m unittest tests.test_q3_balance_source -v
+      - name: Read official SEC balance and lease tags
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: python scripts/inspect_q3_balance_sources.py
+      - name: Save metadata only, no raw SEC dump
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: af-q3-pep-tsla-balance-sources
+          path: publico/balance_q3_2026/companyfacts_balance_lease_diagnostic.json
+          retention-days: 30
+          if-no-files-found: warn
