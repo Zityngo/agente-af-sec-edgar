@@ -47,4 +47,4 @@
 - Se mantiene bloqueada valoración intrínseca definitiva sin reconciliación de FCF sostenible, Ke/WACC, CapEx mantenimiento y escenarios.
 - Sin cambios a main, Proyecto B, Cartera David, brokerage, suscripciones o proveedores.
 
-**PASO 2:** CERRADO Tesla, **parcial verificable PepsiCo** (lesiones Q3 N/D). Siguiente paso autorizado solo bajo petición: FCF sostenible y capital allocation.
+**PASO 2:** CERRADO Tesla, **parcial verificable PepsiCo** (leasing Q3 N/D). Siguiente paso autorizado solo bajo petición: FCF sostenible y capital allocation.
