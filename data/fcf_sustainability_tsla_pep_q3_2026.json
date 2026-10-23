@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "unit": "USD millions",
+  "updated": "2026-10-23",
+  "scope": "TESLA_PEP_ONLY_STEP3",
+  "notes": [
+    "Reported cash flow and capital spending numbers are period-matched; TSLA reports capex net of asset sales, excluding finance leases; PEP reports capital spending.",
+    "Cashflow working-capital sensitivity is a HYPOTHESIS, not a proof of normalized sustainable cash.",
+    "Maintenance growth CapEx is NOT separately disclosed; do not treat the maintenance-only capacity as FCFE or residual distributable cash.",
+    "2025 FY and 2026 YTD are separate; never annualize 36-week Pepsi YTD as FY.",
+    "Do not subtract investments in SpaceX twice from Tesla cash CapEx."
+  ],
+  "companies": {
+    "TSLA": {
+      "period": "9M 2026",
+      "period_end": "2026-09-30",
+      "accession": "0001628280-26-066775",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026066775/tsla-20260930.htm",
+      "fy2025": {
+        "cfo": 14747,
+        "capex_reported": 8527
+      },
+      "ytd2025": {
+        "cfo": 10934,
+        "capex_reported": 6134
+      },
+      "ytd2026": {
+        "cfo": 14897,
+        "capex_reported": 13014
+      },
+      "ttm2026": {
+        "cfo": 18710,
+        "capex_reported": 15407,
+        "fcf_as_reported": 3303
+      },
+      "working_capital_yoy_favorable_contribution": 3510,
+      "cash_details": {
+        "stock_compensation": 3346,
+        "capex_acquired_in_liabilities_non_cash": 3667,
+        "spacex_equity_acquisition": 2002,
+        "debt_proceeds": 5834,
+        "debt_repaid": 4954,
+        "finance_lease_principal_repaid": 63
+      },
+      "capex_definition": "NET_PP&E_CASH_PURCHASE_EXCL_FINANCE_LEASES_AFTER_ASSET_SALES",
+      "sustainable_fcf": null,
+      "sustainable_fcf_status": "BLOCKED_NOT_CERTIFIED"
+    },
+    "PEP": {
+      "period": "36 weeks 2026",
+      "period_end": "2026-09-05",
+      "accession": "0000077476-26-000048",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/77476/000007747626000048/pep-20260905.htm",
+      "fy2025": {
+        "cfo": 12087,
+        "capex_reported": 4415
+      },
+      "ytd2025": {
+        "cfo": 5468,
+        "capex_reported": 2499
+      },
+      "ytd2026": {
+        "cfo": 7950,
+        "capex_reported": 2182
+      },
+      "ttm2026": {
+        "cfo": 14569,
+        "capex_reported": 4098,
+        "fcf_as_reported": 10471
+      },
+      "working_capital_yoy_favorable_contribution": null,
+      "cash_details": {
+        "dividends_paid": 5935,
+        "share_repurchase_paid": 739,
+        "one_time_tax_remaining_liability_reported_paid": 965
+      },
+      "capex_definition": "CASH_CAPITAL_SPENDING",
+      "sustainable_fcf": null,
+      "sustainable_fcf_status": "BLOCKED_WC_MAINTENANCE_UNCERTAIN"
+    }
+  }
+}
