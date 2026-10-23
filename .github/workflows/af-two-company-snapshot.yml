@@ -1,0 +1,28 @@
+name: AF A - two company SEC FY and Q sources
+on:
+  workflow_dispatch:
+  push:
+    branches: [agent/chatgpt-a]
+    paths:
+      - 'scripts/sec_two_company_snapshot.py'
+      - '.github/workflows/af-two-company-snapshot.yml'
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch SEC facts
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: python scripts/sec_two_company_snapshot.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: af-public-sec-jon-tesla-pep
+          path: publico/af_jon_current/sec_financial_source_facts.json
+          retention-days: 14
