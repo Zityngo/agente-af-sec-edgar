@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "unit": "USD millions",
+  "purpose": "AFUNDAMENTAL_TESLA_PEPSICO_Q3_2026_VERIFIED_DEBT_LEASES",
+  "description": "Only official Q3 SEC facts for current balances; 2025 annual lease amounts for PEP are historical, not Q3.",
+  "companies": {
+    "TSLA": {
+      "period_end": "2026-09-30",
+      "accession": "0001628280-26-066775",
+      "filed": "2026-10-22",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026066775/tsla-20260930.htm",
+      "balance": {
+        "cash": 17853,
+        "investments": 27594,
+        "debt_current": 1311,
+        "debt_noncurrent": 7956,
+        "finance_lease_current": 76,
+        "finance_lease_noncurrent": 180,
+        "operating_lease_current": 1075,
+        "operating_lease_noncurrent": 5847,
+        "finance_lease_mode": "EXCLUDED"
+      },
+      "tags": {
+        "cash": "CashAndCashEquivalentsAtCarryingValue",
+        "investments": "ShortTermInvestments",
+        "debt_current": "DebtCurrent",
+        "debt_noncurrent": "LongTermDebt",
+        "finance_lease_current": "FinanceLeaseLiabilityCurrent",
+        "finance_lease_noncurrent": "FinanceLeaseLiabilityNoncurrent",
+        "operating_lease_current": "OperatingLeaseLiabilityCurrent",
+        "operating_lease_noncurrent": "OperatingLeaseLiabilityNoncurrent"
+      },
+      "audit_notes": [
+        "Debt current 1311 + long 7956 = 9267 excludes 76+180 finance leases; 1387+8136=9523 equals debt plus finance leases.",
+        "Unpaid principal 9284 differs 17 from debt carrying 9267; not additive.",
+        "Cash flow cash+restricted 19006 implies 1153 cash restricted, not freely utilizable cash.",
+        "Operating lease right-of-use assets 6555 are assets, not liabilities and not added to net debt.",
+        "30,000 unused credit commitment not an outstanding debt balance.",
+        "China working capital facility 5,966 and other non-recourse debt included in book financial debt; distinguish recourse risk."
+      ]
+    },
+    "PEP": {
+      "period_end": "2026-09-05",
+      "accession": "0000077476-26-000048",
+      "filed": "2026-10-08",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/77476/000007747626000048/pep-20260905.htm",
+      "balance": {
+        "cash": 10675,
+        "investments": 488,
+        "debt_current": 9223,
+        "debt_noncurrent": 42658,
+        "finance_lease_current": null,
+        "finance_lease_noncurrent": null,
+        "operating_lease_current": null,
+        "operating_lease_noncurrent": null,
+        "finance_lease_mode": "UNKNOWN"
+      },
+      "tags": {
+        "cash": "CashAndCashEquivalentsAtCarryingValue",
+        "investments": "ShortTermInvestments",
+        "debt_current": "ShortTermBorrowings",
+        "debt_noncurrent": "LongTermDebtAndCapitalLeaseObligations",
+        "operating_lease_historical": "OperatingLeaseLiability[Current,Noncurrent], LAST FY2025 only"
+      },
+      "historical_lease_2025": {
+        "period_end": "2025-12-27",
+        "operating_lease_current": 719,
+        "operating_lease_noncurrent": 3127,
+        "total": 3846,
+        "status": "OFFICIAL_HISTORICAL_NOT_Q3"
+      },
+      "audit_notes": [
+        "Debt 9,223 short-term (including CP) + 42,658 long-term = 51,881; CP 4,800 is subset of short-term, never add twice.",
+        "LongTermDebtAndCapitalLeaseObligations tag may include capital/finance leases: do not add new finance lease without balance footnote proof.",
+        "Q3 lease liabilities unavailable as individual US-GAAP SEC Companyfacts values; FY2025 total 3,846 is historical sensitivity only.",
+        "10,728 cash+restricted less 10,675 cash = 53 restricted; do not use all in net debt.",
+        "Management states Russia accounted for 20% of cash and equivalents; treat as access stress, not verified trapped cash.",
+        "Loans/revolvers not drawn must not be counted outstanding."
+      ]
+    }
+  }
+}
