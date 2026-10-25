@@ -1,0 +1,28 @@
+name: AF A - KDP SEC 2021-2025 full historical comparable
+on:
+  workflow_dispatch:
+  push:
+    branches: [agent/chatgpt-a]
+    paths:
+      - 'scripts/sec_kdp_full_hist.py'
+      - '.github/workflows/af-kdp-full-hist.yml'
+permissions:
+  contents: read
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: SEC KDP full-history facts
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: python scripts/sec_kdp_full_hist.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: af-sec-kdp-full-history
+          path: publico/af_backtest20/kdp_sec_full_history_2026_10_25.json
+          retention-days: 14
