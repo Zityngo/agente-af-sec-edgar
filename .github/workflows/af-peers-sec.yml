@@ -1,0 +1,28 @@
+name: AF A - Tesla PepsiCo verified GAAP peer comparator SEC
+on:
+  workflow_dispatch:
+  push:
+    branches: [agent/chatgpt-a]
+    paths:
+      - 'scripts/sec_verified_peers.py'
+      - '.github/workflows/af-peers-sec.yml'
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: SEC GM F KDP public filing extraction
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: python scripts/sec_verified_peers.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: af-sec-tesla-pepsi-comps
+          path: publico/af_backtest20/peer_tesla_pepsi_public_sec.json
+          retention-days: 20
