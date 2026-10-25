@@ -1,0 +1,28 @@
+name: AF A - MDLZ SEC comparable historical XBRL
+on:
+  workflow_dispatch:
+  push:
+    branches: [agent/chatgpt-a]
+    paths:
+      - 'scripts/sec_mdlz_snapshot.py'
+      - '.github/workflows/af-mdlz-sec.yml'
+permissions:
+  contents: read
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: SEC MDLZ companyfacts as-of 2026-10-25
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: python scripts/sec_mdlz_snapshot.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: af-sec-mdlz-companyfacts-public
+          path: publico/af_backtest20/mdlz_sec_companyfacts_2026_10_25.json
+          retention-days: 14
