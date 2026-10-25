@@ -14,7 +14,7 @@ class ContextTest(unittest.TestCase):
   with self.assertRaises(ValueError):price_mean_by_fiscal_window([("2025-01-01",100),("2025-01-01",120)],"2025-01-01","2025-12-31")
  def test_invalid(self):
   with self.assertRaises(ValueError):price_mean_by_fiscal_window([("2025-01-01",0)],"2025-01-01","2025-12-31")
- def test_roic(self):self.assertAlmostEqual(roic_components(9670,67777),14.267375658)
+ def test_roic(self):self.assertAlmostEqual(roic_components(9670,67777),14.267376838750609)
  def test_missing_roic_is_null(self):self.assertIsNone(roic_components(None,67777))
  def test_ratios_in_pp(self):self.assertEqual(relative_difference(17.4,18.3,"ratio")["unit"],"pp")
  def test_price_yoy(self):self.assertAlmostEqual(relative_difference(143.3602,169.2791)["value"],-15.311340856609002)
