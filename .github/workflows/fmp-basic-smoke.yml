@@ -1,6 +1,9 @@
 name: FMP Basic - prueba segura
 on:
   workflow_dispatch:
+  push:
+    branches: [agent/chatgpt-a]
+    paths: ['.github/workflows/fmp-basic-smoke.yml']
 permissions:
   contents: read
 jobs:
