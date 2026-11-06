@@ -1,0 +1,32 @@
+name: AF Amazon SEC 5 FY + 20 trimestres
+on:
+  workflow_dispatch:
+  push:
+    branches: [agent/chatgpt-a]
+    paths:
+      - 'scripts/pilot_amzn_20q_sec.py'
+      - '.github/workflows/af-amzn-20q.yml'
+permissions:
+  contents: read
+jobs:
+  amzn-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: "SEC Amazon 5 FY + 20 trimestres (solo lectura)"
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: |
+          test -n "$SEC_USER_AGENT"
+          python scripts/pilot_amzn_20q_sec.py --out publico/pilot_amzn20q/sec20q.json
+      - name: "Conservar auditoría SEC aunque falle"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: amzn-sec-5FY20Q-readonly
+          path: publico/pilot_amzn20q
+          retention-days: 14
+          if-no-files-found: warn
