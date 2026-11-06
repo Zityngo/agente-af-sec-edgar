@@ -30,7 +30,7 @@ jobs:
           python-version: '3.12'
       - name: Unit tests offline (no API)
         run: python -m unittest discover -s tests -p 'test_pilot_pep_20q_sec.py' -v
-      - name: SEC companyfacts: 5 FY, 20 quarters, FY/Q reconciliation and TTM
+      - name: "SEC companyfacts: 5 FY, 20 quarters, FY/Q reconciliation and TTM"
         env:
           SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
         run: |
