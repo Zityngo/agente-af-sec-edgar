@@ -54,3 +54,19 @@ def dcf_gate(years,fcff,wacc,lease_bridge,other_assets,shares,terminal_reinvestm
     if not all(checks.values()):
         return Gate("BLOQUEADO","Do not calculate intrinsic value / safety margin with missing economics",checks)
     return Gate("LISTO PARA CÁLCULO","Run CIC engine DCF; economic assumptions still require review",checks)
+
+
+def reconcile_fmp_debt_components(provider_total,provider_long_debt,provider_lease,
+                                  sec_operating_lease_noncurrent,sec_finance_lease_noncurrent,
+                                  tolerance=1e-4):
+    """Reconcile FMP totalDebt *field construction* with SEC, not its EV applicability."""
+    values=(provider_total,provider_long_debt,provider_lease,
+            sec_operating_lease_noncurrent,sec_finance_lease_noncurrent)
+    if any(x is None for x in values):
+        return Gate("BLOQUEADO","Debt / lease detail missing",{})
+    a=provider_total-provider_long_debt-provider_lease
+    b=provider_lease-sec_operating_lease_noncurrent-sec_finance_lease_noncurrent
+    evidence={"provider_residual":a,"sec_residual":b,"provider_total":provider_total}
+    if abs(a)>tolerance or abs(b)>tolerance:
+        return Gate("DIFERENCIA PENDIENTE DE CONCILIACIÓN","FMP accounting normalization mismatch",evidence)
+    return Gate("CUMPLIDO_DESGLOSE_NO_EV","Provider field explained; may omit current debt and mix lease classes. Cannot be used as strict CIC debt / EV.",evidence)
