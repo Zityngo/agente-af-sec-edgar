@@ -1,0 +1,43 @@
+name: AF PepsiCo SEC 5 FY + 20 trimestres
+on:
+  workflow_dispatch:
+  push:
+    branches: [agent/chatgpt-a]
+    paths:
+      - '.github/workflows/af-pep-20q.yml'
+      - 'scripts/pilot_pep_20q_sec.py'
+      - 'tests/test_pilot_pep_20q_sec.py'
+      - 'scripts/normalize_sp500_v2.py'
+permissions:
+  contents: read
+concurrency:
+  group: af-pep20q
+  cancel-in-progress: false
+jobs:
+  validate-pep-20q:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Unit tests offline (no API)
+        run: python -m unittest discover -s tests -p 'test_pilot_pep_20q_sec.py' -v
+      - name: SEC companyfacts: 5 FY, 20 quarters, FY/Q reconciliation and TTM
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: |
+          if [ -z "$SEC_USER_AGENT" ]; then
+            echo 'BLOCKED: SEC_USER_AGENT secret missing (not a financial error).'
+            exit 2
+          fi
+          python scripts/pilot_pep_20q_sec.py --out publico/pep20q/sec_qa_pep.json
+      - name: Keep SEC-only QA report even on failure; no database
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: af-pepsi-20q-sec-only
+          path: publico/pep20q/
+          retention-days: 14
+          if-no-files-found: warn
