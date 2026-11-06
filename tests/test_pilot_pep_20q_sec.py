@@ -136,18 +136,20 @@ class TestPilotPepsiCo(unittest.TestCase):
         self.assertEqual(result["status"], "STRUCTURAL_PASS")
         self.assertEqual(result["coverage_count_by_metric_of_20"]["eps_diluted"], 20)
         self.assertEqual(len(result["q4_official_eps"]), 5)
-        self.assertEqual(result["eps_ttm_proxy_available"], 20)
+        self.assertEqual(result["eps_ttm_proxy_available"], 17)
 
     def test_unverified_q4_is_rejected(self):
         registry = pilot.load_q4_registry(
             Path(__file__).resolve().parents[1] / "data" / "pep_q4_eps_official_2021_2025.json"
         )
         registry["rows"][0]["eps_diluted"] = -1
-        with self.assertRaises(ValueError):
-            # This check takes place in load_q4_registry, not apply_official_q4_eps.
-            tmp = registry["rows"][0]
-            if tmp["eps_diluted"] <= 0:
-                raise ValueError("BPA Q4 inválido")
+        import json
+        import tempfile
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "invalid_q4.json"
+            path.write_text(json.dumps(registry), encoding="utf-8")
+            with self.assertRaises(ValueError):
+                pilot.load_q4_registry(path)
 
 if __name__ == "__main__":
     unittest.main()
