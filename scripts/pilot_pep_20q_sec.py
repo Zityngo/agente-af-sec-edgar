@@ -22,7 +22,7 @@ FIRST, LAST = 2021, 2025
 RAW_KEYS = ("revenue", "gross_profit", "operating_income", "net_income", "eps_diluted",
             "cfo", "capex", "cash", "debt_total", "equity", "assets", "da", "interest", "tax", "pretax")
 FLOW_KEYS = ("revenue", "gross_profit", "operating_income", "net_income", "cfo", "capex")
-REQUIRED_KEYS = ("revenue", "operating_income", "net_income", "cfo", "capex")
+REQUIRED_KEYS = ("revenue", "gross_profit", "operating_income", "net_income", "cfo", "capex")
 FMP_KEYS = ("revenue", "operating_income", "net_income", "eps_diluted", "cfo", "capex")
 
 def fetch_sec(ua: str) -> dict:
@@ -177,8 +177,13 @@ def audit(facts, norm, fmp_reference=None):
                         "method_notes": ["ROIC proxy: EBIT TTM neto impuesto / media(equity+deuda-caja)",
                                          "No es ROIC core PepsiCo; sin ratios de cotización ni consenso"]})
     fmp_checks = compare_fmp(years, quarters+current_q, fmp_reference)
-    status = "REVIEW_REQUIRED" if defects or any(x["status"] == "DIFFERENCE" for x in fmp_checks) else "STRUCTURAL_PASS"
     coverage = {k: sum(r.get(k) is not None for r in quarters) for k in RAW_KEYS}
+    for key in REQUIRED_KEYS:
+        if coverage[key] != 20:
+            defects.append(f"cobertura insuficiente {key}: {coverage[key]}/20")
+    if any(x["status"] == "NULL" for x in year_reconciliations):
+        defects.append("FY vs 4Q tiene conciliaciones incompletas")
+    status = "REVIEW_REQUIRED" if defects or any(x["status"] == "DIFFERENCE" for x in fmp_checks) else "STRUCTURAL_PASS"
     return {"status": status, "audit_scope": "PEP 5FY + 20Q (2021-2025); Q 2026 opcionales",
             "official_source": SEC_URL, "retrieved_at_utc": datetime.now(timezone.utc).isoformat(),
             "fy_count": len(years), "quarter_count": len(quarters), "additional_current_quarters": len(current_q),
