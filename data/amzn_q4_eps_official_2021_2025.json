@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "issuer": "Amazon.com, Inc.",
+  "cik": "0001018724",
+  "metric": "GAAP diluted EPS, Q4 separately reported, split-adjusted",
+  "rows": [
+    {
+      "fiscal_year": 2021,
+      "period_type": "Q4",
+      "period_end": "2021-12-31",
+      "eps_diluted": 1.39,
+      "published_at": "2023-02-02",
+      "source_url": "https://ir.aboutamazon.com/news-release/news-release-details/2023/Amazon-com-Announces-Fourth-Quarter-Results/default.aspx",
+      "note": "2021 comparative Q4 EPS retroactively adjusted for 20:1 May 2022 split; original 2022 report was 27.75"
+    },
+    {
+      "fiscal_year": 2022,
+      "period_type": "Q4",
+      "period_end": "2022-12-31",
+      "eps_diluted": 0.03,
+      "published_at": "2023-02-02",
+      "source_url": "https://ir.aboutamazon.com/news-release/news-release-details/2023/Amazon-com-Announces-Fourth-Quarter-Results/default.aspx"
+    },
+    {
+      "fiscal_year": 2023,
+      "period_type": "Q4",
+      "period_end": "2023-12-31",
+      "eps_diluted": 1,
+      "published_at": "2025-02-06",
+      "source_url": "https://ir.aboutamazon.com/news-release/news-release-details/2025/Amazon-com-Announces-Fourth-Quarter-Results/"
+    },
+    {
+      "fiscal_year": 2024,
+      "period_type": "Q4",
+      "period_end": "2024-12-31",
+      "eps_diluted": 1.86,
+      "published_at": "2025-02-06",
+      "source_url": "https://ir.aboutamazon.com/news-release/news-release-details/2025/Amazon-com-Announces-Fourth-Quarter-Results/"
+    },
+    {
+      "fiscal_year": 2025,
+      "period_type": "Q4",
+      "period_end": "2025-12-31",
+      "eps_diluted": 1.95,
+      "published_at": "2026-02-05",
+      "source_url": "https://ir.aboutamazon.com/news-release/news-release-details/2026/Amazon-com-Announces-Fourth-Quarter-Results/"
+    }
+  ]
+}
