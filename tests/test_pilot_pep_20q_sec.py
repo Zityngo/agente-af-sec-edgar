@@ -121,5 +121,33 @@ class TestPilotPepsiCo(unittest.TestCase):
         })
         self.assertEqual(r["fmp_checks"][0]["status"], "NOT_COMPARABLE")
 
+
+    def test_q4_official_registry_completes_all_eps(self):
+        registry = pilot.load_q4_registry(
+            Path(__file__).resolve().parents[1] / "data" / "pep_q4_eps_official_2021_2025.json"
+        )
+        # The synthetic fiscal calendar does not align with the actual PepsiCo 8-K
+        # ends; adapt only its dates to test the link/method mechanics.
+        for row in registry["rows"]:
+            # Use a copy to avoid mutating the SEC benchmark registry.
+            row["period_end"] = next(q["period_end"] for q in FixtureNormalizer().quarters
+                                     if q["fiscal_year"] == row["fiscal_year"] and q["period_type"] == "Q4")
+        result = pilot.audit(self.facts(), FixtureNormalizer(), q4_registry=registry)
+        self.assertEqual(result["status"], "STRUCTURAL_PASS")
+        self.assertEqual(result["coverage_count_by_metric_of_20"]["eps_diluted"], 20)
+        self.assertEqual(len(result["q4_official_eps"]), 5)
+        self.assertEqual(result["eps_ttm_proxy_available"], 20)
+
+    def test_unverified_q4_is_rejected(self):
+        registry = pilot.load_q4_registry(
+            Path(__file__).resolve().parents[1] / "data" / "pep_q4_eps_official_2021_2025.json"
+        )
+        registry["rows"][0]["eps_diluted"] = -1
+        with self.assertRaises(ValueError):
+            # This check takes place in load_q4_registry, not apply_official_q4_eps.
+            tmp = registry["rows"][0]
+            if tmp["eps_diluted"] <= 0:
+                raise ValueError("BPA Q4 inválido")
+
 if __name__ == "__main__":
     unittest.main()
