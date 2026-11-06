@@ -1,6 +1,12 @@
 name: AF PepsiCo SEC 5 FY + 20 trimestres
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [agent/chatgpt-a]
+    paths:
+      - 'tests/test_pilot_pep_20q_sec.py'
+      - 'scripts/pilot_pep_20q_sec.py'
+      - '.github/workflows/af-pep-20q.yml'
   push:
     branches: [agent/chatgpt-a]
     paths:
