@@ -18,7 +18,7 @@ OPERATIONS = {
     "fcff", "fcfe", "fcfe_bridge", "ke", "wacc", "safety",
     "price_with_margin", "maintenance_capex", "ttm", "derive_q4",
 }
-FLOW_OPERATIONS = {"fcf_gross", "fcff", "fcfe", "margin_percent", "ttm", "derive_q4"}
+FLOW_OPERATIONS = {"fcf_gross", "fcfe", "margin_percent", "ttm", "derive_q4"}
 STOCK_OPERATIONS = {"net_debt", "enterprise_value"}
 
 def load_engine(path):
@@ -60,6 +60,19 @@ def execute(engine, payload):
                    (inputs[0]["end"], inputs[0]["currency"], inputs[0]["scale"]) for v in inputs)
         ):
             reason = "Stock no homogéneo: fecha, moneda o escala"
+        elif op == "market_cap" and (len(inputs) != 2 or
+            inputs[0]["kind"] != "PER_SHARE" or inputs[1]["kind"] != "STOCK" or
+            inputs[0]["currency"] != inputs[1]["currency"] or
+            inputs[0]["end"] != inputs[1]["end"]):
+            reason = "Capitalización: precio y acciones sin fecha/divisa común"
+        elif op == "fcff" and len(inputs) == 5:
+            monetary = [inputs[i] for i in (0, 2, 3, 4)]
+            if any(m["kind"] != "FLOW" or
+                   (m["currency"], m["scale"], m["basis"], m["period"], m["start"], m["end"]) !=
+                   (monetary[0]["currency"], monetary[0]["scale"], monetary[0]["basis"],
+                    monetary[0]["period"], monetary[0]["start"], monetary[0]["end"])
+                   for m in monetary):
+                reason = "FCFF: flujos monetarios heterogéneos"
         elif op == "fcf_gross" and (
             len(inputs) != 2 or inputs[0]["concept"] != "CFO"
             or inputs[1]["concept"] != "CAPEX_CASH_OUTFLOW"
