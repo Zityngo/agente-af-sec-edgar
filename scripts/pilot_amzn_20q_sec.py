@@ -47,6 +47,24 @@ def run(data, norm):
     quarterly = {(q["fiscal_year"], q["period_type"]): q for q in q_all if q["fiscal_year"] in YEARS}
     current = [q for q in q_all if q["fiscal_year"] == 2026 and q["period_type"] in ("Q1","Q2","Q3")]
     errors=[]
+    # Restaurar BPA Q4 desde comunicados oficiales (nunca BPA FY - BPA 9M).
+    regpath = ROOT / "data" / "amzn_q4_eps_official_2021_2025.json"
+    registry = json.loads(regpath.read_text(encoding="utf-8"))
+    if registry.get("schema_version") != 1 or registry.get("cik") != CIK or len(registry.get("rows", [])) != 5:
+        raise ValueError("Registro oficial de EPS Q4 invalido")
+    for datum in registry["rows"]:
+        key=(datum["fiscal_year"],datum["period_type"])
+        row=quarterly.get(key)
+        if not row or row["period_end"]!=datum["period_end"]:
+            raise ValueError(f"Q4 oficial no coincide con SEC {key}")
+        if row.get("eps_diluted") is not None and abs(row["eps_diluted"]-datum["eps_diluted"])>.02:
+            raise ValueError(f"Q4 oficial contradice EPS SEC {key}")
+        if datum.get("published_at","")<=datum["period_end"] or not datum.get("source_url","").startswith("https://ir.aboutamazon.com/"):
+            raise ValueError(f"EPS Q4 sin evidencia/fecha {key}")
+        row["eps_diluted"]=datum["eps_diluted"]
+        row.setdefault("sources",{})["eps_diluted"]={
+            "tag":"IssuerReportedGAAPDilutedEPS","source":datum["source_url"],
+            "published_at":datum["published_at"],"status":"OFFICIAL_MANUAL_SPLIT_ADJUSTED"}
     # Completar el margen bruto con etiquetas contables originales y procedencia.
     cost_key = "amzn_cost_of_sales"
     cost_annual = {}
