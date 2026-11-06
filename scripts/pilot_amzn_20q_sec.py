@@ -140,6 +140,17 @@ def run(data, norm):
                 if not (isinstance(sf.get("annual_source"),dict) and isinstance(sf.get("nine_month_source"),dict)):
                     errors.append(f"{key} {k} invalid FY/YTD bridge")
         rows.append(row)
+    # Fuente SEC 2026 Q1-Q3: conservar campos originales por trimestre en el artefacto,
+    # incluidos accession y filed, para no degradar estos períodos a PROXY.
+    current_rows=[]
+    for r in sorted(current,key=lambda x:x["period_end"]):
+        v={"year":r["fiscal_year"],"quarter":r["period_type"],
+           "end":r["period_end"],"filed":r.get("filing_date"),
+           "accession":r.get("filing_accession"),
+           "values":{field:r.get(field) for field in FIELDS},
+           "sources":r.get("sources",{}),
+           "methods":{k:r.get(k) for k in ("operating_income_method","debt_method","da_method")}}
+        current_rows.append(v)
     # Interval and accounting comparisons cannot be restricted to calendar-year stock dates.
     dates=sorted(date.fromisoformat(r["end"]) for r in rows)
     if any(not 70 <= (b-a).days <= 112 for a,b in zip(dates,dates[1:])):
@@ -153,7 +164,7 @@ def run(data, norm):
     return {"status":status,"company":"Amazon.com, Inc.","cik":CIK,"sec_url":URL,
             "extracted_utc":datetime.now(timezone.utc).isoformat(),"FY":len(annual),
             "FY_years":sorted(annual.keys()),"quarters":len(rows),"sec_cost_tags":sec_cost_tags,
-            "Q_2026":len(current),"coverage":coverage,
+            "Q_2026":len(current),"current_q_rows":current_rows,"coverage":coverage,
             "fy_vs_q":compare,"defects":errors,"quarter_rows":rows,
             "fy_rows":[{"year":y,"end":r["period_end"],"filed":r["filing_date"],
                         "accession":r["filing_accession"],"values":{k:r.get(k) for k in FIELDS}}

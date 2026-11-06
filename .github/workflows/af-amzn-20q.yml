@@ -2,7 +2,7 @@ name: AF Amazon SEC 5 FY + 20 trimestres
 on:
   workflow_dispatch:
   push:
-    branches: [agent/chatgpt-a]
+    branches: [agent/chatgpt-a, repair/cic-pro-v04-e2e-20261106]
     paths:
       - 'scripts/pilot_amzn_20q_sec.py'
       - '.github/workflows/af-amzn-20q.yml'
