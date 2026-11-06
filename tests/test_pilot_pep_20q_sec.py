@@ -121,5 +121,21 @@ class TestPilotPepsiCo(unittest.TestCase):
         })
         self.assertEqual(r["fmp_checks"][0]["status"], "NOT_COMPARABLE")
 
+
+    def test_ytd_missing_provenance_blocks(self):
+        n = FixtureNormalizer()
+        q = next(x for x in n.quarters if x["fiscal_year"] == 2025 and x["period_type"] == "Q2")
+        q["sources"]["cfo"] = {"derived_from": "ytd_delta", "previous_ytd": 1}
+        r = pilot.audit(self.facts(), n)
+        self.assertEqual(r["status"], "REVIEW_REQUIRED")
+        self.assertTrue(any("cfo sin procedencia" in e for e in r["defects"]))
+
+    def test_gross_profit_gap_is_not_approved(self):
+        n = FixtureNormalizer()
+        n.quarters[3]["gross_profit"] = None
+        r = pilot.audit(self.facts(), n)
+        self.assertEqual(r["status"], "REVIEW_REQUIRED")
+        self.assertIn("cobertura insuficiente gross_profit: 19/20", r["defects"])
+
 if __name__ == "__main__":
     unittest.main()
