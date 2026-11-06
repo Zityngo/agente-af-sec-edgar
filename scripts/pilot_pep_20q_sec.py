@@ -49,6 +49,8 @@ def source_state(r, key):
     src = r.get("sources", {}).get(key)
     if not isinstance(src, dict):
         return "REVIEW_NO_SOURCE"
+    if key == "eps_diluted" and src.get("tag") == "IssuerReportedGAAPDilutedEPS":
+        return "OFFICIAL_8K_MANUAL"
     if key == "operating_income" and r.get("operating_income_method") not in (
         "reported_OperatingIncomeLoss", "derived_Q4_FY_minus_9M"
     ):
@@ -81,6 +83,53 @@ def quarterly_rows(facts, norm):
     current_q = [r for r in q_all if r["fiscal_year"] == LAST+1 and r["period_type"] in ("Q1", "Q2", "Q3")]
     return annual_all, fy, q, current_q
 
+def load_q4_registry(path):
+    """Referencias manuales: BPA GAAP de 8-K oficiales, no FY-9M."""
+    obj = json.loads(Path(path).read_text(encoding="utf-8"))
+    if obj.get("schema_version") != 1 or obj.get("cik") != PEP_CIK:
+        raise ValueError("Registro Q4 incorrecto para PepsiCo")
+    rows = obj.get("rows")
+    if not isinstance(rows, list) or len(rows) != 5:
+        raise ValueError("Se requieren cinco BPA Q4 oficiales")
+    keys = [(x.get("fiscal_year"), x.get("period_type")) for x in rows]
+    if set(keys) != {(y, "Q4") for y in range(FIRST, LAST+1)}:
+        raise ValueError("Trimestres Q4 ausentes o duplicados")
+    for row in rows:
+        if not isinstance(row.get("eps_diluted"), (float, int)) or row["eps_diluted"] <= 0:
+            raise ValueError("BPA Q4 inválido")
+        if not str(row.get("source_url", "")).startswith("https://www.sec.gov/Archives/edgar/data/77476/"):
+            raise ValueError("El BPA debe tener referencia SEC PepsiCo")
+        if not row.get("release_date") or row["release_date"] <= row.get("period_end", ""):
+            raise ValueError("Fecha de publicación obligatoria y posterior al cierre")
+    return obj
+
+def apply_official_q4_eps(qrows, registry):
+    """No modifica el extractor ni la base; anota fuente oficial y BPA trimestral."""
+    if registry is None:
+        return []
+    matched = []
+    bykey = {(x["fiscal_year"], x["period_type"]): x for x in qrows}
+    for datum in registry["rows"]:
+        key = (datum["fiscal_year"], "Q4")
+        actual = bykey.get(key)
+        if actual is None or actual["period_end"] != datum["period_end"]:
+            raise ValueError(f"Q4 oficial no coincide con cierre SEC: {key}")
+        if actual.get("eps_diluted") is not None and abs(actual["eps_diluted"]-datum["eps_diluted"]) > .015:
+            raise ValueError(f"BPA Q4 SEC contra 8-K discordante: {key}")
+        actual["eps_diluted"] = datum["eps_diluted"]
+        actual.setdefault("sources", {})["eps_diluted"] = {
+            "tag": "IssuerReportedGAAPDilutedEPS",
+            "status": "PILOT_VERIFIED_MANUAL",
+            "derived_from": "official_Q4_earnings_release",
+            "issuer_url": datum["source_url"],
+            "released": datum["release_date"],
+            "period_end": datum["period_end"],
+        }
+        matched.append({"year": datum["fiscal_year"], "eps": datum["eps_diluted"],
+                        "status": "OFFICIAL_8K_MANUAL", "released": datum["release_date"],
+                        "source_url": datum["source_url"]})
+    return matched
+
 def compare_fmp(years, quarters, reference, tolerance_usd=2_000_000, tolerance_eps=.015):
     """Los datos FMP son opcionales y privados; nunca se versionan como fixtures."""
     checks = []
@@ -101,8 +150,9 @@ def compare_fmp(years, quarters, reference, tolerance_usd=2_000_000, tolerance_e
                            "sec": ours, "fmp": their, "status": flag, "tolerance": tol})
     return checks
 
-def audit(facts, norm, fmp_reference=None):
+def audit(facts, norm, fmp_reference=None, q4_registry=None):
     annual_all, years, quarters, current_q = quarterly_rows(facts, norm)
+    q4_official = apply_official_q4_eps(quarters, q4_registry)
     seen = {}
     defects = []
     year_reconciliations = []
@@ -180,6 +230,7 @@ def audit(facts, norm, fmp_reference=None):
                                    "fcf": fcf, "fcf_ttm": total_fcf,
                                    "roic_ttm_cic_proxy": roic, "roe_ttm": roe,
                                    "interest_coverage_ttm": ratio(sums["operating_income"], sums["interest"]),
+                                   "eps_ttm_proxy": round(sum(q["eps_diluted"] for q in w), 4) if len(w)==4 and all(q.get("eps_diluted") is not None for q in w) else None,
                                    "net_debt": row["debt_total"]-row["cash"] if row.get("debt_total") is not None and row.get("cash") is not None else None},
                         "method_notes": ["ROIC proxy: EBIT TTM neto impuesto / media(equity+deuda-caja)",
                                          "No es ROIC core PepsiCo; sin ratios de cotización ni consenso"]})
@@ -195,6 +246,8 @@ def audit(facts, norm, fmp_reference=None):
             "official_source": SEC_URL, "retrieved_at_utc": datetime.now(timezone.utc).isoformat(),
             "documented_fiscal_calendar_exceptions": calendar_exceptions,
             "fy_count": len(years), "quarter_count": len(quarters), "additional_current_quarters": len(current_q),
+            "q4_official_eps": q4_official,
+            "eps_ttm_proxy_available": sum(x["ratios"]["eps_ttm_proxy"] is not None for x in metrics),
             "missing_quarters": [{"fiscal_year": fy, "quarter": q} for fy, q in sorted(expected-set(seen))],
             "coverage_count_by_metric_of_20": coverage, "fy_vs_quarters": year_reconciliations,
             "fmp_checks": fmp_checks, "defects": defects, "quarters": metrics,
@@ -209,16 +262,18 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--companyfacts", type=Path, help="JSON SEC local para ejecutar sin red")
     ap.add_argument("--fmp", type=Path, help="JSON FMP privado opcional, NO versionar")
+    ap.add_argument("--q4-eps-registry", type=Path, default=ROOT/"data"/"pep_q4_eps_official_2021_2025.json",
+                    help="BPA Q4 del 8-K oficial (referencias manuales)")
     ap.add_argument("--out", type=Path, default=Path("publico/pilot_pep_20q_qa.json"))
     args = ap.parse_args(argv)
     obj = json.loads(args.companyfacts.read_text(encoding="utf-8")) if args.companyfacts else fetch_sec(os.environ.get("SEC_USER_AGENT", ""))
     benchmark = json.loads(args.fmp.read_text(encoding="utf-8")) if args.fmp else None
     import normalize_sp500_v2 as nm
-    report = audit(obj, nm, benchmark)
+    report = audit(obj, nm, benchmark, load_q4_registry(args.q4_eps_registry))
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(report, ensure_ascii=False, indent=2, allow_nan=False)+"\n", encoding="utf-8")
     print(json.dumps({k: report[k] for k in ("status", "fy_count", "quarter_count", "additional_current_quarters",
-                                           "coverage_count_by_metric_of_20", "defects")}, ensure_ascii=False))
+                                           "coverage_count_by_metric_of_20", "eps_ttm_proxy_available", "defects")}, ensure_ascii=False))
     return 0 if report["status"] == "STRUCTURAL_PASS" and report["fy_count"] == 5 and report["quarter_count"] == 20 else 2
 
 if __name__ == "__main__":
