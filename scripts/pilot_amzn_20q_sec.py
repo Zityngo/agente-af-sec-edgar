@@ -89,10 +89,11 @@ def run(data, norm):
         if c["status"]=="NULL" and c["metric"] in REQUIRED:
             errors.append(f"FY/4Q reconciliation missing: {c['fy']} {c['metric']}")
     coverage={k:sum(r["values"][k] is not None for r in rows) for k in FIELDS}
+    sec_cost_tags = sorted(k for k in facts if "CostOf" in k or "CostOfGoods" in k)
     status="STRUCTURAL_PASS" if not errors and len(annual)==5 and len(rows)==20 else "REVIEW_REQUIRED"
     return {"status":status,"company":"Amazon.com, Inc.","cik":CIK,"sec_url":URL,
             "extracted_utc":datetime.now(timezone.utc).isoformat(),"FY":len(annual),
-            "FY_years":sorted(annual.keys()),"quarters":len(rows),
+            "FY_years":sorted(annual.keys()),"quarters":len(rows),"sec_cost_tags":sec_cost_tags,
             "Q_2026":len(current),"coverage":coverage,
             "fy_vs_q":compare,"defects":errors,"quarter_rows":rows,
             "fy_rows":[{"year":y,"end":r["period_end"],"filed":r["filing_date"],
