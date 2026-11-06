@@ -38,12 +38,53 @@ def run(data, norm):
     if not isinstance(facts, dict):
         raise ValueError("SEC JSON sin us-gaap")
     norm._CACHE.clear()
+    # Amazon etiqueta el coste de ventas en us-gaap:CostOfGoodsAndServicesSold.
+    # El 'gross profit' es CALCULO revenue - cost, no campo GrossProfit observado.
+    norm.TAG["amzn_cost_of_sales"] = ["CostOfGoodsAndServicesSold"]
     fys_all = norm.annual(facts, CIK, data.get("entityName", "Amazon.com"), "AMZN", 2020, 2026)
     annual = {r["fiscal_year"]: r for r in fys_all if r["fiscal_year"] in YEARS}
     q_all = norm.quarterly(facts, CIK, data.get("entityName","Amazon.com"), "AMZN", fys_all, 2021, 2026)
     quarterly = {(q["fiscal_year"], q["period_type"]): q for q in q_all if q["fiscal_year"] in YEARS}
     current = [q for q in q_all if q["fiscal_year"] == 2026 and q["period_type"] in ("Q1","Q2","Q3")]
     errors=[]
+    # Completar el margen bruto con etiquetas contables originales y procedencia.
+    cost_key = "amzn_cost_of_sales"
+    cost_annual = {}
+    for year,r in annual.items():
+        v,src = norm.select(facts,cost_key,r["period_end"],norm.ANNUAL_FORMS,
+                            year,"FY",(320,390),r["filing_accession"])
+        cost_annual[year]=(v,src)
+        if v is None or r.get("revenue") is None:
+            errors.append(f"FY {year}: cost of sales not found")
+        else:
+            r["gross_profit"] = r["revenue"] - v
+    for (year,quarter),r in quarterly.items():
+        if quarter != "Q4":
+            v,src = norm.select(facts,cost_key,r["period_end"],norm.QUARTER_FORMS,
+                                year,quarter,(70,112),r["filing_accession"])
+        else:
+            annual_cost,annual_src = cost_annual.get(year,(None,None))
+            q3 = quarterly.get((year,"Q3"))
+            ytd,ytd_src = ((None,None) if q3 is None else
+                norm.select(facts,cost_key,q3["period_end"],norm.QUARTER_FORMS,
+                            year,"Q3",(230,300),q3["filing_accession"]))
+            v=annual_cost-ytd if annual_cost is not None and ytd is not None else None
+            src={"derived_from":"FY_minus_9M","annual_source":annual_src,
+                 "nine_month_source":ytd_src} if v is not None else None
+        if v is None or r.get("revenue") is None:
+            errors.append(f"{year} {quarter}: cost of sales not found")
+        else:
+            r["gross_profit"]=r["revenue"]-v
+            r.setdefault("sources",{})["gross_profit"] = {"derived_from":"revenue_minus_cost_of_sales",
+                "cost_of_sales":src,"revenue_source":r.get("sources",{}).get("revenue")}
+    for r in current:
+        year=r["fiscal_year"];period=r["period_type"]
+        v,src=norm.select(facts,cost_key,r["period_end"],norm.QUARTER_FORMS,
+                          year,period,(70,112),r["filing_accession"])
+        if v is not None and r.get("revenue") is not None:
+            r["gross_profit"]=r["revenue"]-v
+            r.setdefault("sources",{})["gross_profit"]={"derived_from":"revenue_minus_cost_of_sales","cost_of_sales":src}
+
     for year in YEARS:
         if year not in annual: errors.append(f"FY {year} absent")
         for ix in range(1, 5):
