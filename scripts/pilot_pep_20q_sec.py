@@ -122,9 +122,16 @@ def audit(facts, norm, fmp_reference=None):
     for k in sorted(expected - set(seen)):
         defects.append(f"trimestre ausente {k}")
     dates = [r["period_end"] for r in sorted(quarters, key=lambda x:x["period_end"])]
+    calendar_exceptions = []
     for earlier, later in zip(dates, dates[1:]):
         days = (date.fromisoformat(later) - date.fromisoformat(earlier)).days
-        if not 70 <= days <= 112:
+        # PepsiCo 2022 10-K, p. 66: 53-week fiscal year, Q4 has 17 weeks.
+        # SEC: https://www.sec.gov/Archives/edgar/data/77476/000007747623000007/pep-20221231.htm
+        documented_53_week_q4 = (earlier, later, days) == ("2022-09-03", "2022-12-31", 119)
+        if documented_53_week_q4:
+            calendar_exceptions.append({"year": 2022, "period": "Q4", "weeks": 17,
+                                        "days": 119, "source": "SEC 2022 10-K p.66"})
+        elif not 70 <= days <= 112:
             defects.append(f"fechas no consecutivas {earlier} -> {later} ({days} días)")
     annual_by_year = {r["fiscal_year"]: r for r in years}
     for yr in range(FIRST, LAST+1):
@@ -186,6 +193,7 @@ def audit(facts, norm, fmp_reference=None):
     status = "REVIEW_REQUIRED" if defects or any(x["status"] == "DIFFERENCE" for x in fmp_checks) else "STRUCTURAL_PASS"
     return {"status": status, "audit_scope": "PEP 5FY + 20Q (2021-2025); Q 2026 opcionales",
             "official_source": SEC_URL, "retrieved_at_utc": datetime.now(timezone.utc).isoformat(),
+            "documented_fiscal_calendar_exceptions": calendar_exceptions,
             "fy_count": len(years), "quarter_count": len(quarters), "additional_current_quarters": len(current_q),
             "missing_quarters": [{"fiscal_year": fy, "quarter": q} for fy, q in sorted(expected-set(seen))],
             "coverage_count_by_metric_of_20": coverage, "fy_vs_quarters": year_reconciliations,
