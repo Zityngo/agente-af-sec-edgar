@@ -8,7 +8,7 @@ from __future__ import annotations
 from datetime import date
 from typing import Any
 
-SCHEMA_VERSION = "0.6-consensus-guard-rc1"
+SCHEMA_VERSION = "0.6-consensus-guard-guidance-first-rc2"
 
 def _num(v: Any) -> bool:
     return isinstance(v, (int, float)) and not isinstance(v, bool) and abs(v) < 1e16
@@ -18,6 +18,32 @@ def _sum_existing(values):
 
 def _round(v, p=3):
     return round(v, p) if _num(v) else None
+
+def _official_future_guidance(inputs, anchor_year):
+    """Per-metric, per-year priority: official disclosed range beats vendor forecasts.
+
+    The optional list holds only official forward guidance actually issued by
+    the company; no extrapolation. Missing official periods remain provider
+    scenarios rather than being mislabeled issuer guidance.
+    """
+    official = {}
+    asof = date.fromisoformat(inputs["asof_date"])
+    for g in inputs.get("official_guidance_years", []):
+        y = g.get("year")
+        if not isinstance(y, int) or y <= anchor_year or y > anchor_year + 4 or y in official:
+            raise ValueError("Guidance adicional fuera del horizonte o duplicado")
+        if g.get("source_type") != "OFICIAL" or not g.get("source_url") or not g.get("published_at"):
+            raise ValueError("Guidance futuro sin fuente oficial y fecha")
+        release = date.fromisoformat(g["published_at"])
+        if release > asof:
+            raise ValueError("Prohibido usar guidance publicado después de la fecha de corte")
+        for k in ("revenue_low", "revenue_high"):
+            if not _num(g.get(k)) or g[k] <= 0:
+                raise ValueError("Guidance anual oficial sin rango de ventas válido")
+        if g["revenue_low"] > g["revenue_high"]:
+            raise ValueError("Guidance oficial anual con intervalo invertido")
+        official[y] = g
+    return official
 
 def build_model(inputs: dict, *, engine) -> dict:
     """Validates source fields; never turns NULL into zero or invents DCF cash flows.
@@ -77,6 +103,7 @@ def build_model(inputs: dict, *, engine) -> dict:
             discrepancies.append({'metric':f'ebit_avg_{anchor_year}','provider_value':cons_2026_ebit,
              'official_implicit_range':[_round(fy_ebit_low),_round(fy_ebit_high)],
              'status':'NO_COMPARABLE_PENDIENTE_DEFINICION', 'action':'Bloquear proyección EBIT del mismo proveedor hasta conciliación'})
+    official_futures=_official_future_guidance(inputs,anchor_year)
     futures=sorted(inputs['forecasts'],key=lambda x:x['year'])
     if [x.get('year') for x in futures]!=list(range(anchor_year+1,anchor_year+5)):
         raise ValueError('Se requieren máximo 5 columnas (ancla + 4 años), sin extrapolar ejercicios futuros')
@@ -85,24 +112,48 @@ def build_model(inputs: dict, *, engine) -> dict:
         if x.get('source_type')!='PROVEEDOR' or not x.get('source') or not x.get('retrieved_at'):
             raise ValueError('Consenso sin proveedor/fecha')
         n=x.get('analyst_count_revenue')
-        if not isinstance(n,int) or n<20: raise ValueError('Consenso insuficiente (<20 analistas)')
-        for k in ('revenue_low','revenue_avg','revenue_high'):
-            if not _num(x.get(k)) or x[k] <= 0:raise ValueError('Previsión sin datos: '+k)
-        if not x['revenue_low']<=x['revenue_avg']<=x['revenue_high']:
-            raise ValueError('Rango consenso de ingresos inválido')
-        years.append({'fiscal_year':x['year'],'data_status':'PROVEEDOR_CONSENSO',
-        'source':x['source'], 'revenue_low':_round(x['revenue_low']), 'revenue_avg':_round(x['revenue_avg']),
-        'revenue_high':_round(x['revenue_high']), 'analysts_revenue':n,
-        'confidence_label': 'COBERTURA_RELATIVAMENTE_BAJA' if n<30 else 'COBERTURA_AMPLIA',
-        'ebit_low':None,'ebit_high':None,'ebit_margin_low_pct':None,'ebit_margin_high_pct':None,
-        'operating_cash_flow':None,'capex':None,'fcff':None,'valuation_status':'BLOQUEADO',
-        'source_url':x['source_url']})
+        g_future=official_futures.get(x['year'])
+        provider_usable = isinstance(n,int) and n>=20 and all(
+            _num(x.get(k)) and x[k]>0 for k in ('revenue_low','revenue_avg','revenue_high')
+        ) and x['revenue_low']<=x['revenue_avg']<=x['revenue_high']
+        if not g_future and not provider_usable:
+            raise ValueError('Sin guidance anual ni consenso suficientemente respaldado')
+        if g_future:
+            low, high = g_future['revenue_low'],g_future['revenue_high']
+            mean=(low+high)/2
+            if provider_usable and not low<=x['revenue_avg']<=high:
+                discrepancies.append({'metric':f"revenue_avg_{x['year']}",
+                    'provider_value':x['revenue_avg'],
+                    'official_implicit_range':[_round(low),_round(high)],
+                    'status':'DIFERENCIA_PENDIENTE',
+                    'action':'Prevalece guidance oficial; revisar definiciones y fechas'})
+            state='OFICIAL_GUIDANCE'
+            primary_source=g_future['source_url']
+        else:
+            low,mean,high=x['revenue_low'],x['revenue_avg'],x['revenue_high']
+            state='PROVEEDOR_CONSENSO_SIN_GUIDANCE_ANUAL'
+            primary_source=x['source_url']
+        years.append({'fiscal_year':x['year'],'data_status':state,
+        'source': 'Guidance oficial' if g_future else x['source'],
+        'source_priority':'OFICIAL' if g_future else 'PROVEEDOR_SIN_GUIDANCE',
+        'revenue_low':_round(low), 'revenue_avg':_round(mean),
+        'revenue_high':_round(high), 'analysts_revenue':n if provider_usable else None,
+        'consensus_revenue_avg':_round(x['revenue_avg']) if provider_usable else None,
+        'confidence_label': ('GUIDANCE_EMPRESA' if g_future else
+             ('COBERTURA_RELATIVAMENTE_BAJA' if n<30 else 'COBERTURA_AMPLIA')),
+        'ebit_low':g_future.get('operating_income_low') if g_future else None,
+        'ebit_high':g_future.get('operating_income_high') if g_future else None,
+        'ebit_margin_low_pct':None,'ebit_margin_high_pct':None,
+        'operating_cash_flow':None,
+        'capex':g_future.get('cash_capex') if g_future else None,
+        'fcff':None,'valuation_status':'BLOQUEADO',
+        'source_url':primary_source})
     for i in range(1,len(years)):
         prev=years[i-1]['revenue_avg'];val=years[i]['revenue_avg']
         years[i]['revenue_growth_pct']=_round(engine.growth_percent(val,prev).value,2)
     years[0]['revenue_growth_pct']=None
     return {
-      'schema_version':SCHEMA_VERSION, 'ticker':ticker,'asof_date':inputs['asof_date'],'anchor_fiscal_year':anchor_year,
+      'schema_version':SCHEMA_VERSION, 'source_precedence':'guidance oficial por periodo y metrica > consenso proveedor como apoyo', 'ticker':ticker,'asof_date':inputs['asof_date'],'anchor_fiscal_year':anchor_year,
       'fiscal_years':years, 'source_types':['OFICIAL','CALCULO_OFICIAL','PROVEEDOR_CONSENSO','NO DISPONIBLE'],
       'anchor_consensus_revenue_status':revenue_2026_status,'anchor_consensus_ebit_status':ebit_vendor_status,
       'discrepancies':discrepancies, 'guidance_cash_capex_anchor_year':inputs.get('guidance_cash_capex_anchor_year',inputs.get('guidance_cash_capex_2026')),
