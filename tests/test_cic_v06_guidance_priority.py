@@ -1,7 +1,7 @@
 """2026-11-07 guidance-first regression, all data synthetic."""
 import copy
 import unittest
-from tests.test_cic_v06_consensus_bridge import data, cic_engine
+from test_cic_v06_consensus_bridge import data, cic_engine
 from integrations.cic_consensus_guard import build_model
 
 class TestGuidancePriority(unittest.TestCase):
